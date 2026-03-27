@@ -1,4 +1,4 @@
-
+# bot.py
 import os
 import telebot
 from telebot import types
@@ -22,7 +22,8 @@ cursor.execute("""
 CREATE TABLE IF NOT EXISTS users (
     user_id INTEGER PRIMARY KEY,
     balance REAL DEFAULT 0,
-    ref_by INTEGER DEFAULT 0
+    ref_by INTEGER DEFAULT 0,
+    verified INTEGER DEFAULT 0
 )
 """)
 
@@ -45,9 +46,9 @@ def set_text(key, value):
     cursor.execute("REPLACE INTO settings (key,value) VALUES (?,?)", (key, value))
     conn.commit()
 
-# Set defaults if missing
+# Set defaults
 if not get_text("welcome"):
-    set_text("welcome", "👋 Welcome! Use menu below")
+    set_text("welcome", "👋 Welcome! Please verify yourself using /verify")
 if not get_text("refer"):
     set_text("refer", "👥 Your Referral Link:\n{link}")
 
@@ -57,7 +58,7 @@ def add_user(uid, ref):
     if cursor.fetchone() is None:
         cursor.execute("INSERT INTO users (user_id, ref_by) VALUES (?,?)", (uid, ref))
         conn.commit()
-        # Add referral bonus
+        # Add referral bonus if valid
         if ref != 0 and ref != uid:
             cursor.execute("SELECT * FROM users WHERE user_id=?", (ref,))
             if cursor.fetchone():
@@ -68,6 +69,15 @@ def get_balance(uid):
     cursor.execute("SELECT balance FROM users WHERE user_id=?", (uid,))
     data = cursor.fetchone()
     return data[0] if data else 0
+
+def is_verified(uid):
+    cursor.execute("SELECT verified FROM users WHERE user_id=?", (uid,))
+    data = cursor.fetchone()
+    return data[0] == 1 if data else False
+
+def set_verified(uid):
+    cursor.execute("UPDATE users SET verified = 1 WHERE user_id=?", (uid,))
+    conn.commit()
 
 # ---------------- KEYBOARDS ----------------
 def main_menu():
@@ -97,17 +107,35 @@ def start(message):
         except:
             ref = 0
     add_user(uid, ref)
-    bot.send_message(uid, get_text("welcome"), reply_markup=main_menu())
+    if not is_verified(uid):
+        bot.send_message(uid, "👋 Please verify yourself using /verify")
+    else:
+        bot.send_message(uid, get_text("welcome"), reply_markup=main_menu())
+
+# Verification
+@bot.message_handler(commands=['verify'])
+def verify(message):
+    uid = message.from_user.id
+    add_user(uid, 0)
+    set_verified(uid)
+    bot.send_message(uid, "✅ You are verified! Use the menu below.", reply_markup=main_menu())
 
 # Balance
 @bot.message_handler(func=lambda m: m.text == "💰 Balance")
 def balance(message):
-    bot.send_message(message.chat.id, f"💰 Your Balance: ₹{get_balance(message.from_user.id)}")
+    uid = message.from_user.id
+    if not is_verified(uid):
+        bot.send_message(uid.chat.id, "❌ Please verify using /verify first")
+        return
+    bot.send_message(message.chat.id, f"💰 Your Balance: ₹{get_balance(uid)}")
 
 # Refer
 @bot.message_handler(func=lambda m: m.text == "👥 Refer")
 def refer(message):
     uid = message.from_user.id
+    if not is_verified(uid):
+        bot.send_message(message.chat.id, "❌ Please verify using /verify first")
+        return
     link = f"https://t.me/{bot.get_me().username}?start={uid}"
     bot.send_message(uid, get_text("refer").format(link=link))
 
@@ -123,7 +151,7 @@ def admin_panel(message):
         return
     bot.send_message(message.chat.id, "⚙️ Admin Panel", reply_markup=admin_menu())
 
-# Back to main
+# Back
 @bot.message_handler(func=lambda m: m.text == "⬅️ Back")
 def back(message):
     bot.send_message(message.chat.id, "Back to main menu", reply_markup=main_menu())
@@ -133,7 +161,7 @@ def back(message):
 def add_balance(message):
     if message.from_user.id not in ADMINS:
         return
-    msg = bot.send_message(message.chat.id, "Send user_id amount")
+    msg = bot.send_message(message.chat.id, "Send: user_id amount")
     bot.register_next_step_handler(msg, process_add_balance)
 
 def process_add_balance(message):
@@ -208,7 +236,6 @@ def run_flask():
 
 # ---------------- RUN BOT ----------------
 if __name__ == "__main__":
-    # Start Flask in a thread
     threading.Thread(target=run_flask).start()
     print("Bot is running...")
     bot.remove_webhook()
