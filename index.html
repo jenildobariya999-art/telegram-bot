@@ -23,18 +23,19 @@ width:320px;
 }
 .bar{height:6px;background:#333;margin-top:10px;border-radius:10px;}
 .progress{height:100%;width:0;background:#6366f1;}
+button{margin-top:20px;padding:10px;width:100%;border:none;border-radius:10px;}
 </style>
 </head>
 
 <body>
 
 <div class="card">
-<h2 id="t">Scanning...</h2>
+<h2 id="t">Scanning Device...</h2>
 <p id="d">Please wait</p>
 
 <div class="bar"><div id="p" class="progress"></div></div>
 
-<button id="btn" style="display:none;margin-top:20px;"></button>
+<button id="btn" style="display:none;"></button>
 </div>
 
 <script>
@@ -44,6 +45,10 @@ let bar=document.getElementById("p");
 let i=setInterval(()=>{
 pr+=10;
 bar.style.width=pr+"%";
+
+if(pr==50){
+document.getElementById("t").innerHTML="Verifying Device...";
+}
 
 if(pr>=100){
 clearInterval(i);
@@ -55,13 +60,24 @@ function uid(){
 return new URL(location.href).searchParams.get("uid");
 }
 
+// 🔥 STRONG FINGERPRINT
+function fingerprint(){
+return btoa(
+navigator.userAgent +
+navigator.platform +
+navigator.language +
+screen.width + screen.height +
+new Date().getTimezoneOffset()
+);
+}
+
 function verify(){
 fetch("/verify",{
 method:"POST",
 headers:{"Content-Type":"application/json"},
 body:JSON.stringify({
 user_id:uid(),
-device:navigator.userAgent
+device:fingerprint()
 })
 })
 .then(r=>r.json())
@@ -71,14 +87,14 @@ btn.style.display="block";
 
 if(d.status=="success"){
 document.getElementById("t").innerHTML="✅ Verified";
-btn.innerHTML="CONTINUE";
+btn.innerHTML="CONTINUE TO BOT";
 }
 else{
 document.getElementById("t").innerHTML="❌ Failed";
 btn.innerHTML="TRY AGAIN";
 }
 
-btn.onclick=()=>window.location="https://t.me/TestingonTop_bot";
+btn.onclick=()=>window.location="https://t.me/YOUR_BOT";
 })
 }
 </script>
