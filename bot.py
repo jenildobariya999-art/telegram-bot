@@ -1,26 +1,59 @@
-# bot.py
-import telebot
 import os
-from flask import Flask, request
+import telebot
+from flask import Flask, request, redirect, render_template_string
 
-# ================= CONFIG =================
-TOKEN = os.getenv("BOT_TOKEN")  # Set this in Railway secrets
-if not TOKEN:
-    raise ValueError("Bot token is missing! Set BOT_TOKEN in Railway secrets.")
+# ===== CONFIG =====
+TOKEN = os.getenv("BOT_TOKEN")  # Add your bot token in Railway env
+RAILWAY_URL = os.getenv("RAILWAY_STATIC_URL")  # Your Railway app URL
 
-# ================= DEVICE VERIFICATION =================
-# Telegram user_id -> device/session ID mapping
-VERIFIED_USERS = {
-    123456789: "DEVICE_ABC123",  # Replace with real user IDs
-    987654321: "DEVICE_XYZ987"
-}
-
-# ================= TELEGRAM BOT =================
-bot = telebot.TeleBot(TOKEN, parse_mode="HTML")
-
-# ================= FLASK APP =================
+bot = telebot.TeleBot(TOKEN)
 app = Flask(__name__)
 
+# ===== In-memory store for verification status =====
+pending_verification = {}
+
+# ===== Web page template =====
+VERIFY_PAGE = """
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Bot Verification</title>
+</head>
+<body>
+    <h2>Bot Verification</h2>
+    <p>{{ message }}</p>
+</body>
+</html>
+"""
+
+# ===== Web route for verification =====
+@app.route('/verify/<int:user_id>')
+def verify_user(user_id):
+    if user_id in pending_verification:
+        # Mark verified
+        pending_verification[user_id] = True
+        # Notify bot
+        bot.send_message(user_id, "✅ Verification Successful!")
+        return render_template_string(VERIFY_PAGE, message="✅ Verification Successful! Return to Telegram.")
+    else:
+        return render_template_string(VERIFY_PAGE, message="❌ Verification Failed!")
+
+# ===== Bot handlers =====
+@bot.message_handler(commands=['start'])
+def start(message):
+    user_id = message.from_user.id
+    # Add user to pending verification
+    pending_verification[user_id] = False
+    # Send button with web link
+    markup = telebot.types.InlineKeyboardMarkup()
+    url_button = telebot.types.InlineKeyboardButton(
+        text="Verify Now", 
+        url=f"{RAILWAY_URL}/verify/{user_id}"
+    )
+    markup.add(url_button)
+    bot.send_message(message.chat.id, "Please verify yourself to use this bot.", reply_markup=markup)
+
+# ===== Webhook route =====
 @app.route('/' + TOKEN, methods=['POST'])
 def webhook():
     json_string = request.get_data().decode('utf-8')
@@ -28,50 +61,14 @@ def webhook():
     bot.process_new_updates([update])
     return "OK", 200
 
-@app.route('/')
-def index():
-    return "Bot is running", 200
-
-# ================= BOT COMMANDS =================
-@bot.message_handler(commands=['start'])
-def start(message):
-    user_id = message.from_user.id
-    device_id = str(message.from_user.id)  # simple device simulation
-    allowed_device = VERIFIED_USERS.get(user_id)
-    
-    if not allowed_device or allowed_device != device_id:
-        bot.send_message(message.chat.id, "❌ You are not verified or using an unauthorized device.")
-        return
-    
-    bot.send_message(message.chat.id, f"✅ Welcome! Your device is verified, {message.from_user.first_name}.")
-
-@bot.message_handler(commands=['verify'])
-def verify(message):
-    secret_code = "1234"  # your secret verification code
-    args = message.text.split()
-    
-    if len(args) != 2:
-        bot.send_message(message.chat.id, "Usage: /verify <code>")
-        return
-    
-    if args[1] == secret_code:
-        device_id = str(message.from_user.id)
-        VERIFIED_USERS[message.from_user.id] = device_id
-        bot.send_message(message.chat.id, "✅ Your device is now verified!")
-    else:
-        bot.send_message(message.chat.id, "❌ Invalid verification code.")
-
-# ================= WEBHOOK SETUP =================
+# ===== Set webhook =====
 def set_webhook():
-    url = os.getenv("RAILWAY_STATIC_URL")  # Railway public URL
-    if not url:
-        raise ValueError("RAILWAY_STATIC_URL is missing! Set it in Railway environment variables.")
-    webhook_url = f"{url}/{TOKEN}"
+    webhook_url = f"{RAILWAY_URL}/{TOKEN}"
     bot.remove_webhook()
     bot.set_webhook(url=webhook_url)
     print("Webhook set:", webhook_url)
 
-# ================= RUN =================
+# ===== Run app =====
 if __name__ == "__main__":
     set_webhook()
-    app.run(host="0.0.0.0", port=int(os.environ.get('PORT', 8080)))
+    app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 8080)))
