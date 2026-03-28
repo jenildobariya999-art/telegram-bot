@@ -1,166 +1,122 @@
-import telebot
-from telebot import types
-import sqlite3
 from flask import Flask, request, jsonify
-import threading
-import secrets
-import requests
+from flask_cors import CORS
+from telebot import TeleBot, types
+import hashlib, json, os, threading, requests
 
-TOKEN = "8274297339:AAHfc0y2cXcaOxSFzYNYmY5-oOf2ESIuemg"
-bot = telebot.TeleBot(TOKEN, parse_mode="HTML")
+# ===== CONFIG =====
+API_TOKEN = os.environ.get("API_TOKEN")
+DOMAIN = "https://verification-beta-five.vercel.app"
 
-ADMINS = [6925391837, 7528813331]
+bot = TeleBot(API_TOKEN, parse_mode="HTML")
 
-# ---------- DATABASE ----------
-conn = sqlite3.connect("data.db", check_same_thread=False)
-cursor = conn.cursor()
+# FIX 409 ERROR
+bot.remove_webhook()
+bot.delete_webhook()
 
-cursor.execute("""
-CREATE TABLE IF NOT EXISTS users (
-    user_id INTEGER PRIMARY KEY,
-    balance REAL DEFAULT 0,
-    ref_by INTEGER DEFAULT 0,
-    verified INTEGER DEFAULT 0,
-    ip TEXT,
-    fingerprint TEXT,
-    token TEXT
-)
-""")
-conn.commit()
-
-# ---------- FUNCTIONS ----------
-def add_user(uid, ref):
-    cursor.execute("SELECT * FROM users WHERE user_id=?", (uid,))
-    if cursor.fetchone() is None:
-        cursor.execute("INSERT INTO users (user_id, ref_by) VALUES (?,?)", (uid, ref))
-        conn.commit()
-
-        if ref != 0 and ref != uid:
-            cursor.execute("UPDATE users SET balance = balance + 1 WHERE user_id=?", (ref,))
-            conn.commit()
-
-def is_verified(uid):
-    cursor.execute("SELECT verified FROM users WHERE user_id=?", (uid,))
-    data = cursor.fetchone()
-    return data and data[0] == 1
-
-def get_balance(uid):
-    cursor.execute("SELECT balance FROM users WHERE user_id=?", (uid,))
-    data = cursor.fetchone()
-    return data[0] if data else 0
-
-# ---------- MENU ----------
-def main_menu():
-    markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-    markup.row("💰 Balance", "👥 Refer")
-    return markup
-
-# ---------- START ----------
-@bot.message_handler(commands=['start'])
-def start(message):
-    uid = message.from_user.id
-    args = message.text.split()
-
-    ref = int(args[1]) if len(args) > 1 and args[1].isdigit() else 0
-    add_user(uid, ref)
-
-    if not is_verified(uid):
-        token = secrets.token_hex(16)
-
-        cursor.execute("UPDATE users SET token=? WHERE user_id=?", (token, uid))
-        conn.commit()
-
-        link = f"https://verification-beta-five.vercel.app/?id={uid}&token={token}"
-
-        bot.send_message(uid, f"🔐 Verify here:\n{link}", disable_web_page_preview=True)
-        return
-
-    bot.send_message(uid, "✅ Welcome!", reply_markup=main_menu())
-
-# ---------- BALANCE ----------
-@bot.message_handler(func=lambda m: m.text == "💰 Balance")
-def balance(message):
-    uid = message.from_user.id
-    if not is_verified(uid):
-        bot.send_message(uid, "❌ Verify first")
-        return
-    bot.send_message(uid, f"💰 Balance: ₹{get_balance(uid)}")
-
-# ---------- REFER ----------
-@bot.message_handler(func=lambda m: m.text == "👥 Refer")
-def refer(message):
-    uid = message.from_user.id
-    if not is_verified(uid):
-        bot.send_message(uid, "❌ Verify first")
-        return
-    link = f"https://t.me/{bot.get_me().username}?start={uid}"
-    bot.send_message(uid, f"👥 Referral Link:\n{link}")
-
-# ---------- ADMIN ----------
-@bot.message_handler(commands=['adminpanel'])
-def admin(message):
-    if message.from_user.id not in ADMINS:
-        return
-    markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-    markup.row("📢 Broadcast", "➕ Add Balance")
-    bot.send_message(message.chat.id, "Admin Panel", reply_markup=markup)
-
-# ---------- VERIFY API ----------
 app = Flask(__name__)
+CORS(app)
 
+# ===== FILES =====
+FILES = {
+    "devices": "devices.json",
+    "users": "users.json",
+    "failed": "failed.json",
+    "ips": "ips.json"
+}
+
+for f in FILES.values():
+    if not os.path.exists(f):
+        with open(f, "w") as x:
+            json.dump({}, x)
+
+def load(f):
+    try:
+        return json.load(open(f))
+    except:
+        return {}
+
+def save(name, data):
+    json.dump(data, open(FILES[name], "w"))
+
+devices = load(FILES["devices"])
+users = load(FILES["users"])
+failed = load(FILES["failed"])
+ips = load(FILES["ips"])
+
+# ===== HELPERS =====
+def hash_device(data):
+    return hashlib.sha256(data.encode()).hexdigest()
+
+def get_ip(req):
+    return req.headers.get("X-Forwarded-For", req.remote_addr)
+
+# ===== START =====
+@bot.message_handler(commands=['start'])
+def start(msg):
+    uid = str(msg.chat.id)
+
+    if uid in users:
+        return bot.send_message(uid, "✅ Already Verified")
+
+    markup = types.InlineKeyboardMarkup()
+    markup.add(types.InlineKeyboardButton(
+        "🔐 Verify Device",
+        web_app=types.WebAppInfo(DOMAIN)
+    ))
+
+    bot.send_message(uid, "🛡 Click below to verify", reply_markup=markup)
+
+# ===== VERIFY API =====
 @app.route("/verify", methods=["POST"])
 def verify():
     data = request.json
-    user_id = int(data.get("user_id"))
-    token = data.get("token")
-    fingerprint = data.get("fingerprint")
 
-    ip = request.headers.get('X-Forwarded-For', request.remote_addr)
+    uid = str(data.get("user_id"))
+    device_raw = data.get("device")
+    ip = get_ip(request)
 
-    # Token check
-    cursor.execute("SELECT token FROM users WHERE user_id=?", (user_id,))
-    db_token = cursor.fetchone()
+    device_hash = hash_device(device_raw)
 
-    if not db_token or db_token[0] != token:
-        return jsonify({"status": "fail", "reason": "Invalid link"})
-
-    # VPN detect
+    # 🌍 VPN CHECK
     try:
-        vpn = requests.get(f"http://ip-api.com/json/{ip}").json()
-        if vpn.get("proxy") or vpn.get("hosting"):
-            return jsonify({"status": "fail", "reason": "VPN blocked"})
+        ipinfo = requests.get(f"https://ipapi.co/{ip}/json").json()
+        if ipinfo.get("proxy"):
+            return jsonify({"status": "failed", "reason": "VPN"})
     except:
         pass
 
-    # Bot detect
-    ua = request.headers.get("User-Agent", "").lower()
-    if "bot" in ua:
-        return jsonify({"status": "fail", "reason": "Bot detected"})
+    # 📵 Emulator detect
+    if "sdk_gphone" in device_raw or "Emulator" in device_raw:
+        return jsonify({"status": "failed", "reason": "Emulator"})
 
-    # Device reuse
-    cursor.execute("SELECT user_id FROM users WHERE fingerprint=?", (fingerprint,))
-    if cursor.fetchone():
-        return jsonify({"status": "fail", "reason": "Device already used"})
+    # 🤖 Bot detect
+    if "Headless" in device_raw or "bot" in device_raw.lower():
+        return jsonify({"status": "failed", "reason": "Bot"})
 
-    # Save
-    cursor.execute("""
-    UPDATE users SET verified=1, ip=?, fingerprint=?, token=NULL
-    WHERE user_id=?
-    """, (ip, fingerprint, user_id))
-    conn.commit()
+    # 🔒 One device + IP
+    if device_hash in devices or ip in ips:
+        failed[uid] = True
+        save("failed", failed)
+        return jsonify({"status": "failed"})
 
-    try:
-        bot.send_message(user_id, "✅ Verified Successfully!")
-    except:
-        pass
+    # SAVE
+    devices[device_hash] = uid
+    ips[ip] = uid
+    users[uid] = True
 
-    return jsonify({"status": "ok"})
+    save("devices", devices)
+    save("ips", ips)
+    save("users", users)
 
-# ---------- RUN ----------
-def run_web():
-    app.run(host="0.0.0.0", port=5000)
+    bot.send_message(uid, "✅ Verification Successful!")
 
-if __name__ == "__main__":
-    bot.remove_webhook()
-    threading.Thread(target=run_web).start()
+    return jsonify({"status": "success"})
+
+# ===== RUN =====
+def run_bot():
     bot.infinity_polling(skip_pending=True)
+
+threading.Thread(target=run_bot).start()
+
+port = int(os.environ.get("PORT", 5000))
+app.run(host="0.0.0.0", port=port)
