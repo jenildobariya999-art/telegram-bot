@@ -1,13 +1,13 @@
 from flask import Flask, request, jsonify
 from telebot import TeleBot, types
-import hashlib, threading, os, time
+import hashlib, os, threading, time
 
 API_TOKEN = os.environ.get("API_TOKEN")
 DOMAIN = "https://verification-beta-five.vercel.app"
 
 bot = TeleBot(API_TOKEN)
 
-# ✅ FIX 409 ERROR
+# ❌ 409 FIX
 try:
     bot.remove_webhook()
 except:
@@ -18,10 +18,6 @@ app = Flask(__name__)
 devices = set()
 ips = set()
 
-@app.route("/")
-def home():
-    return "OK"
-
 def make_hash(data):
     return hashlib.md5(data.encode()).hexdigest()
 
@@ -29,6 +25,10 @@ def get_ip(req):
     if req.headers.get("X-Forwarded-For"):
         return req.headers.get("X-Forwarded-For").split(",")[0]
     return req.remote_addr
+
+@app.route("/")
+def home():
+    return "OK"
 
 @bot.message_handler(commands=['start'])
 def start(msg):
