@@ -3,89 +3,75 @@ from telebot import TeleBot, types
 import hashlib, json, os, threading
 
 API_TOKEN = os.environ.get("API_TOKEN")
+
 bot = TeleBot(API_TOKEN, parse_mode="HTML")
+bot.remove_webhook()
 
 app = Flask(__name__)
 
-# ===== FILES =====
-FILES = ["devices.json", "users.json", "ips.json"]
+# ===== FILE =====
+DATA_FILE = "data.json"
 
-for f in FILES:
-    if not os.path.exists(f):
-        with open(f, "w") as file:
-            json.dump({}, file)
+if not os.path.exists(DATA_FILE):
+    with open(DATA_FILE, "w") as f:
+        json.dump({"users": {}, "devices": {}, "ips": {}}, f)
 
-def load(file):
-    with open(file) as f:
+def load():
+    with open(DATA_FILE) as f:
         return json.load(f)
 
-def save(file, data):
-    with open(file, "w") as f:
+def save(data):
+    with open(DATA_FILE, "w") as f:
         json.dump(data, f)
 
-devices = load("devices.json")
-users = load("users.json")
-ips = load("ips.json")
-
-# ===== HASH =====
 def make_hash(data):
     return hashlib.md5(data.encode()).hexdigest()
 
 def get_ip(req):
-    return req.headers.get("x-forwarded-for", req.remote_addr)
+    return req.headers.get("X-Forwarded-For", req.remote_addr)
 
-# ===== START =====
+# ===== TELEGRAM START =====
 @bot.message_handler(commands=['start'])
 def start(msg):
     uid = msg.chat.id
 
     markup = types.InlineKeyboardMarkup()
-    markup.add(types.InlineKeyboardButton(
-        "🔐 Verify",
-        web_app=types.WebAppInfo("https://verification-beta-five.vercel.app/")
-    ))
+    markup.add(
+        types.InlineKeyboardButton(
+            "🔐 Verify",
+            web_app=types.WebAppInfo("https://verification-beta-five.vercel.app/")
+        )
+    )
 
-    bot.send_message(uid, "🔐 Please verify first", reply_markup=markup)
+    bot.send_message(uid, "🛡 Please verify first", reply_markup=markup)
 
 # ===== VERIFY API =====
 @app.route("/verify", methods=["POST"])
 def verify():
     try:
         data = request.json
-
         uid = str(data.get("user_id"))
-        device_raw = data.get("device")
-
-        if not uid or not device_raw:
-            return jsonify({"status": "failed"})
-
-        device = make_hash(device_raw)
+        device = make_hash(data.get("device"))
         ip = get_ip(request)
 
-        # ❌ Already used
-        if device in devices or ip in ips:
+        db = load()
+
+        if device in db["devices"] or ip in db["ips"]:
             return jsonify({"status": "failed"})
 
-        # ✅ Save
-        devices[device] = uid
-        ips[ip] = uid
-        users[uid] = True
+        db["devices"][device] = uid
+        db["ips"][ip] = uid
+        db["users"][uid] = True
 
-        save("devices.json", devices)
-        save("ips.json", ips)
-        save("users.json", users)
+        save(db)
 
-        # ✅ Send message
-        try:
-            bot.send_message(uid, "✅ Verification Successful!")
-        except:
-            pass
+        bot.send_message(uid, "✅ Verified Successfully!")
 
         return jsonify({"status": "success"})
 
     except Exception as e:
         print("ERROR:", e)
-        return jsonify({"status": "failed"})
+        return jsonify({"status": "error"})
 
 # ===== RUN =====
 def run_bot():
