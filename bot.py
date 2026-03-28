@@ -1,22 +1,26 @@
 from flask import Flask, request, jsonify
 from telebot import TeleBot, types
-import hashlib, threading, os
+import hashlib, threading, os, time
 
-# ===== CONFIG =====
 API_TOKEN = os.environ.get("API_TOKEN")
 DOMAIN = "https://verification-beta-five.vercel.app"
 
 bot = TeleBot(API_TOKEN, parse_mode="HTML")
+
+# 🚀 IMPORTANT FIX
 bot.remove_webhook()
+time.sleep(1)
 
 app = Flask(__name__)
 
-# ===== MEMORY STORAGE (NO JSON / NO DB) =====
 users = {}
 devices = set()
 ips = set()
 
-# ===== HELPERS =====
+@app.route("/")
+def home():
+    return "Bot Running ✅"
+
 def make_hash(data):
     return hashlib.md5(data.encode()).hexdigest()
 
@@ -25,61 +29,45 @@ def get_ip(req):
         return req.headers.get("X-Forwarded-For").split(",")[0]
     return req.remote_addr
 
-# ===== START =====
 @bot.message_handler(commands=['start'])
 def start(msg):
     uid = str(msg.chat.id)
 
-    if uid in users:
-        bot.send_message(uid, "✅ Already Verified")
-        return
-
     markup = types.InlineKeyboardMarkup()
-    markup.add(types.InlineKeyboardButton(
-        "🔐 Verify",
-        web_app=types.WebAppInfo(DOMAIN)
-    ))
+    markup.add(types.InlineKeyboardButton("🔐 Verify", web_app=types.WebAppInfo(DOMAIN)))
 
-    bot.send_message(uid, "🛡 Click below to verify", reply_markup=markup)
+    bot.send_message(uid, "Click to verify", reply_markup=markup)
 
-# ===== VERIFY API =====
 @app.route("/verify", methods=["POST"])
 def verify():
     data = request.json
 
-    if not data:
-        return jsonify({"status": "error"})
-
     uid = str(data.get("user_id"))
-    device_raw = data.get("device")
-
-    if not uid or not device_raw:
-        return jsonify({"status": "error"})
-
-    dev = make_hash(device_raw)
+    dev = make_hash(data.get("device"))
     ip = get_ip(request)
 
-    # 🚫 Already used
     if dev in devices or ip in ips:
         return jsonify({"status": "failed"})
 
-    # ✅ Save
     devices.add(dev)
     ips.add(ip)
     users[uid] = True
 
     try:
-        bot.send_message(uid, "✅ Verification Successful!")
+        bot.send_message(uid, "✅ Verified Successfully")
     except:
         pass
 
     return jsonify({"status": "success"})
 
-# ===== RUN BOT =====
 def run_bot():
-    bot.infinity_polling(skip_pending=True)
+    while True:
+        try:
+            bot.infinity_polling(skip_pending=True)
+        except Exception as e:
+            print("Restarting bot...", e)
+            time.sleep(3)
 
 threading.Thread(target=run_bot).start()
 
-# ===== RUN SERVER =====
 app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 8080)))
