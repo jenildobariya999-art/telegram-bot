@@ -1,77 +1,96 @@
 from flask import Flask, request, jsonify
-from flask_cors import CORS
 from telebot import TeleBot, types
 import hashlib, json, os, threading
 
 API_TOKEN = os.environ.get("API_TOKEN")
-
-# ✅ YOUR VERCEL LINK
-DOMAIN = "https://verification-beta-five.vercel.app/"
-
-ADMIN_IDS = ["6925391837", "7528813331"]
-
 bot = TeleBot(API_TOKEN, parse_mode="HTML")
-bot.remove_webhook()
 
 app = Flask(__name__)
-CORS(app)
 
-devices = {}
-users = {}
-ips = {}
+# ===== FILES =====
+FILES = ["devices.json", "users.json", "ips.json"]
 
+for f in FILES:
+    if not os.path.exists(f):
+        with open(f, "w") as file:
+            json.dump({}, file)
+
+def load(file):
+    with open(file) as f:
+        return json.load(f)
+
+def save(file, data):
+    with open(file, "w") as f:
+        json.dump(data, f)
+
+devices = load("devices.json")
+users = load("users.json")
+ips = load("ips.json")
+
+# ===== HASH =====
 def make_hash(data):
     return hashlib.md5(data.encode()).hexdigest()
 
 def get_ip(req):
-    if req.headers.get("X-Forwarded-For"):
-        return req.headers.get("X-Forwarded-For").split(",")[0]
-    return req.remote_addr
-
-@app.route("/")
-def home():
-    return "Bot Running ✅"
+    return req.headers.get("x-forwarded-for", req.remote_addr)
 
 # ===== START =====
 @bot.message_handler(commands=['start'])
 def start(msg):
     uid = msg.chat.id
 
-    if str(uid) in users:
-        return bot.send_message(uid, "✅ Already Verified")
-
     markup = types.InlineKeyboardMarkup()
     markup.add(types.InlineKeyboardButton(
         "🔐 Verify",
-        web_app=types.WebAppInfo(DOMAIN)
+        web_app=types.WebAppInfo("https://verification-beta-five.vercel.app/")
     ))
 
-    bot.send_message(uid, "🛡 Please verify first", reply_markup=markup)
+    bot.send_message(uid, "🔐 Please verify first", reply_markup=markup)
 
 # ===== VERIFY API =====
 @app.route("/verify", methods=["POST"])
 def verify():
-    data = request.json
-    uid = str(data.get("user_id"))
-    dev = make_hash(data.get("device"))
-    ip = get_ip(request)
+    try:
+        data = request.json
 
-    if dev in devices or ip in ips:
+        uid = str(data.get("user_id"))
+        device_raw = data.get("device")
+
+        if not uid or not device_raw:
+            return jsonify({"status": "failed"})
+
+        device = make_hash(device_raw)
+        ip = get_ip(request)
+
+        # ❌ Already used
+        if device in devices or ip in ips:
+            return jsonify({"status": "failed"})
+
+        # ✅ Save
+        devices[device] = uid
+        ips[ip] = uid
+        users[uid] = True
+
+        save("devices.json", devices)
+        save("ips.json", ips)
+        save("users.json", users)
+
+        # ✅ Send message
+        try:
+            bot.send_message(uid, "✅ Verification Successful!")
+        except:
+            pass
+
+        return jsonify({"status": "success"})
+
+    except Exception as e:
+        print("ERROR:", e)
         return jsonify({"status": "failed"})
 
-    devices[dev] = uid
-    ips[ip] = uid
-    users[uid] = True
-
-    bot.send_message(uid, "✅ Verification Successful!")
-
-    return jsonify({"status": "success"})
-
 # ===== RUN =====
-def run():
+def run_bot():
     bot.infinity_polling(skip_pending=True)
 
-threading.Thread(target=run).start()
+threading.Thread(target=run_bot).start()
 
-port = int(os.environ.get("PORT", 5000))
-app.run(host="0.0.0.0", port=port)
+app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
