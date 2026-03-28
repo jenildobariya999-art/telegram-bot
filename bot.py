@@ -1,13 +1,14 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, render_template
 from telebot import TeleBot, types
 import hashlib, os, threading, time
 
+# ===== CONFIG =====
 API_TOKEN = os.environ.get("API_TOKEN")
-DOMAIN = "https://verification-beta-five.vercel.app"
+RAILWAY_URL = "https://web-production-155.up.railway.app"  # 🔁 CHANGE THIS
 
 bot = TeleBot(API_TOKEN)
 
-# ❌ 409 FIX
+# ❌ FIX 409 ERROR
 try:
     bot.remove_webhook()
 except:
@@ -18,6 +19,7 @@ app = Flask(__name__)
 devices = set()
 ips = set()
 
+# ===== HELPERS =====
 def make_hash(data):
     return hashlib.md5(data.encode()).hexdigest()
 
@@ -26,19 +28,12 @@ def get_ip(req):
         return req.headers.get("X-Forwarded-For").split(",")[0]
     return req.remote_addr
 
+# ===== WEB PAGE =====
 @app.route("/")
 def home():
-    return "OK"
+    return render_template("index.html")
 
-@bot.message_handler(commands=['start'])
-def start(msg):
-    markup = types.InlineKeyboardMarkup()
-    markup.add(types.InlineKeyboardButton(
-        "🔐 Verify",
-        web_app=types.WebAppInfo(DOMAIN)
-    ))
-    bot.send_message(msg.chat.id, "Click Verify", reply_markup=markup)
-
+# ===== VERIFY API =====
 @app.route("/verify", methods=["POST"])
 def verify():
     try:
@@ -67,9 +62,21 @@ def verify():
         return jsonify({"status": "success"})
 
     except Exception as e:
-        print("VERIFY ERROR:", e)
+        print("ERROR:", e)
         return jsonify({"status": "error"})
 
+# ===== TELEGRAM BOT =====
+@bot.message_handler(commands=['start'])
+def start(msg):
+    markup = types.InlineKeyboardMarkup()
+    markup.add(types.InlineKeyboardButton(
+        "🔐 Verify",
+        web_app=types.WebAppInfo(RAILWAY_URL)
+    ))
+
+    bot.send_message(msg.chat.id, "Click Verify", reply_markup=markup)
+
+# ===== RUN BOT SAFE =====
 def run_bot():
     while True:
         try:
@@ -80,4 +87,5 @@ def run_bot():
 
 threading.Thread(target=run_bot).start()
 
+# ===== RUN FLASK =====
 app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 8080)))
