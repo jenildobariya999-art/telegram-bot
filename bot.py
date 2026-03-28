@@ -5,21 +5,22 @@ import hashlib, threading, os, time
 API_TOKEN = os.environ.get("API_TOKEN")
 DOMAIN = "https://verification-beta-five.vercel.app"
 
-bot = TeleBot(API_TOKEN, parse_mode="HTML")
+bot = TeleBot(API_TOKEN)
 
-# 🚀 IMPORTANT FIX
-bot.remove_webhook()
-time.sleep(1)
+# ✅ FIX 409 ERROR
+try:
+    bot.remove_webhook()
+except:
+    pass
 
 app = Flask(__name__)
 
-users = {}
 devices = set()
 ips = set()
 
 @app.route("/")
 def home():
-    return "Bot Running ✅"
+    return "OK"
 
 def make_hash(data):
     return hashlib.md5(data.encode()).hexdigest()
@@ -31,42 +32,51 @@ def get_ip(req):
 
 @bot.message_handler(commands=['start'])
 def start(msg):
-    uid = str(msg.chat.id)
-
     markup = types.InlineKeyboardMarkup()
-    markup.add(types.InlineKeyboardButton("🔐 Verify", web_app=types.WebAppInfo(DOMAIN)))
-
-    bot.send_message(uid, "Click to verify", reply_markup=markup)
+    markup.add(types.InlineKeyboardButton(
+        "🔐 Verify",
+        web_app=types.WebAppInfo(DOMAIN)
+    ))
+    bot.send_message(msg.chat.id, "Click Verify", reply_markup=markup)
 
 @app.route("/verify", methods=["POST"])
 def verify():
-    data = request.json
-
-    uid = str(data.get("user_id"))
-    dev = make_hash(data.get("device"))
-    ip = get_ip(request)
-
-    if dev in devices or ip in ips:
-        return jsonify({"status": "failed"})
-
-    devices.add(dev)
-    ips.add(ip)
-    users[uid] = True
-
     try:
-        bot.send_message(uid, "✅ Verified Successfully")
-    except:
-        pass
+        data = request.json
 
-    return jsonify({"status": "success"})
+        uid = str(data.get("user_id"))
+        device_raw = data.get("device")
+
+        if not uid or not device_raw:
+            return jsonify({"status": "error"})
+
+        dev = make_hash(device_raw)
+        ip = get_ip(request)
+
+        if dev in devices or ip in ips:
+            return jsonify({"status": "failed"})
+
+        devices.add(dev)
+        ips.add(ip)
+
+        try:
+            bot.send_message(uid, "✅ Verified Successfully")
+        except:
+            pass
+
+        return jsonify({"status": "success"})
+
+    except Exception as e:
+        print("VERIFY ERROR:", e)
+        return jsonify({"status": "error"})
 
 def run_bot():
     while True:
         try:
             bot.infinity_polling(skip_pending=True)
         except Exception as e:
-            print("Restarting bot...", e)
-            time.sleep(3)
+            print("BOT ERROR:", e)
+            time.sleep(5)
 
 threading.Thread(target=run_bot).start()
 
