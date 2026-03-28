@@ -3,13 +3,15 @@ from telebot import types
 import sqlite3
 from flask import Flask, request, jsonify
 import threading
+import secrets
+import requests
 
 TOKEN = "8274297339:AAHfc0y2cXcaOxSFzYNYmY5-oOf2ESIuemg"
 bot = telebot.TeleBot(TOKEN, parse_mode="HTML")
 
 ADMINS = [6925391837, 7528813331]
 
-# ---------------- DATABASE ----------------
+# ---------- DATABASE ----------
 conn = sqlite3.connect("data.db", check_same_thread=False)
 cursor = conn.cursor()
 
@@ -18,12 +20,15 @@ CREATE TABLE IF NOT EXISTS users (
     user_id INTEGER PRIMARY KEY,
     balance REAL DEFAULT 0,
     ref_by INTEGER DEFAULT 0,
-    verified INTEGER DEFAULT 0
+    verified INTEGER DEFAULT 0,
+    ip TEXT,
+    fingerprint TEXT,
+    token TEXT
 )
 """)
 conn.commit()
 
-# ---------------- FUNCTIONS ----------------
+# ---------- FUNCTIONS ----------
 def add_user(uid, ref):
     cursor.execute("SELECT * FROM users WHERE user_id=?", (uid,))
     if cursor.fetchone() is None:
@@ -39,171 +44,123 @@ def is_verified(uid):
     data = cursor.fetchone()
     return data and data[0] == 1
 
-def set_verified(uid):
-    cursor.execute("UPDATE users SET verified=1 WHERE user_id=?", (uid,))
-    conn.commit()
-
 def get_balance(uid):
     cursor.execute("SELECT balance FROM users WHERE user_id=?", (uid,))
     data = cursor.fetchone()
     return data[0] if data else 0
 
-# ---------------- KEYBOARD ----------------
+# ---------- MENU ----------
 def main_menu():
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
     markup.row("💰 Balance", "👥 Refer")
     return markup
 
-# ---------------- START ----------------
+# ---------- START ----------
 @bot.message_handler(commands=['start'])
 def start(message):
     uid = message.from_user.id
     args = message.text.split()
 
-    ref = 0
-    if len(args) > 1:
-        try:
-            ref = int(args[1])
-        except:
-            ref = 0
-
+    ref = int(args[1]) if len(args) > 1 and args[1].isdigit() else 0
     add_user(uid, ref)
 
     if not is_verified(uid):
-        verify_link = f"https://verification-beta-five.vercel.app/?id={uid}"
-        bot.send_message(uid,
-            f"🔐 Please verify first:\n{verify_link}",
-            disable_web_page_preview=True
-        )
+        token = secrets.token_hex(16)
+
+        cursor.execute("UPDATE users SET token=? WHERE user_id=?", (token, uid))
+        conn.commit()
+
+        link = f"https://verification-beta-five.vercel.app/?id={uid}&token={token}"
+
+        bot.send_message(uid, f"🔐 Verify here:\n{link}", disable_web_page_preview=True)
         return
 
     bot.send_message(uid, "✅ Welcome!", reply_markup=main_menu())
 
-# ---------------- BALANCE ----------------
+# ---------- BALANCE ----------
 @bot.message_handler(func=lambda m: m.text == "💰 Balance")
 def balance(message):
     uid = message.from_user.id
-
     if not is_verified(uid):
-        bot.send_message(uid, "❌ Verify first using /start")
+        bot.send_message(uid, "❌ Verify first")
         return
-
     bot.send_message(uid, f"💰 Balance: ₹{get_balance(uid)}")
 
-# ---------------- REFER ----------------
+# ---------- REFER ----------
 @bot.message_handler(func=lambda m: m.text == "👥 Refer")
 def refer(message):
     uid = message.from_user.id
-
     if not is_verified(uid):
-        bot.send_message(uid, "❌ Verify first using /start")
+        bot.send_message(uid, "❌ Verify first")
         return
-
     link = f"https://t.me/{bot.get_me().username}?start={uid}"
-    bot.send_message(uid, f"👥 Your Referral Link:\n{link}")
+    bot.send_message(uid, f"👥 Referral Link:\n{link}")
 
-# ---------------- ADMIN PANEL ----------------
+# ---------- ADMIN ----------
 @bot.message_handler(commands=['adminpanel'])
-def admin_panel(message):
+def admin(message):
     if message.from_user.id not in ADMINS:
         return
-
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
     markup.row("📢 Broadcast", "➕ Add Balance")
-    markup.row("🔄 Reset User", "⬅️ Back")
+    bot.send_message(message.chat.id, "Admin Panel", reply_markup=markup)
 
-    bot.send_message(message.chat.id, "⚙️ Admin Panel", reply_markup=markup)
-
-# ---------------- BACK ----------------
-@bot.message_handler(func=lambda m: m.text == "⬅️ Back")
-def back(message):
-    bot.send_message(message.chat.id, "Main Menu", reply_markup=main_menu())
-
-# ---------------- ADD BALANCE ----------------
-@bot.message_handler(func=lambda m: m.text == "➕ Add Balance")
-def add_balance(message):
-    if message.from_user.id not in ADMINS:
-        return
-
-    msg = bot.send_message(message.chat.id, "Send: user_id amount")
-    bot.register_next_step_handler(msg, process_add_balance)
-
-def process_add_balance(message):
-    try:
-        uid, amt = message.text.split()
-        cursor.execute("UPDATE users SET balance = balance + ? WHERE user_id=?", (float(amt), int(uid)))
-        conn.commit()
-        bot.send_message(message.chat.id, "✅ Balance Added")
-    except:
-        bot.send_message(message.chat.id, "❌ Error")
-
-# ---------------- RESET USER ----------------
-@bot.message_handler(func=lambda m: m.text == "🔄 Reset User")
-def reset_user(message):
-    if message.from_user.id not in ADMINS:
-        return
-
-    msg = bot.send_message(message.chat.id, "Send user_id")
-    bot.register_next_step_handler(msg, process_reset)
-
-def process_reset(message):
-    try:
-        uid = int(message.text)
-        cursor.execute("DELETE FROM users WHERE user_id=?", (uid,))
-        conn.commit()
-        bot.send_message(message.chat.id, "✅ User Reset")
-    except:
-        bot.send_message(message.chat.id, "❌ Error")
-
-# ---------------- BROADCAST ----------------
-@bot.message_handler(func=lambda m: m.text == "📢 Broadcast")
-def broadcast(message):
-    if message.from_user.id not in ADMINS:
-        return
-
-    msg = bot.send_message(message.chat.id, "Send message")
-    bot.register_next_step_handler(msg, process_broadcast)
-
-def process_broadcast(message):
-    cursor.execute("SELECT user_id FROM users")
-    users = cursor.fetchall()
-
-    for u in users:
-        try:
-            bot.send_message(u[0], message.text)
-        except:
-            pass
-
-    bot.send_message(message.chat.id, "✅ Broadcast Done")
-
-# ---------------- FLASK VERIFY API ----------------
+# ---------- VERIFY API ----------
 app = Flask(__name__)
 
 @app.route("/verify", methods=["POST"])
 def verify():
     data = request.json
     user_id = int(data.get("user_id"))
+    token = data.get("token")
+    fingerprint = data.get("fingerprint")
 
-    set_verified(user_id)
+    ip = request.headers.get('X-Forwarded-For', request.remote_addr)
+
+    # Token check
+    cursor.execute("SELECT token FROM users WHERE user_id=?", (user_id,))
+    db_token = cursor.fetchone()
+
+    if not db_token or db_token[0] != token:
+        return jsonify({"status": "fail", "reason": "Invalid link"})
+
+    # VPN detect
+    try:
+        vpn = requests.get(f"http://ip-api.com/json/{ip}").json()
+        if vpn.get("proxy") or vpn.get("hosting"):
+            return jsonify({"status": "fail", "reason": "VPN blocked"})
+    except:
+        pass
+
+    # Bot detect
+    ua = request.headers.get("User-Agent", "").lower()
+    if "bot" in ua:
+        return jsonify({"status": "fail", "reason": "Bot detected"})
+
+    # Device reuse
+    cursor.execute("SELECT user_id FROM users WHERE fingerprint=?", (fingerprint,))
+    if cursor.fetchone():
+        return jsonify({"status": "fail", "reason": "Device already used"})
+
+    # Save
+    cursor.execute("""
+    UPDATE users SET verified=1, ip=?, fingerprint=?, token=NULL
+    WHERE user_id=?
+    """, (ip, fingerprint, user_id))
+    conn.commit()
 
     try:
-        bot.send_message(user_id, "✅ Verification Successful! Now use /start")
+        bot.send_message(user_id, "✅ Verified Successfully!")
     except:
         pass
 
     return jsonify({"status": "ok"})
 
-# ---------------- RUN BOTH ----------------
-def run_flask():
+# ---------- RUN ----------
+def run_web():
     app.run(host="0.0.0.0", port=5000)
 
 if __name__ == "__main__":
-    print("Bot + Web running...")
-
-    try:
-        bot.remove_webhook()
-    except:
-        pass
-
-    threading.Thread(target=run_flask).start()
+    bot.remove_webhook()
+    threading.Thread(target=run_web).start()
     bot.infinity_polling(skip_pending=True)
