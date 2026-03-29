@@ -4,12 +4,13 @@ from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton, WebAppInfo
 import threading
 
 TOKEN = "8274297339:AAEch3qco73oPdck8vMIROqJxfAj0SARyU8"
-WEB_URL = "https://verification-beta-five.vercel.app"  # Vercel link
+WEB_URL = "https://verification-beta-five.vercel.app"
 
 bot = telebot.TeleBot(TOKEN)
 app = Flask(__name__)
 
-verified_devices = {}
+# 🔥 DEVICE BASED STORAGE
+device_data = {}   # fingerprint → user_id
 
 # ✅ VERIFY API
 @app.route("/verify", methods=["POST"])
@@ -19,22 +20,26 @@ def verify():
         user_id = str(data.get("user_id"))
         fingerprint = data.get("fingerprint")
 
-        # 🟢 FIRST TIME ALWAYS SUCCESS
-        if user_id not in verified_devices:
-            verified_devices[user_id] = fingerprint
+        if not user_id or not fingerprint:
+            return jsonify({"status": "failed"})
+
+        # 🟢 NEW DEVICE
+        if fingerprint not in device_data:
+            device_data[fingerprint] = user_id
 
             try:
-                bot.send_message(user_id, "✅ Verification Successful!")
+                bot.send_message(user_id, "✅ Verification Successful")
             except:
                 pass
 
             return jsonify({"status": "success"})
 
-        # 🔴 SAME USER AGAIN
-        if verified_devices[user_id] == fingerprint:
+        # 🟢 SAME DEVICE SAME USER
+        if device_data[fingerprint] == user_id:
             return jsonify({"status": "success"})
-        else:
-            return jsonify({"status": "failed"})
+
+        # 🔴 SAME DEVICE DIFFERENT USER
+        return jsonify({"status": "failed"})
 
     except:
         return jsonify({"status": "failed"})
@@ -45,22 +50,20 @@ def home():
     return "Running ✅"
 
 
-# 🤖 START COMMAND (🔥 WEB APP BUTTON)
+# 🤖 TELEGRAM START
 @bot.message_handler(commands=['start'])
 def start(msg):
-    user_id = msg.from_user.id
-
     markup = InlineKeyboardMarkup()
     markup.add(
         InlineKeyboardButton(
             "🔐 Verify Device",
-            web_app=WebAppInfo(f"{WEB_URL}?id={user_id}")
+            web_app=WebAppInfo(WEB_URL)
         )
     )
 
     bot.send_message(
         msg.chat.id,
-        "🔐 Click below to verify",
+        "🔐 Click below to verify your device",
         reply_markup=markup
     )
 
