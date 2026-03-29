@@ -22,15 +22,11 @@ let interval = setInterval(() => {
 function getDevice() {
   return JSON.stringify({
     ua: navigator.userAgent,
-    screen: screen.width + "x" + screen.height,
-    platform: navigator.platform,
-    lang: navigator.language
+    screen: screen.width + "x" + screen.height
   });
 }
 
 function verify() {
-  percent.innerText = "Checking...";
-
   fetch("/verify", {
     method: "POST",
     headers: {
@@ -43,30 +39,14 @@ function verify() {
   })
   .then(res => res.json())
   .then(res => {
-
     document.getElementById("scanBox").style.display = "none";
     document.getElementById("resultBox").style.display = "block";
 
     if (res.status === "success") {
-      status.className = "badge success";
       status.innerText = "VERIFIED";
-
-      document.getElementById("icon").innerText = "✅";
-      document.getElementById("title").innerText = "Success";
-      document.getElementById("desc").innerText = "Device Approved";
-
-    } else if (res.status === "failed") {
-      status.className = "badge failed";
-      status.innerText = "FAILED";
-
-      document.getElementById("icon").innerText = "❌";
-      document.getElementById("title").innerText = "Failed";
-      document.getElementById("desc").innerText = "Device Already Used";
-
     } else {
-      status.innerText = "SERVER ERROR ❌";
+      status.innerText = "FAILED";
     }
-
   })
   .catch(() => {
     status.innerText = "SERVER ERROR ❌";
