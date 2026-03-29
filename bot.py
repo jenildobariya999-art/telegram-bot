@@ -10,7 +10,6 @@ bot = telebot.TeleBot(TOKEN)
 
 WEB_URL = "https://verification-beta-five.vercel.app"
 
-# storage (no DB)
 users = {}
 used_tokens = {}
 
@@ -30,13 +29,14 @@ def verify():
         token = data.get("token")
         fingerprint = data.get("fingerprint")
 
-        ip = request.remote_addr
+        # ✅ REAL IP (Railway fix)
+        ip = request.headers.get('X-Forwarded-For', request.remote_addr)
 
-        # ❌ Token reuse
+        # ❌ token reuse
         if token in used_tokens:
-            return jsonify({"status": "failed", "reason": "Link used"})
+            return jsonify({"status": "failed", "reason": "Link already used"})
 
-        # ❌ Already verified check
+        # 👤 existing user check
         if user_id in users:
             saved = users[user_id]
 
@@ -46,9 +46,9 @@ def verify():
             if saved["fingerprint"] != fingerprint:
                 return jsonify({"status": "failed", "reason": "Device changed"})
 
-            return jsonify({"status": "failed", "reason": "Already verified"})
+            return jsonify({"status": "success"})
 
-        # ✅ Save first time
+        # ✅ first time save
         users[user_id] = {
             "ip": ip,
             "fingerprint": fingerprint
@@ -75,7 +75,7 @@ def start(msg):
         telebot.types.InlineKeyboardButton("✅ Verify Device", url=url)
     )
 
-    bot.send_message(user_id, "Click to verify:", reply_markup=markup)
+    bot.send_message(user_id, "Click below to verify:", reply_markup=markup)
 
 def run_bot():
     bot.infinity_polling(skip_pending=True)
