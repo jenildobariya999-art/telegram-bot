@@ -5,7 +5,7 @@ import time
 
 app = Flask(__name__)
 
-TOKEN = "YOUR_BOT_TOKEN"
+TOKEN = "8274297339:AAEch3qco73oPdck8vMIROqJxfAj0SARyU8"
 bot = telebot.TeleBot(TOKEN)
 
 WEB_URL = "https://verification-beta-five.vercel.app"
