@@ -1,16 +1,17 @@
 from flask import Flask, request, jsonify
 import telebot
 import threading
-import requests
 import time
 
 app = Flask(__name__)
 
-TOKEN = "8274297339:AAEch3qco73oPdck8vMIROqJxfAj0SARyU8"
+TOKEN = "YOUR_BOT_TOKEN"
 bot = telebot.TeleBot(TOKEN)
 
 WEB_URL = "https://verification-beta-five.vercel.app"
 
+# storage (no DB)
+users = {}
 used_tokens = {}
 
 def generate_token(user_id):
@@ -25,38 +26,41 @@ def verify():
     try:
         data = request.json
 
-        user_id = int(data.get("user_id"))
+        user_id = str(data.get("user_id"))
         token = data.get("token")
         fingerprint = data.get("fingerprint")
 
         ip = request.remote_addr
-        ua = request.headers.get("User-Agent", "")
 
         # ❌ Token reuse
         if token in used_tokens:
-            return jsonify({"status": "failed", "reason": "Link already used"})
+            return jsonify({"status": "failed", "reason": "Link used"})
 
-        # ❌ Bot detect
-        if "bot" in ua.lower():
-            return jsonify({"status": "failed", "reason": "Bot detected"})
+        # ❌ Already verified check
+        if user_id in users:
+            saved = users[user_id]
 
-        # ❌ VPN detect (REAL API)
-        try:
-            ip_data = requests.get(f"http://ip-api.com/json/{ip}").json()
-            if ip_data.get("proxy") or ip_data.get("hosting"):
-                return jsonify({"status": "failed", "reason": "VPN/Proxy detected"})
-        except:
-            pass  # agar API fail ho, ignore
+            if saved["ip"] != ip:
+                return jsonify({"status": "failed", "reason": "IP changed"})
 
-        # Save token
+            if saved["fingerprint"] != fingerprint:
+                return jsonify({"status": "failed", "reason": "Device changed"})
+
+            return jsonify({"status": "failed", "reason": "Already verified"})
+
+        # ✅ Save first time
+        users[user_id] = {
+            "ip": ip,
+            "fingerprint": fingerprint
+        }
+
         used_tokens[token] = True
 
-        bot.send_message(user_id, "✅ Verification Successful!")
+        bot.send_message(int(user_id), "✅ Verification Successful!")
 
         return jsonify({"status": "success"})
 
-    except Exception:
-        # ❗ kabhi bhi crash nahi hone dena
+    except:
         return jsonify({"status": "failed", "reason": "Verification failed"})
 
 @bot.message_handler(commands=['start'])
@@ -71,7 +75,7 @@ def start(msg):
         telebot.types.InlineKeyboardButton("✅ Verify Device", url=url)
     )
 
-    bot.send_message(user_id, "Click below to verify:", reply_markup=markup)
+    bot.send_message(user_id, "Click to verify:", reply_markup=markup)
 
 def run_bot():
     bot.infinity_polling(skip_pending=True)
