@@ -1,86 +1,28 @@
-from flask import Flask, request, jsonify
 import telebot
-import threading
-import time
-
-app = Flask(__name__)
+from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
 
 TOKEN = "8274297339:AAEch3qco73oPdck8vMIROqJxfAj0SARyU8"
+WEB_URL = "https://verification-beta-five.vercel.app"  # apna Vercel link
+
 bot = telebot.TeleBot(TOKEN)
-
-WEB_URL = "https://verification-beta-five.vercel.app"
-
-users = {}
-used_tokens = {}
-
-def generate_token(user_id):
-    return f"{user_id}_{int(time.time())}"
-
-@app.route("/")
-def home():
-    return "OK"
-
-@app.route("/verify", methods=["POST"])
-def verify():
-    try:
-        data = request.json
-
-        user_id = str(data.get("user_id"))
-        token = data.get("token")
-        fingerprint = data.get("fingerprint")
-
-        # ✅ REAL IP (Railway fix)
-        ip = request.headers.get('X-Forwarded-For', request.remote_addr)
-
-        # ❌ token reuse
-        if token in used_tokens:
-            return jsonify({"status": "failed", "reason": "Link already used"})
-
-        # 👤 existing user check
-        if user_id in users:
-            saved = users[user_id]
-
-            if saved["ip"] != ip:
-                return jsonify({"status": "failed", "reason": "IP changed"})
-
-            if saved["fingerprint"] != fingerprint:
-                return jsonify({"status": "failed", "reason": "Device changed"})
-
-            return jsonify({"status": "success"})
-
-        # ✅ first time save
-        users[user_id] = {
-            "ip": ip,
-            "fingerprint": fingerprint
-        }
-
-        used_tokens[token] = True
-
-        bot.send_message(int(user_id), "✅ Verification Successful!")
-
-        return jsonify({"status": "success"})
-
-    except:
-        return jsonify({"status": "failed", "reason": "Verification failed"})
 
 @bot.message_handler(commands=['start'])
 def start(msg):
-    user_id = msg.chat.id
-    token = generate_token(user_id)
+    user_id = msg.from_user.id
 
-    url = f"{WEB_URL}?id={user_id}&token={token}"
-
-    markup = telebot.types.InlineKeyboardMarkup()
+    markup = InlineKeyboardMarkup()
     markup.add(
-        telebot.types.InlineKeyboardButton("✅ Verify Device", url=url)
+        InlineKeyboardButton(
+            "🔐 Verify Device",
+            url=f"{WEB_URL}?id={user_id}"
+        )
     )
 
-    bot.send_message(user_id, "Click below to verify:", reply_markup=markup)
+    bot.send_message(
+        msg.chat.id,
+        "🔐 Please verify your device to continue",
+        reply_markup=markup
+    )
 
-def run_bot():
-    bot.infinity_polling(skip_pending=True)
-
-threading.Thread(target=run_bot).start()
-
-if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=8080)
+print("Bot Running...")
+bot.infinity_polling(skip_pending=True)
