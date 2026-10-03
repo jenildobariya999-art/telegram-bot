@@ -336,36 +336,27 @@ function tone(f,t,d,type,v,when){ if(!pref.snd) return; try{ unlock(); const o=a
   o.connect(g); g.connect(master); o.start(s); o.stop(s+d+.03); }catch(e){} }
 const N={C5:523,D5:587,E5:659,G5:784,A5:880,C6:1047,E6:1319,G6:1568};
 const snd={
-  tap:()=>{tone(700,1000,.07,"triangle",.17);tone(1500,0,.05,"sine",.05,.012)},
-  nav:()=>{tone(430,700,.1,"sine",.15);tone(700,1100,.1,"sine",.12,.07)},
-  open:()=>{[N.C5,N.E5,N.G5,N.C6,N.E6].forEach((f,i)=>tone(f,0,.3,"triangle",.13,i*.08));tone(N.G6,0,.7,"sine",.09,.42)},
-  close:()=>{[N.E6,N.C6,N.G5,N.E5,N.C5].forEach((f,i)=>tone(f,0,.22,"triangle",.1,i*.07))},
-  coin:()=>{tone(988,0,.1,"square",.07);tone(1319,0,.4,"square",.07,.09)},
-  win:()=>{[N.C5,N.E5,N.G5,N.C6].forEach((f,i)=>tone(f,0,.24,"triangle",.15,i*.09));tone(N.E6,0,.6,"sine",.11,.4);tone(N.G6,0,.6,"sine",.08,.5)},
-  err:()=>{tone(220,140,.25,"sawtooth",.11);tone(180,110,.3,"sawtooth",.09,.12)},
-  pop:()=>tone(300,900,.12,"sine",.16),
-  swipe:()=>{tone(900,500,.12,"sine",.07)},
-  up:()=>{tone(380,760,.18,"triangle",.14);tone(760,1140,.14,"sine",.08,.1)},
-  down:()=>{tone(760,380,.16,"triangle",.12)},
-  tick:()=>tone(1400+Math.random()*300,0,.025,"triangle",.05),
-  key:()=>tone(900+Math.random()*200,0,.03,"triangle",.06)
+  tap:()=>{},
+  nav:()=>{tone(520,780,.08,"sine",.07)},
+  open:()=>{tone(N.C5,0,.22,"triangle",.07);tone(N.G5,0,.4,"sine",.06,.1)},
+  close:()=>{},
+  coin:()=>{tone(1319,0,.25,"sine",.06)},
+  win:()=>{[N.C5,N.E5,N.G5,N.C6].forEach((f,i)=>tone(f,0,.2,"triangle",.08,i*.08))},
+  err:()=>{tone(240,170,.2,"sawtooth",.06)},
+  pop:()=>tone(420,760,.09,"sine",.07),
+  swipe:()=>{},
+  up:()=>{tone(420,720,.12,"sine",.06)},
+  down:()=>{tone(720,420,.1,"sine",.05)},
+  tick:()=>{},
+  key:()=>{}
 };
 function hap(t){ if(!pref.hap) return; try{ if(tg&&tg.HapticFeedback){ t==="err"?tg.HapticFeedback.notificationOccurred("error"):t==="ok"?tg.HapticFeedback.notificationOccurred("success"):tg.HapticFeedback.impactOccurred("light"); } else if(navigator.vibrate) navigator.vibrate(t==="err"?[40,30,40]:10); }catch(e){} }
-/* every tap, anywhere */
-let lastTap=0, opened=false;
+/* sounds only for real actions (tab change, success, error, popups). Plain taps stay silent. */
+let opened=false;
 document.addEventListener("pointerdown",e=>{ unlock();
   if(!opened){ opened=true; snd.open(); }
-  const now=Date.now(); if(now-lastTap>40){ snd.tap(); lastTap=now; } hap();
-  const b=e.target.closest(".btn,.ref"); if(b){ const r=b.getBoundingClientRect(),d=Math.max(r.width,r.height),s=document.createElement("span"); s.className="rip"; s.style.cssText=`width:${d}px;height:${d}px;left:${e.clientX-r.left-d/2}px;top:${e.clientY-r.top-d/2}px`; b.appendChild(s); setTimeout(()=>s.remove(),600); }
+  const b=e.target.closest(".btn,.ref"); if(b){ hap(); const r=b.getBoundingClientRect(),d=Math.max(r.width,r.height),s=document.createElement("span"); s.className="rip"; s.style.cssText=`width:${d}px;height:${d}px;left:${e.clientX-r.left-d/2}px;top:${e.clientY-r.top-d/2}px`; b.appendChild(s); setTimeout(()=>s.remove(),600); }
 },true);
-document.addEventListener("input",()=>snd.key(),true);
-/* app opened (works where the browser allows autoplay) + closing / hiding */
-try{ snd.open(); }catch(e){}
-document.addEventListener("visibilitychange",()=>{ if(document.hidden){ snd.close(); } else { snd.up(); } });
-addEventListener("pagehide",()=>snd.close());
-if(tg){ try{ tg.onEvent("viewportChanged",(x)=>{ if(x&&x.isStateStable===true) snd.swipe(); }); }catch(e){} }
-let sy=0; /* scrolling feedback */
-let lastY=scrollY; addEventListener("scroll",()=>{ if(Math.abs(scrollY-lastY)>140){ snd.swipe(); lastY=scrollY; } },{passive:true});
 
 /* ================= UI helpers ================= */
 let tt;
@@ -394,9 +385,12 @@ function palette(c){ let base=c; if(lum(c)>.62) base=mix(c,"#000000",.45);
 function applyColor(c,el){ const p=palette(c),t=el||document.documentElement; for(const k in p) t.style.setProperty(k,p[k]); }
 
 /* ================= bot logo (auto) ================= */
-function setImg(el,url,fallbackHtml){ const i=new Image(); i.onload=()=>{el.innerHTML="";el.appendChild(i)}; i.onerror=()=>{ if(fallbackHtml) el.innerHTML=fallbackHtml }; i.src=url; }
-function botLogoUrl(){ return me.logo || (me.bot?`https://t.me/i/userpic/320/${me.bot}.jpg`:""); }
-function applyLogo(){ const u=botLogoUrl(); if(!u) return; const L=(me.brand||"B")[0].toUpperCase();
+function setImg(el,urls,fallbackHtml){ urls=[].concat(urls).filter(Boolean); let k=0;
+  (function next(){ if(k>=urls.length){ if(fallbackHtml) el.innerHTML=fallbackHtml; return; }
+    const i=new Image(); i.onload=()=>{ if(i.naturalWidth>1){ el.innerHTML=""; el.appendChild(i); } else next(); }; i.onerror=next; i.src=urls[k++]; })(); }
+function logoUrls(name){ name=String(name||"").replace(/^@/,""); if(!name) return []; return ["/api/logo?u="+encodeURIComponent(name),"https://t.me/i/userpic/320/"+encodeURIComponent(name)+".jpg"]; }
+function botLogoUrls(){ return [me.logo].concat(me.bot?logoUrls(me.bot):[]); }
+function applyLogo(){ const u=botLogoUrls().filter(Boolean); if(!u.length) return; const L=(me.brand||"B")[0].toUpperCase();
   setImg($("logo"),u,L); setImg($("gCoin"),u,ic("gift")); setImg($("spCoin"),u,ic("rupee")); }
 
 /* ================= api ================= */
@@ -421,8 +415,9 @@ async function api(body){
     }catch(e){ why=(m==="direct"?"direct call blocked (CORS)":"proxy unreachable"); }
   }
   LASTERR="Cannot reach bot server ("+why+"). Upload api/proxy.js with index.html on Vercel.";
-  return {ok:false,error:LASTERR};
+  return {ok:false,error:LASTERR,net:true};
 }
+async function apiRetry(body){ let r=await api(body); if(!r.ok&&(r.net||/did not answer|timed out/i.test(r.error||""))){ await new Promise(s=>setTimeout(s,1500)); r=await api(body); } return r; }
 function showDiag(t){ $("diagT").textContent=t; $("diag").classList.remove("hide"); }
 function hideDiag(){ $("diag").classList.add("hide"); }
 
@@ -468,7 +463,7 @@ function closeSheet(){ if(!$("sheet").classList.contains("on")) return; $("ov").
   s.addEventListener("touchend",()=>{ if(!drag) return; drag=false; s.style.transition=""; s.style.transform=""; if(dy>90) closeSheet(); },{passive:true}); })();
 
 /* ================= data ================= */
-let loaded=false;
+let loaded=false, busy=false, lastOk=Date.now();
 function paint(d,manual){
   if(d.color) applyColor(d.color);
   $("brand").textContent=d.brand||d.bot||"App"; document.title=d.brand||d.bot||"App"; applyLogo();
@@ -481,9 +476,9 @@ function paint(d,manual){
 }
 async function refresh(manual){
   if(manual) $("refBtn").classList.add("spin");
-  const d=await api({a:"me"}); $("refBtn").classList.remove("spin");
-  if(!d.ok){ $("bal").classList.remove("sk"); showDiag(d.error||LASTERR||"Could not load data"); $("splash").classList.add("off"); return; }
-  hideDiag(); const first=!loaded; loaded=true; me=Object.assign({},me,d); paint(me,manual); GATES=d.gates||{};
+  if(busy) return; busy=true; const d=await apiRetry({a:"me"}); busy=false; $("refBtn").classList.remove("spin");
+  if(!d.ok){ $("bal").classList.remove("sk"); $("splash").classList.add("off"); if(manual||!loaded) showDiag(d.error||LASTERR||"Could not load data"); return; }
+  hideDiag(); lastOk=Date.now(); const first=!loaded; loaded=true; me=Object.assign({},me,d); paint(me,manual); GATES=d.gates||{};
   if(d.gate){ showGate(d.gate,"start",null); } else if(GK==="start"){ $("gate").classList.remove("on"); GK=null; }
   if(manual){ snd.coin(); toast("Balance updated","ok"); }
   if(first) setTimeout(()=>$("splash").classList.add("off"),250);
@@ -508,24 +503,24 @@ function sw(){ $("sw-snd").classList.toggle("on",pref.snd); $("sw-hap").classLis
 /* ================= CHANNEL GATE ================= */
 let GATES={}, GK=null, GCB=null, GPAGE=null;
 async function guard(key,fn){ if(GATES[key]){ const d=await api({a:"gate",key}); if(d.ok&&d.gate){ showGate(d.gate,key,fn); return; } } fn(); }
-function chAvatar(c){ const L=esc((c.title||c.name||"C")[0].toUpperCase()); return `<div class="chav">${L}${c.av?`<img src="https://t.me/i/userpic/160/${esc(c.av)}.jpg" onerror="this.remove()">`:""}</div>`; }
+function chAvatar(c){ const L=esc((c.title||c.name||"C")[0].toUpperCase()); const u=c.av?"/api/logo?u="+encodeURIComponent(c.av):""; return `<div class="chav">${L}${u?`<img src="${u}" onerror="this.remove()">`:""}</div>`; }
 function showGate(g,key,cb){ GK=key; GCB=cb||null; renderGate(g); $("gX").classList.toggle("hide",key==="start"); if(!$("gate").classList.contains("on")){ $("gate").classList.add("on"); snd.up(); } $("splash").classList.add("off"); }
 function renderGate(g){ GPAGE=g.page; $("gSub").textContent="Join all channels below to continue.";
   $("gList").innerHTML=g.channels.map((c,i)=>`<div class="gch">${chAvatar(c)}<div class="t"><b>${esc(c.title)}</b><small>${esc(c.name)}</small></div><button class="btn" data-l="${i}">Join</button></div>`).join("");
   $("gList").querySelectorAll("button[data-l]").forEach((b,i)=>b.onclick=()=>openLinkSmart(g.channels[i].link)); }
 function openLinkSmart(l){ if(!l) return; try{ (/t\.me/.test(l)&&tg)?tg.openTelegramLink(l):(tg?tg.openLink(l):open(l)); }catch(e){ open(l); } }
-async function gateVerify(silent){ const b=$("gVer"); b.disabled=true; const d=await api({a:"gate",key:GK}); b.disabled=false;
+async function gateVerify(silent){ const b=$("gVer"); b.disabled=true; const d=await apiRetry({a:"gate",key:GK}); b.disabled=false;
   if(!d.ok) return;
   if(d.gate){ const nextPage=d.gate.page!==GPAGE; renderGate(d.gate); if(!silent){ if(nextPage){ snd.win(); burst(); toast("Great! Join the next channels","ok"); } else toast("Join all channels first","err"); } return; }
   const cb=GCB, k=GK; $("gate").classList.remove("on"); GK=null; GCB=null; snd.win(); burst(); toast("All channels joined","ok");
   if(k==="start") refresh(); if(cb) setTimeout(cb,350); }
 function gateClose(){ if(GK==="start") return; $("gate").classList.remove("on"); GK=null; GCB=null; snd.down(); }
-document.addEventListener("visibilitychange",()=>{ if(!document.hidden&&$("gate").classList.contains("on")&&GK) gateVerify(true); });
+document.addEventListener("visibilitychange",()=>{ if(!document.hidden&&$("gate").classList.contains("on")&&GK) setTimeout(()=>gateVerify(true),1500); });
 
 /* ================= ADMIN: channel manager ================= */
 const GLABEL={start:"App start (first open)",tab_invite:"Invite tab",tab_gift:"Gift tab",tab_profile:"Profile tab",btn_share:"Share link button",btn_claim:"Claim gift button"};
 let CH={list:[],pages:1,gates:{},cur:1};
-async function chLoad(){ const d=await api({a:"adm_ch_list"}); if(!d.ok) return; CH.list=d.channels; CH.pages=d.pages; CH.gates=d.gates; if(CH.cur>CH.pages) CH.cur=1; chRender(); }
+async function chLoad(){ const d=await apiRetry({a:"adm_ch_list"}); if(!d.ok) toast(d.error||"Could not load channels","err"); if(!d.ok) return; CH.list=d.channels; CH.pages=d.pages; CH.gates=d.gates; if(CH.cur>CH.pages) CH.cur=1; chRender(); }
 function chRender(){
   $("ptabs").innerHTML=Array.from({length:CH.pages},(_,i)=>`<div class="chip${i+1===CH.cur?" on":""}" data-p="${i+1}">Page ${i+1}</div>`).join("")+`<div class="chip" data-p="new">+ New</div>`;
   $("addTxt").textContent="ADD TO PAGE "+CH.cur;
@@ -573,5 +568,6 @@ if(qs.get("bu")){ const g=k=>qs.get(k)||"";
   paint(me); $("bal").classList.remove("sk"); setTimeout(()=>$("splash").classList.add("off"),700); }
 refresh();
 setTimeout(()=>$("splash").classList.add("off"),4000);
-setInterval(()=>{ if(!document.hidden&&cur==="home") refresh(); },30000);
+setInterval(()=>{ if(!document.hidden&&cur==="home"&&Date.now()-lastOk>60000) refresh(); },20000);
+document.addEventListener("visibilitychange",()=>{ if(!document.hidden&&Date.now()-lastOk>25000) setTimeout(()=>{ if(!document.hidden) refresh(); },1200); });
 </script></body></html>
