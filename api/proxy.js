@@ -46,7 +46,7 @@ module.exports = async (req, res) => {
   if (typeof body !== "string") body = JSON.stringify(body || {});
 
   const ctl = new AbortController();
-  const timer = setTimeout(() => ctl.abort(), 25000);
+  const timer = setTimeout(() => ctl.abort(), 28000);
   try {
     const r = await fetch(target.toString(), {
       method: "POST",
@@ -64,6 +64,6 @@ module.exports = async (req, res) => {
     return res.status(200).send(text);
   } catch (e) {
     clearTimeout(timer);
-    return res.status(200).send(JSON.stringify({ ok: false, error: "Bot server did not answer: " + String(e.message || e).slice(0, 80) }));
+    return res.status(200).send(JSON.stringify({ ok: false, error: "Bot server did not answer in time: " + String(e.message || e).slice(0, 80) }));
   }
 };
