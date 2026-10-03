@@ -4,236 +4,283 @@
 <title>Refer & Earn</title>
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <style>
-:root{--g1:#0d6b45;--g2:#052f1f;--bg1:#0b5a3b;--bg2:#042a1b;--y1:#ffe14d;--y2:#ff9a00;--ink:#0b4b33;--card:#f8fcf9;--mut:#5f7a6c;--ok:#12b886}
+:root{--g1:#0d6b45;--g2:#052f1f;--bg1:#0b5a3b;--bg2:#042a1b;--y1:#ffe14d;--y2:#ff9a00;--ink:#0b4b33;--card:#f8fcf9;--mut:#5f7a6c;--ok:#12b886;--line:rgba(0,0,0,.08)}
 [data-theme=blue]{--g1:#1456b8;--g2:#071d45;--bg1:#12489c;--bg2:#06142f;--ink:#0d3472;--card:#f7faff;--mut:#5c6f92}
 [data-theme=purple]{--g1:#6d28d9;--g2:#1e0a45;--bg1:#5b21b6;--bg2:#160733;--ink:#47209b;--card:#faf7ff;--mut:#74608f}
 [data-theme=red]{--g1:#c0262d;--g2:#3d0809;--bg1:#a51d24;--bg2:#2c0506;--ink:#7d1519;--card:#fff8f8;--mut:#8f6060}
-[data-theme=dark]{--g1:#2a2f3a;--g2:#0a0c10;--bg1:#1b1f27;--bg2:#07080b;--ink:#e9edf5;--card:#1f2430;--mut:#93a0b8}
+[data-theme=dark]{--g1:#2a2f3a;--g2:#0a0c10;--bg1:#1b1f27;--bg2:#07080b;--ink:#e9edf5;--card:#1f2430;--mut:#93a0b8;--line:rgba(255,255,255,.09)}
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;font-family:"Segoe UI",system-ui,-apple-system,Roboto,sans-serif}
-html,body{height:100%}
-body{background:linear-gradient(180deg,var(--bg1),var(--bg2)) fixed;color:#fff;overflow-x:hidden;user-select:none}
-#app{max-width:520px;margin:0 auto;min-height:100%;padding-bottom:calc(104px + env(safe-area-inset-bottom,0px))}
+body{background:linear-gradient(180deg,var(--bg1),var(--bg2)) fixed;color:#fff;overflow-x:hidden;user-select:none;min-height:100vh}
+#app{max-width:520px;margin:0 auto;padding-bottom:calc(108px + env(safe-area-inset-bottom,0px))}
+/* icons */
+.ic{width:1em;height:1em;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex:none;vertical-align:-.14em}
 /* header */
 .top{position:sticky;top:0;z-index:20;background:var(--card);color:var(--ink);border-radius:0 0 34px 34px;padding:calc(14px + env(safe-area-inset-top,0px)) 18px 16px;display:flex;align-items:center;gap:12px;box-shadow:0 10px 30px rgba(0,0,0,.28)}
-.logo{width:50px;height:50px;border-radius:50%;flex:none;background:linear-gradient(135deg,var(--y1),var(--y2));display:grid;place-items:center;font-size:24px;font-weight:900;color:#000;border:3px solid #fff;box-shadow:0 0 0 2px var(--y2),0 6px 14px rgba(0,0,0,.25);overflow:hidden}
+.logo{width:52px;height:52px;border-radius:50%;flex:none;background:radial-gradient(circle at 30% 25%,#1d8f62,var(--g2));display:grid;place-items:center;font-size:24px;font-weight:900;color:var(--y1);border:3px solid var(--y1);box-shadow:0 0 0 2px #fff,0 6px 14px rgba(0,0,0,.25);overflow:hidden}
 .logo img{width:100%;height:100%;object-fit:cover}
-.tt{flex:1;min-width:0}.tt h1{font-size:20px;line-height:1.1;font-weight:900;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.tt small{display:block;margin-top:3px;font-size:11px;font-weight:800;letter-spacing:.9px;color:var(--ink);opacity:.8}
-.pill{display:flex;align-items:center;gap:8px;background:linear-gradient(var(--y1),var(--y2));color:#1a1000;font-weight:900;border-radius:999px;padding:7px 15px 7px 7px;box-shadow:0 5px 14px rgba(255,154,0,.45)}
-.pill i{width:28px;height:28px;border-radius:50%;background:#fff;color:var(--y2);display:grid;place-items:center;font-style:normal;font-size:16px}
+.tt{flex:1;min-width:0}.tt h1{font-size:21px;line-height:1.1;font-weight:900;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tt small{display:block;margin-top:3px;font-size:11.5px;font-weight:900;letter-spacing:1px}
+.pill{display:flex;align-items:center;gap:9px;background:linear-gradient(var(--y1),var(--y2));color:#1a1000;font-weight:900;font-size:18px;border-radius:999px;padding:7px 18px 7px 7px;box-shadow:0 5px 14px rgba(255,154,0,.45)}
+.pill i{width:30px;height:30px;border-radius:50%;background:#fff;color:var(--y2);display:grid;place-items:center;font-size:17px}
 /* views */
 .view{display:none;padding:16px;gap:16px;flex-direction:column}
 .view.on{display:flex;animation:in .45s cubic-bezier(.2,.9,.3,1)}
 @keyframes in{from{opacity:0;transform:translateY(18px) scale(.985)}to{opacity:1;transform:none}}
 .card{background:var(--card);color:var(--ink);border-radius:30px;padding:20px;box-shadow:0 12px 30px rgba(0,0,0,.28);position:relative;overflow:hidden}
 .card h3{font-size:13px;font-weight:900;letter-spacing:1.1px;text-transform:uppercase;display:flex;align-items:center;gap:10px}
-.card h3:before{content:"";width:7px;height:22px;border-radius:5px;background:linear-gradient(var(--y1),var(--y2));box-shadow:0 0 10px rgba(255,170,0,.7)}
+.card h3:before{content:"";width:7px;height:24px;border-radius:5px;background:linear-gradient(var(--y1),var(--y2));box-shadow:0 0 10px rgba(255,170,0,.7);flex:none}
 .muted{color:var(--mut);font-size:14px;line-height:1.5}
-.sec{font-size:22px;font-weight:900;display:flex;align-items:center;gap:10px;padding:2px 4px}
-.sec:before{content:"";width:7px;height:26px;border-radius:5px;background:linear-gradient(var(--y1),var(--y2));box-shadow:0 0 12px rgba(255,170,0,.7)}
+.sec{font-size:23px;font-weight:900;display:flex;align-items:center;gap:10px;padding:2px 4px}
+.sec:before{content:"";width:7px;height:28px;border-radius:5px;background:linear-gradient(var(--y1),var(--y2));box-shadow:0 0 12px rgba(255,170,0,.7)}
 .sec .sp{flex:1}
-/* buttons */
-.btn{position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;gap:10px;width:100%;border:0;border-radius:999px;padding:17px;font-size:16px;font-weight:900;letter-spacing:.8px;color:#1a1000;background:linear-gradient(var(--y1),var(--y2));box-shadow:0 8px 20px rgba(255,150,0,.45),inset 0 -3px 0 rgba(0,0,0,.12);cursor:pointer;transition:transform .15s,filter .15s}
+.btn{position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;gap:10px;width:100%;border:0;border-radius:999px;padding:17px;font-size:16px;font-weight:900;letter-spacing:1px;color:#1a1000;background:linear-gradient(var(--y1),var(--y2));box-shadow:0 8px 20px rgba(255,150,0,.45),inset 0 -3px 0 rgba(0,0,0,.12);cursor:pointer;transition:transform .15s,filter .15s}
 .btn:active{transform:scale(.96);filter:brightness(.95)}
-.btn.dark{background:var(--g1);color:#fff;box-shadow:0 8px 18px rgba(0,0,0,.3)}
-.btn.sm{width:auto;padding:10px 18px;font-size:14px;letter-spacing:.3px}
+.btn .ic{font-size:19px;stroke-width:2.6}
+.btn.sm{width:auto;padding:11px 18px;font-size:14px;letter-spacing:.3px}
 .btn[disabled]{opacity:.6;pointer-events:none}
 .rip{position:absolute;border-radius:50%;background:rgba(255,255,255,.55);transform:scale(0);animation:rip .6s ease-out;pointer-events:none}
 @keyframes rip{to{transform:scale(4);opacity:0}}
 /* banner */
-.banner{padding:12px;background:var(--card);border-radius:34px;box-shadow:0 12px 30px rgba(0,0,0,.28)}
-.slides{display:flex;transition:transform .6s cubic-bezier(.3,.8,.2,1);border-radius:26px;overflow:hidden}
-.slide{min-width:100%;padding:20px;border-radius:26px;background:radial-gradient(circle at 85% 0,rgba(255,225,77,.22),transparent 45%),linear-gradient(135deg,var(--g1),var(--g2));position:relative;min-height:190px}
-.tag{display:inline-flex;gap:6px;align-items:center;background:linear-gradient(var(--y1),var(--y2));color:#1a1000;font-weight:900;font-size:13px;padding:7px 13px;border-radius:999px}
-.tag.o{background:rgba(0,0,0,.35);color:var(--y1);float:right}
-.slide h2{font-size:27px;line-height:1.12;margin:14px 0 8px;font-weight:900}
-.slide p{font-size:15px;opacity:.9;max-width:78%}
-.slide .btn{position:absolute;right:16px;bottom:14px;width:auto;padding:11px 18px;font-size:14px}
-.slide .big{position:absolute;right:14px;top:60px;font-size:54px;animation:fl 3s ease-in-out infinite}
-@keyframes fl{50%{transform:translateY(-8px) rotate(6deg)}}
-.dots{display:flex;gap:7px;justify-content:center;margin-top:10px}.dots i{width:9px;height:9px;border-radius:9px;background:rgba(0,0,0,.2);transition:all .4s}.dots i.on{width:30px;background:linear-gradient(var(--y1),var(--y2))}
-.hello{display:flex;align-items:center;gap:12px;color:#fff;padding:0 6px}
-.av{width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,var(--y1),var(--y2));color:#000;font-weight:900;display:grid;place-items:center;border:2px solid #fff;overflow:hidden;flex:none;font-size:18px}
+.hello{display:flex;align-items:center;gap:12px;padding:0 6px}
+.av{width:46px;height:46px;border-radius:50%;background:linear-gradient(135deg,var(--y1),var(--y2));color:#1a1000;font-weight:900;display:grid;place-items:center;border:2px solid #fff;overflow:hidden;flex:none;font-size:19px}
 .av img{width:100%;height:100%;object-fit:cover}
-.hello b{font-size:17px}.hello small{display:block;opacity:.75;font-size:12px}
+.hello b{font-size:18px}.hello small{display:block;opacity:.75;font-size:12px}
+.banner{padding:12px;background:var(--card);border-radius:36px;box-shadow:0 12px 30px rgba(0,0,0,.28)}
+.slides{display:flex;transition:transform .6s cubic-bezier(.3,.8,.2,1);border-radius:28px;overflow:hidden}
+.slide{min-width:100%;padding:20px;border-radius:28px;background:radial-gradient(circle at 88% 0,rgba(255,225,77,.2),transparent 45%),linear-gradient(135deg,var(--g1),var(--g2));position:relative;min-height:200px}
+.tag{display:inline-flex;gap:7px;align-items:center;background:linear-gradient(var(--y1),var(--y2));color:#1a1000;font-weight:900;font-size:13px;padding:7px 14px;border-radius:999px;border:2px solid #fff}
+.tag.o{background:rgba(0,0,0,.35);color:var(--y1);float:right;border:1px solid rgba(255,255,255,.1)}
+.slide h2{font-size:29px;line-height:1.1;margin:16px 0 8px;font-weight:900;max-width:80%}
+.slide p{font-size:15px;opacity:.9;max-width:70%}
+.slide .btn{position:absolute;right:16px;bottom:16px;width:auto;padding:12px 20px;font-size:15px}
+.slide .deco{position:absolute;right:16px;top:58px;font-size:62px;color:var(--y1);opacity:.9;animation:fl 3s ease-in-out infinite;filter:drop-shadow(0 6px 10px rgba(0,0,0,.4))}
+@keyframes fl{50%{transform:translateY(-8px) rotate(6deg)}}
+.dots{display:flex;gap:7px;justify-content:center;margin-top:11px}.dots i{width:10px;height:10px;border-radius:10px;background:rgba(0,0,0,.2);transition:all .4s}.dots i.on{width:32px;background:linear-gradient(var(--y1),var(--y2))}
 /* balance */
 .bal{text-align:center}
-.bal .row0{display:flex;justify-content:space-between;align-items:center}
-.ref{width:42px;height:42px;border-radius:50%;border:1px solid #d9e8df;background:#fff;color:var(--ink);font-size:19px;display:grid;place-items:center}
-.ref.spin{animation:sp .8s linear infinite}@keyframes sp{to{transform:rotate(360deg)}}
-.amt{font-size:56px;font-weight:900;margin:14px 0 18px;letter-spacing:-1px;display:flex;justify-content:center;align-items:baseline;gap:4px}
-.amt span{color:var(--y2);font-size:40px}
+.bal .r0{display:flex;justify-content:space-between;align-items:center}
+.ref{width:44px;height:44px;border-radius:50%;border:1px solid #d9e8df;background:#fff;color:var(--ink);font-size:21px;display:grid;place-items:center;box-shadow:0 3px 8px rgba(0,0,0,.08)}
+.ref.spin .ic{animation:sp .8s linear infinite}@keyframes sp{to{transform:rotate(360deg)}}
+.amt{font-size:60px;font-weight:900;margin:14px 0 18px;letter-spacing:-1px;display:flex;justify-content:center;align-items:baseline;gap:4px}
+.amt span{color:var(--y2);font-size:42px}
 .two{display:grid;grid-template-columns:1fr 1fr;gap:14px}
-.stat b{display:block;font-size:34px;font-weight:900;margin-top:10px}.stat b.g{color:var(--ok)}
-/* list */
-.li{display:flex;align-items:center;gap:13px;padding:13px 4px;border-bottom:1px solid rgba(0,0,0,.07);color:var(--ink)}
+.stat b{display:block;font-size:36px;font-weight:900;margin-top:12px}.stat b.g{color:var(--ok)}
+.li{display:flex;align-items:center;gap:13px;padding:13px 4px;border-bottom:1px solid var(--line);color:var(--ink)}
 .li:last-child{border:0}
-.ico{width:42px;height:42px;border-radius:14px;display:grid;place-items:center;font-size:20px;background:#fff3cf;flex:none}
+.ico{width:44px;height:44px;border-radius:15px;display:grid;place-items:center;font-size:22px;background:#fff1c7;color:#b86e00;flex:none}
+.ico.b{background:#dff1ff;color:#1c8ee0}.ico.g{background:#dff7ea;color:#0f9d63}.ico.p{background:#f3e5ff;color:#8a3fd1}.ico.r{background:#ffe5e5;color:#d6404a}
 .li .t{flex:1;min-width:0}.li .t b{display:block;font-size:15px}.li .t small{color:var(--mut);font-size:12px}
 .li .a{font-weight:900;color:var(--ok)}
-.empty{text-align:center;padding:14px 6px;font-weight:600;color:var(--ink);opacity:.8}
+.empty{text-align:center;padding:14px 6px;font-weight:700;opacity:.85}
 /* invite */
-.hero{text-align:center}.hero h2{font-size:30px;font-weight:900;margin:12px 0 8px}.hero h2 span{color:var(--y2)}
-.coin{width:130px;height:130px;margin:16px auto 6px;border-radius:50%;background:radial-gradient(circle at 30% 25%,#fff3a1,var(--y1) 35%,var(--y2));display:grid;place-items:center;font-size:60px;border:6px solid #fff;box-shadow:0 0 0 3px var(--y2),0 14px 30px rgba(255,150,0,.5);animation:fl 3s ease-in-out infinite}
-.lnk{border:2px dashed #b9d3c5;border-radius:18px;padding:13px 14px;display:flex;align-items:center;gap:10px;margin:14px 0;font-size:14px;color:var(--ink)}
-.lnk span{flex:1;word-break:break-all}.lnk button{border:1px solid #d3e3da;background:#fff;border-radius:14px;width:44px;height:44px;font-size:19px}
-.step{display:flex;gap:14px;margin:16px 0}.step i{flex:none;width:36px;height:36px;border-radius:50%;background:linear-gradient(var(--y1),var(--y2));color:#1a1000;font-style:normal;font-weight:900;display:grid;place-items:center;box-shadow:0 4px 10px rgba(255,150,0,.4)}
-.step b{display:block;margin-bottom:2px}
-.cnt{background:linear-gradient(var(--y1),var(--y2));color:#1a1000;font-weight:900;padding:8px 16px;border-radius:999px;font-size:14px}
-/* inputs */
-input,select{width:100%;padding:16px 18px;border-radius:20px;border:2px solid #d7e6dd;font-size:16px;margin:8px 0;color:#222;background:#fff;outline:0;transition:border .2s,box-shadow .2s;user-select:text}
+.hero{text-align:center}.hero h2{font-size:31px;font-weight:900;margin:14px 0 8px}.hero h2 span{color:var(--y2)}
+.coin{width:132px;height:132px;margin:18px auto 6px;border-radius:50%;background:radial-gradient(circle at 30% 25%,#fff3a1,var(--y1) 35%,var(--y2));display:grid;place-items:center;font-size:62px;color:#7a4300;border:6px solid #fff;box-shadow:0 0 0 3px var(--y2),0 14px 30px rgba(255,150,0,.5);animation:fl 3s ease-in-out infinite}
+.coin .ic{stroke-width:2.4}
+.lnk{border:2px dashed #b9d3c5;border-radius:20px;padding:13px 14px;display:flex;align-items:center;gap:10px;margin:14px 0;font-size:14px}
+.lnk>.ic{font-size:21px;opacity:.8}.lnk span{flex:1;word-break:break-all}.lnk button{border:1px solid #d3e3da;background:#fff;color:var(--ink);border-radius:15px;width:46px;height:46px;font-size:21px;display:grid;place-items:center}
+.step{display:flex;gap:14px;margin:18px 0}.step i{flex:none;width:38px;height:38px;border-radius:50%;background:linear-gradient(var(--y1),var(--y2));color:#1a1000;font-style:normal;font-weight:900;display:grid;place-items:center;box-shadow:0 4px 10px rgba(255,150,0,.4),0 0 0 4px #fff4cf}
+.step b{display:block;margin-bottom:2px;font-size:17px}
+.cnt{margin-left:auto;background:linear-gradient(var(--y1),var(--y2));color:#1a1000;font-weight:900;padding:8px 16px;border-radius:999px;font-size:14px;border:2px solid #fff;box-shadow:0 4px 10px rgba(255,150,0,.35);text-transform:none;letter-spacing:0}
+.card h3 .cnt{margin-left:auto}
+input,select{width:100%;padding:17px 18px;border-radius:22px;border:2px solid #d7e6dd;font-size:16px;margin:8px 0;color:#222;background:#fff;outline:0;transition:border .2s,box-shadow .2s;user-select:text;font-weight:600}
 input:focus,select:focus{border-color:var(--y2);box-shadow:0 0 0 4px rgba(255,170,0,.2)}
-.card.darkc input,.card.darkc select{background:#2a303d;color:#fff;border-color:#3b4354}
+[data-theme=dark] input,[data-theme=dark] select{background:#2a303d;color:#fff;border-color:#3b4354}
 /* profile */
-.pf{text-align:center}.pf .big{width:112px;height:112px;margin:4px auto 10px;position:relative}
-.pf .big .av{width:112px;height:112px;font-size:44px;border:5px solid #fff;box-shadow:0 0 0 3px var(--y2),0 10px 24px rgba(0,0,0,.3)}
-.pf .ck{position:absolute;right:-2px;bottom:4px;width:34px;height:34px;border-radius:50%;background:var(--ok);color:#fff;display:grid;place-items:center;border:3px solid #fff;font-size:16px}
-.pf h2{font-size:25px;font-weight:900}.pf .meta{color:var(--mut);font-size:14px;margin-top:6px}
+.pf{text-align:center}.pf .big{width:116px;height:116px;margin:4px auto 12px;position:relative}
+.pf .big .av{width:116px;height:116px;font-size:46px;border:5px solid #fff;box-shadow:0 0 0 3px var(--y2),0 10px 24px rgba(0,0,0,.3)}
+.pf .ck{position:absolute;right:-2px;bottom:4px;width:36px;height:36px;border-radius:50%;background:var(--ok);color:#fff;display:grid;place-items:center;border:3px solid #fff;font-size:18px}
+.pf .ck .ic{stroke-width:3.2}
+.pf h2{font-size:26px;font-weight:900}.pf .meta{color:var(--mut);font-size:14px;margin-top:7px;display:flex;gap:7px;align-items:center;justify-content:center;font-weight:600}
 .mini{border:1.5px solid #cfe7da;border-radius:22px;padding:14px;text-align:center;font-size:12px;font-weight:900;letter-spacing:.8px}
-.mini b{display:block;font-size:26px;margin-top:6px;color:var(--ok)}.mini.o b{color:var(--y2)}
-.cap{font-size:13px;font-weight:900;letter-spacing:1.3px;padding:6px 8px 0;opacity:.95}
-.row{display:flex;align-items:center;gap:14px;padding:17px 6px;border-bottom:1px solid rgba(0,0,0,.07);color:var(--ink);font-weight:800;font-size:16px;cursor:pointer}
-.row:last-child{border:0}.row .ico{width:44px;height:44px}.row .go{margin-left:auto;opacity:.5}
-.sw{margin-left:auto;width:52px;height:30px;border-radius:30px;background:#c9d6cf;position:relative;transition:.3s}.sw:after{content:"";position:absolute;top:3px;left:3px;width:24px;height:24px;border-radius:50%;background:#fff;transition:.3s;box-shadow:0 2px 5px rgba(0,0,0,.3)}
-.sw.on{background:var(--ok)}.sw.on:after{left:25px}
+.mini b{display:block;font-size:27px;margin-top:6px;color:var(--ok)}.mini.o b{color:var(--y2)}
+.cap{font-size:13px;font-weight:900;letter-spacing:1.4px;padding:4px 8px 0}
+.row{display:flex;align-items:center;gap:14px;padding:16px 4px;border-bottom:1px solid var(--line);color:var(--ink);font-weight:800;font-size:16.5px;cursor:pointer}
+.row:last-child{border:0}.row .go{margin-left:auto;opacity:.5;font-size:20px}
+.sw{margin-left:auto;width:54px;height:31px;border-radius:30px;background:#c9d6cf;position:relative;transition:.3s;flex:none}.sw:after{content:"";position:absolute;top:3px;left:3px;width:25px;height:25px;border-radius:50%;background:#fff;transition:.3s cubic-bezier(.3,1.4,.4,1);box-shadow:0 2px 5px rgba(0,0,0,.3)}
+.sw.on{background:var(--ok)}.sw.on:after{left:26px}
 /* nav */
-nav{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(12px + env(safe-area-inset-bottom,0px));width:calc(100% - 22px);max-width:498px;background:var(--card);border-radius:34px;display:flex;padding:9px;box-shadow:0 14px 34px rgba(0,0,0,.4);z-index:30}
-nav button{flex:1;border:0;background:none;color:#6d7b95;font-weight:800;font-size:12px;padding:9px 0 7px;border-radius:26px;transition:all .35s cubic-bezier(.3,.9,.3,1);display:flex;flex-direction:column;align-items:center;gap:3px}
-nav button span{font-size:22px;transition:transform .35s}
-nav button.on{background:var(--g1);color:#fff;transform:translateY(-8px) scale(1.06);box-shadow:0 10px 20px rgba(0,0,0,.35),inset 0 0 0 2px rgba(255,255,255,.12)}
-nav button.on span{transform:scale(1.15)}
-[data-theme=dark] nav button{color:#93a0b8}
-/* toast + loader */
-#toast{position:fixed;left:50%;top:calc(90px + env(safe-area-inset-top,0px));transform:translate(-50%,-30px);background:#101820;color:#fff;padding:13px 22px;border-radius:999px;font-weight:700;font-size:14px;opacity:0;pointer-events:none;transition:.35s cubic-bezier(.3,1.4,.4,1);z-index:100;max-width:90%;text-align:center;box-shadow:0 10px 30px rgba(0,0,0,.5);border:1px solid rgba(255,255,255,.12)}
+nav{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(12px + env(safe-area-inset-bottom,0px));width:calc(100% - 22px);max-width:498px;background:var(--card);border-radius:36px;display:flex;padding:9px;box-shadow:0 14px 34px rgba(0,0,0,.4);z-index:30}
+nav button{flex:1;border:0;background:none;color:#6d7b95;font-weight:800;font-size:12.5px;padding:10px 0 8px;border-radius:28px;transition:all .35s cubic-bezier(.3,.9,.3,1);display:flex;flex-direction:column;align-items:center;gap:4px}
+nav button .ic{font-size:24px;transition:transform .35s}
+nav button.on{background:var(--g1);color:#fff;transform:translateY(-9px) scale(1.07);box-shadow:0 10px 20px rgba(0,0,0,.35),inset 0 0 0 2px rgba(255,255,255,.14)}
+nav button.on .ic{transform:scale(1.12)}
+/* toast + splash */
+#toast{position:fixed;left:50%;top:calc(92px + env(safe-area-inset-top,0px));transform:translate(-50%,-30px);background:#101820;color:#fff;padding:13px 22px;border-radius:999px;font-weight:700;font-size:14px;opacity:0;pointer-events:none;transition:.35s cubic-bezier(.3,1.4,.4,1);z-index:100;max-width:92%;display:flex;gap:9px;align-items:center;box-shadow:0 10px 30px rgba(0,0,0,.5);border:1px solid rgba(255,255,255,.12)}
+#toast .ic{font-size:19px;stroke-width:3}
 #toast.on{opacity:1;transform:translate(-50%,0)}#toast.err{background:#7a1520}#toast.ok{background:#0b6b46}
-#splash{position:fixed;inset:0;background:linear-gradient(180deg,var(--bg1),var(--bg2));z-index:200;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;transition:opacity .5s,visibility .5s}
+#splash{position:fixed;inset:0;background:linear-gradient(180deg,var(--bg1),var(--bg2));z-index:200;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;transition:opacity .5s,visibility .5s}
 #splash.off{opacity:0;visibility:hidden}
-#splash .coin{width:96px;height:96px;font-size:44px;margin:0}
+#splash .coin{width:100px;height:100px;font-size:48px;margin:0}
 .bar{width:140px;height:5px;border-radius:5px;background:rgba(255,255,255,.18);overflow:hidden}.bar i{display:block;width:40%;height:100%;background:linear-gradient(90deg,var(--y1),var(--y2));animation:bar 1s infinite ease-in-out}
 @keyframes bar{0%{transform:translateX(-100%)}100%{transform:translateX(350%)}}
 canvas#fx{position:fixed;inset:0;pointer-events:none;z-index:150}
-.sk{background:linear-gradient(90deg,rgba(0,0,0,.06),rgba(0,0,0,.14),rgba(0,0,0,.06));background-size:200%;animation:sh 1.2s infinite;color:transparent!important;border-radius:10px}
+.sk{background:linear-gradient(90deg,rgba(0,0,0,.06),rgba(0,0,0,.14),rgba(0,0,0,.06));background-size:200%;animation:sh 1.2s infinite;color:transparent!important;border-radius:12px}
 @keyframes sh{to{background-position:-200%}}
 .hide{display:none!important}
 </style></head><body>
-<div id="splash"><div class="coin">💰</div><div class="bar"><i></i></div></div>
+
+<!-- ICON SPRITE (custom flat icons, no keyboard emoji) -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+<symbol id="i-home" viewBox="0 0 24 24"><path d="M12 2.6 2.8 10.3a.9.9 0 0 0-.3.7V20a1.5 1.5 0 0 0 1.5 1.5h4.2a.8.8 0 0 0 .8-.8v-5h5v5a.8.8 0 0 0 .8.8H20a1.5 1.5 0 0 0 1.5-1.5v-9a.9.9 0 0 0-.3-.7z" fill="currentColor" stroke="none"/></symbol>
+<symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="7.5" r="4.5" fill="currentColor" stroke="none"/><path d="M3.5 21c0-4.6 3.8-7.5 8.5-7.5s8.5 2.9 8.5 7.5z" fill="currentColor" stroke="none"/></symbol>
+<symbol id="i-share" viewBox="0 0 24 24"><circle cx="18" cy="5" r="3" fill="currentColor"/><circle cx="6" cy="12" r="3" fill="currentColor"/><circle cx="18" cy="19" r="3" fill="currentColor"/><path d="m8.6 10.5 6.8-4M8.6 13.5l6.8 4"/></symbol>
+<symbol id="i-gift" viewBox="0 0 24 24"><rect x="3" y="8" width="18" height="4.5" rx="1.2"/><path d="M5 12.5V20a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-7.5M12 8v13"/><path d="M12 8c-1-3.4-5.2-4.2-5.2-1.8S10.3 8 12 8zm0 0c1-3.4 5.2-4.2 5.2-1.8S13.7 8 12 8z"/></symbol>
+<symbol id="i-rupee" viewBox="0 0 24 24"><path d="M6.5 4.5h11M6.5 9h11M6.5 4.5h2.5c4.2 0 5.800 1.800 5.800 4.500s-1.600 4.500-5.800 4.500H6.500l8 7"/></symbol>
+<symbol id="i-crown" viewBox="0 0 24 24"><path d="m2.5 7.5 4.700 4.500L12 4l4.800 8 4.700-4.500-2 12h-15z" fill="currentColor" stroke="none"/></symbol>
+<symbol id="i-refresh" viewBox="0 0 24 24"><path d="M20.500 12a8.500 8.500 0 1 1-2.700-6.200"/><path d="M20.500 3.500v5h-5"/></symbol>
+<symbol id="i-upright" viewBox="0 0 24 24"><path d="M7 17 17 7M8.500 7H17v8.500"/></symbol>
+<symbol id="i-right" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></symbol>
+<symbol id="i-chev" viewBox="0 0 24 24"><path d="m9 5 7 7-7 7"/></symbol>
+<symbol id="i-link" viewBox="0 0 24 24"><path d="M10 14a4 4 0 0 0 5.700 0l3-3a4 4 0 0 0-5.700-5.700l-1 1M14 10a4 4 0 0 0-5.700 0l-3 3a4 4 0 0 0 5.700 5.700l1-1"/></symbol>
+<symbol id="i-copy" viewBox="0 0 24 24"><rect x="8.500" y="8.500" width="12" height="12" rx="2.500"/><path d="M5.500 15.500H5A2 2 0 0 1 3 13.500V5a2 2 0 0 1 2-2h8.500a2 2 0 0 1 2 2v.5"/></symbol>
+<symbol id="i-check" viewBox="0 0 24 24"><path d="m4.500 12.500 5 5 10-11"/></symbol>
+<symbol id="i-x" viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18"/></symbol>
+<symbol id="i-cal" viewBox="0 0 24 24"><rect x="3" y="4.500" width="18" height="16.500" rx="3.500"/><path d="M3 10h18M8 2.500v4M16 2.500v4"/></symbol>
+<symbol id="i-pulse" viewBox="0 0 24 24"><path d="M2.500 12h4.500l3-8 4 16 3-8h4.500"/></symbol>
+<symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 2.800 4.500 5.800v5.700c0 4.800 3.200 8.300 7.500 9.700 4.300-1.400 7.500-4.900 7.500-9.700V5.800z"/><path d="m8.800 12 2.400 2.400 4.200-4.600"/></symbol>
+<symbol id="i-doc" viewBox="0 0 24 24"><path d="M6 2.500h8l5 5V21a.5.5 0 0 1-.5.500h-12A.5.5 0 0 1 6 21z"/><path d="M14 2.500V8h5"/></symbol>
+<symbol id="i-ticket" viewBox="0 0 24 24"><path d="M3.500 7.500h17v3a1.800 1.800 0 0 0 0 3.500v3h-17v-3a1.800 1.800 0 0 0 0-3.500z"/><path d="M9.500 7.500v10" stroke-dasharray="2 2.200"/></symbol>
+<symbol id="i-tg" viewBox="0 0 24 24"><path d="M21.500 3.500 2.700 10.800l5.900 2.300 2.300 6.700 3.100-4.200 5.300 3.900z" fill="currentColor" stroke="none"/><path d="m8.600 13.100 12-8.600-9.700 10.200" stroke="#fff" stroke-width="1.300" opacity=".7"/></symbol>
+<symbol id="i-vol" viewBox="0 0 24 24"><path d="M4 9.500v5h3.800l5.200 4.200V5.300L7.800 9.500z" fill="currentColor"/><path d="M16.500 8.800a4.800 4.800 0 0 1 0 6.400M19 6.200a8.600 8.600 0 0 1 0 11.600"/></symbol>
+<symbol id="i-vib" viewBox="0 0 24 24"><rect x="8" y="3" width="8" height="18" rx="2.500"/><path d="M4 8v8M20 8v8M1.500 10.500v3M22.500 10.500v3"/></symbol>
+<symbol id="i-bot" viewBox="0 0 24 24"><rect x="4" y="8" width="16" height="12" rx="4"/><path d="M12 4v4"/><circle cx="12" cy="3.500" r="1" fill="currentColor"/><circle cx="9" cy="14" r="1.500" fill="currentColor" stroke="none"/><circle cx="15" cy="14" r="1.500" fill="currentColor" stroke="none"/></symbol>
+<symbol id="i-gear" viewBox="0 0 24 24"><path d="M4 6.500h9M17 6.500h3M4 12h3M11 12h9M4 17.500h11M19 17.500h1"/><circle cx="15" cy="6.500" r="2" fill="currentColor"/><circle cx="9" cy="12" r="2" fill="currentColor"/><circle cx="17" cy="17.500" r="2" fill="currentColor"/></symbol>
+<symbol id="i-users" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.600"/><path d="M2.500 20c0-3.700 2.900-6 6.500-6s6.500 2.300 6.500 6"/><circle cx="17.500" cy="9" r="2.600"/><path d="M17.500 14c2.800 0 4.500 1.900 4.500 5"/></symbol>
+<symbol id="i-wallet" viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="14" rx="3.500"/><path d="M3 10.500h18M6 6V5a2 2 0 0 1 2-2h8"/><circle cx="16.500" cy="15" r="1.200" fill="currentColor"/></symbol>
+<symbol id="i-fire" viewBox="0 0 24 24"><path d="M12.500 2.500c.6 4.200 5.500 5.500 5.500 11a6 6 0 0 1-12 0c0-2.200 1-3.800 2.300-4.800.1 1.800.9 2.800 2 3.100-.4-3.400.1-6 2.200-9.300z" fill="currentColor" stroke="none"/></symbol>
+<symbol id="i-spark" viewBox="0 0 24 24"><path d="m12 2.500 2.200 6.300 6.300 2.200-6.300 2.200L12 19.500l-2.200-6.300L3.500 11l6.300-2.200z" fill="currentColor" stroke="none"/></symbol>
+<symbol id="i-send" viewBox="0 0 24 24"><path d="M21.500 2.500 10.500 13.500M21.500 2.500l-7 19-4-8.500-8.500-4z"/></symbol>
+<symbol id="i-lock" viewBox="0 0 24 24"><rect x="4.500" y="10.500" width="15" height="10.500" rx="2.800"/><path d="M8 10.500V8a4 4 0 0 1 8 0v2.500"/></symbol>
+<symbol id="i-bolt" viewBox="0 0 24 24"><path d="M13.500 2.500 4.500 13.500h6.500l-1 8 9-11h-6.500z" fill="currentColor" stroke="none"/></symbol>
+<symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 4.500v15M4.500 12h15"/></symbol>
+<symbol id="i-msg" viewBox="0 0 24 24"><path d="M4 5.500h16a1.500 1.500 0 0 1 1.500 1.500v9a1.500 1.500 0 0 1-1.500 1.500H9.500L5 21v-3.500H4A1.500 1.500 0 0 1 2.500 16V7A1.500 1.500 0 0 1 4 5.500z"/></symbol>
+</defs></svg>
+
+<div id="splash"><div class="coin"><svg class="ic"><use href="#i-rupee"/></svg></div><div class="bar"><i></i></div></div>
 <canvas id="fx"></canvas><div id="toast"></div>
+
 <div id="app">
- <div class="top"><div class="logo" id="logo">💎</div><div class="tt"><h1 id="brand">Loading…</h1><small id="sub">PLAY &amp; EARN</small></div><div class="pill"><i>₹</i><b id="topBal">0.00</b></div></div>
+ <div class="top"><div class="logo" id="logo"><svg class="ic"><use href="#i-crown"/></svg></div>
+  <div class="tt"><h1 id="brand">Loading</h1><small id="sub">PLAY &amp; EARN</small></div>
+  <div class="pill"><i><svg class="ic"><use href="#i-rupee"/></svg></i><b id="topBal">0.00</b></div></div>
 
  <!-- HOME -->
  <section class="view on" id="v-home">
-  <div class="hello"><div class="av" id="hAv">👤</div><div><small>Welcome back 👋</small><b id="hName">Friend</b></div></div>
+  <div class="hello"><div class="av" id="hAv"></div><div><small>Welcome back</small><b id="hName">Friend</b></div></div>
   <div class="banner"><div class="slides" id="slides">
-    <div class="slide"><span class="tag">👑 EXCLUSIVE OFFER</span><span class="tag o">100% Free</span><div class="big">💸</div>
-      <h2>Claim Your Full Cash Reward</h2><p>Invite friends &amp; complete tasks, then withdraw directly!</p><button class="btn" onclick="go('invite')">Claim Now ➜</button></div>
-    <div class="slide"><span class="tag">🎁 DAILY BONUS</span><span class="tag o">Every day</span><div class="big">🎁</div>
-      <h2>Collect Your Daily Bonus</h2><p>Come back every day for a free reward.</p><button class="btn" onclick="act('bonus')">Get Bonus ➜</button></div>
-    <div class="slide"><span class="tag">🎟 GIFT CODES</span><span class="tag o">Instant</span><div class="big">🎟</div>
-      <h2>Redeem Gift Codes</h2><p>Enter a code from our channel to get cash instantly.</p><button class="btn" onclick="go('gift')">Redeem ➜</button></div>
+   <div class="slide"><span class="tag"><svg class="ic"><use href="#i-crown"/></svg>EXCLUSIVE OFFER</span><span class="tag o">100% Free</span><svg class="ic deco"><use href="#i-wallet"/></svg>
+    <h2>Claim Your Full Cash Reward</h2><p>Invite friends and complete simple tasks, then withdraw directly.</p><button class="btn" onclick="go('invite')">Claim Now <svg class="ic"><use href="#i-right"/></svg></button></div>
+   <div class="slide"><span class="tag"><svg class="ic"><use href="#i-gift"/></svg>DAILY BONUS</span><span class="tag o">Every day</span><svg class="ic deco"><use href="#i-gift"/></svg>
+    <h2>Collect Your Daily Bonus</h2><p>Come back every day for a free reward.</p><button class="btn" onclick="act('bonus')">Get Bonus <svg class="ic"><use href="#i-right"/></svg></button></div>
+   <div class="slide"><span class="tag"><svg class="ic"><use href="#i-ticket"/></svg>GIFT CODES</span><span class="tag o">Instant</span><svg class="ic deco"><use href="#i-ticket"/></svg>
+    <h2>Redeem Gift Codes</h2><p>Enter a code from our channel to get cash instantly.</p><button class="btn" onclick="go('gift')">Redeem <svg class="ic"><use href="#i-right"/></svg></button></div>
   </div><div class="dots" id="dots"><i class="on"></i><i></i><i></i></div></div>
 
-  <div class="card bal"><div class="row0"><h3>Available Balance</h3><button class="ref" id="refBtn" onclick="refresh(true)">🔄</button></div>
+  <div class="card bal"><div class="r0"><h3>Available Balance</h3><button class="ref" id="refBtn" onclick="refresh(true)"><svg class="ic"><use href="#i-refresh"/></svg></button></div>
    <div class="amt"><span>₹</span><b id="bal" class="sk">0.00</b></div>
-   <button class="btn" onclick="act('withdraw')">💸 WITHDRAW NOW ↗</button></div>
+   <button class="btn" onclick="act('withdraw')">WITHDRAW VOUCHER <svg class="ic"><use href="#i-upright"/></svg></button></div>
 
-  <div class="two"><div class="card stat"><h3>👥 Total Invites</h3><b id="inv">0</b></div><div class="card stat"><h3>💰 Total Income</h3><b class="g" id="earn">₹0.00</b></div></div>
+  <div class="two"><div class="card stat"><h3>Total Invites</h3><b id="inv">0</b></div><div class="card stat"><h3>Total Income</h3><b class="g" id="earn">₹0.00</b></div></div>
 
-  <div class="sec">Recent Activity<span class="sp"></span><button class="btn sm" onclick="go('invite')">View All ›</button></div>
-  <div class="card" id="actList"><div class="empty">No recent activity yet. Invite friends or redeem gift codes to earn! ✨</div></div>
+  <div class="sec">Recent Activity<span class="sp"></span><button class="btn sm" onclick="go('invite')">View All <svg class="ic"><use href="#i-chev"/></svg></button></div>
+  <div class="card" id="actList"><div class="empty">No recent activity yet. Invite friends or complete offers to earn!</div></div>
  </section>
 
  <!-- INVITE -->
  <section class="view" id="v-invite">
-  <div class="card hero"><span class="tag">🔥 BIG REWARD OFFER</span><h2>Invite Friends &amp; Get <span id="prx">₹0</span></h2>
-   <p class="muted">When your friend joins the bot, the reward is added to your wallet instantly!</p><div class="coin">🤑</div></div>
-  <div class="card"><h3>Your Referral Link <span style="margin-left:auto" class="cnt">∞ Unlimited</span></h3>
-   <div class="lnk"><span id="lnk">…</span><button onclick="copy()">📋</button></div>
-   <button class="btn" onclick="share()">📤 SHARE LINK WITH FRIENDS</button></div>
+  <div class="card hero"><span class="tag"><svg class="ic"><use href="#i-fire"/></svg>BIG REWARD OFFER</span><h2>Invite Friends &amp; Get <span id="prx">₹0</span></h2>
+   <p class="muted">When your friend joins the bot, the reward is added to your wallet instantly!</p><div class="coin"><svg class="ic"><use href="#i-rupee"/></svg></div></div>
+  <div class="card"><h3>Your Referral Link <span class="cnt">UNLIMITED EARNINGS</span></h3>
+   <div class="lnk"><svg class="ic"><use href="#i-link"/></svg><span id="lnk">…</span><button onclick="copy()"><svg class="ic"><use href="#i-copy"/></svg></button></div>
+   <button class="btn" onclick="share()"><svg class="ic"><use href="#i-send"/></svg>SHARE LINK WITH FRIENDS</button></div>
   <div class="sec">How It Works</div>
   <div class="card"><div class="step"><i>1</i><div><b>Share Your Link</b><span class="muted">Send your referral link to friends on Telegram or WhatsApp.</span></div></div>
-   <div class="step"><i>2</i><div><b>Friend Starts The Bot</b><span class="muted">Your friend opens the bot with your link and joins.</span></div></div>
-   <div class="step"><i>3</i><div><b>Get Paid Instantly 💰</b><span class="muted">The reward lands in your wallet right away.</span></div></div></div>
-  <div class="sec">Invited Friends<span class="sp"></span><span class="cnt" id="invc">0 Total</span></div>
-  <div class="card"><div class="empty" id="invTxt">Share your link to start earning! 🚀</div></div>
+   <div class="step"><i>2</i><div><b>Friend Starts Bot</b><span class="muted">Your friend opens the bot from your link and joins.</span></div></div>
+   <div class="step"><i>3</i><div><b>Get Paid Instantly</b><span class="muted">The reward lands in your wallet right away.</span></div></div></div>
+  <div class="sec">Invited Friends<span class="sp"></span><span class="cnt" style="margin:0" id="invc">0 Total</span></div>
+  <div class="card"><div class="empty" id="invTxt">No friends invited yet. Share your link to start earning!</div></div>
  </section>
 
  <!-- GIFT -->
  <section class="view" id="v-gift">
-  <div class="card hero"><span class="tag">🎁 EXCLUSIVE GIFT PROMO</span><h2>Redeem Gift Codes</h2>
-   <p class="muted">Get codes from our official Telegram channel and claim instant cash!</p><div class="coin">🎁</div></div>
-  <div class="card"><h3>Enter Promo / Gift Code <span class="cnt" style="margin-left:auto;font-size:11px">⚡ FAST CLAIM</span></h3>
+  <div class="card hero"><span class="tag"><svg class="ic"><use href="#i-gift"/></svg>EXCLUSIVE GIFT PROMO</span><h2>Redeem Gift Codes</h2>
+   <p class="muted">Get codes from our official Telegram channel and claim instant cash!</p><div class="coin"><svg class="ic"><use href="#i-gift"/></svg></div></div>
+  <div class="card"><h3>Enter Promo / Gift Code <span class="cnt" style="font-size:12px">FAST CLAIM</span></h3>
    <input id="code" placeholder="Enter gift code (e.g. WELCOME50)" autocapitalize="characters" autocomplete="off">
-   <button class="btn" id="claimBtn" onclick="redeem()">🎁 CLAIM GIFT REWARD</button></div>
-  <div class="card"><div class="row" onclick="openCh()"><div class="ico" style="background:#dff1ff">✈️</div>Join Telegram Channel for codes<span class="go">›</span></div></div>
+   <button class="btn" id="claimBtn" onclick="redeem()"><svg class="ic"><use href="#i-gift"/></svg>CLAIM GIFT REWARD</button></div>
+  <div class="card" style="padding:6px 18px"><div class="row" onclick="openCh()"><div class="ico b"><svg class="ic"><use href="#i-tg"/></svg></div>Join Telegram Channel for codes<svg class="ic go"><use href="#i-chev"/></svg></div></div>
  </section>
 
  <!-- PROFILE -->
  <section class="view" id="v-profile">
-  <div class="card pf"><div class="big"><div class="av" id="pAv">👤</div><div class="ck">✔</div></div>
-   <h2 id="pName">User</h2><div class="meta" id="pUser">ID</div><div class="meta" id="pSince">📅 Member since …</div>
+  <div class="card pf"><div class="big"><div class="av" id="pAv"></div><div class="ck"><svg class="ic"><use href="#i-check"/></svg></div></div>
+   <h2 id="pName">User</h2><div class="meta" id="pUser"></div><div class="meta"><svg class="ic"><use href="#i-cal"/></svg><span id="pSince">Member since</span></div>
    <div class="two" style="margin-top:18px"><div class="mini">TOTAL EARNED<b id="pEarn">₹0.00</b></div><div class="mini o">BALANCE<b id="pBal">₹0.00</b></div></div></div>
   <div class="cap">ACCOUNT SETTINGS</div>
-  <div class="card" style="padding:8px 18px">
-   <div class="row" onclick="go('home')"><div class="ico">📊</div>Wallet &amp; Activity<span class="go">›</span></div>
-   <div class="row" onclick="act('withdraw')"><div class="ico" style="background:#e3fbe9">💸</div>Withdraw Voucher<span class="go">›</span></div>
-   <div class="row" onclick="go('gift')"><div class="ico">🎁</div>Redeem Gift / Promo Code<span class="go">›</span></div>
-   <div class="row" onclick="openCh()"><div class="ico" style="background:#dff1ff">✈️</div>Join Telegram Channel<span class="go">›</span></div></div>
-  <div class="cap">APP SETTINGS</div>
-  <div class="card" style="padding:8px 18px">
-   <div class="row" onclick="tgl('snd')"><div class="ico" style="background:#fde8ff">🔊</div>Sounds<div class="sw" id="sw-snd"></div></div>
-   <div class="row" onclick="tgl('hap')"><div class="ico" style="background:#e8eaff">📳</div>Vibration<div class="sw" id="sw-hap"></div></div>
-   <div class="row" onclick="openBot()"><div class="ico" style="background:#ffe8e8">🎫</div>Open Bot Chat / Support<span class="go">›</span></div>
-   <div class="row hide" id="admRow" onclick="go('admin')"><div class="ico" style="background:#ffeacc">⚙️</div>Admin Panel<span class="go">›</span></div></div>
+  <div class="card" style="padding:6px 18px">
+   <div class="row" onclick="go('home')"><div class="ico"><svg class="ic"><use href="#i-pulse"/></svg></div>Wallet &amp; Activity<svg class="ic go"><use href="#i-chev"/></svg></div>
+   <div class="row" onclick="act('withdraw')"><div class="ico g"><svg class="ic"><use href="#i-upright"/></svg></div>Withdraw Voucher<svg class="ic go"><use href="#i-chev"/></svg></div>
+   <div class="row" onclick="go('gift')"><div class="ico"><svg class="ic"><use href="#i-gift"/></svg></div>Redeem Gift / Promo Code<svg class="ic go"><use href="#i-chev"/></svg></div>
+   <div class="row" onclick="openCh()"><div class="ico b"><svg class="ic"><use href="#i-tg"/></svg></div>Join Telegram Channel<svg class="ic go"><use href="#i-chev"/></svg></div></div>
+  <div class="cap">APP &amp; SETTINGS</div>
+  <div class="card" style="padding:6px 18px">
+   <div class="row" onclick="tgl('snd')"><div class="ico p"><svg class="ic"><use href="#i-vol"/></svg></div>Sounds<div class="sw" id="sw-snd"></div></div>
+   <div class="row" onclick="tgl('hap')"><div class="ico b"><svg class="ic"><use href="#i-vib"/></svg></div>Vibration<div class="sw" id="sw-hap"></div></div>
+   <div class="row" onclick="openBot()"><div class="ico r"><svg class="ic"><use href="#i-ticket"/></svg></div>Raise a Ticket / Support<svg class="ic go"><use href="#i-chev"/></svg></div>
+   <div class="row" onclick="toast('Be safe. We never ask for your OTP or password.')"><div class="ico"><svg class="ic"><use href="#i-shield"/></svg></div>Privacy Policy<svg class="ic go"><use href="#i-chev"/></svg></div>
+   <div class="row" onclick="toast('Rewards are subject to the bot rules.')"><div class="ico g"><svg class="ic"><use href="#i-doc"/></svg></div>Terms &amp; Conditions<svg class="ic go"><use href="#i-chev"/></svg></div></div>
  </section>
 
- <!-- ADMIN -->
+ <!-- ADMIN (auto shown when the bot says you are an admin) -->
  <section class="view" id="v-admin">
-  <div class="sec">⚙️ Admin Panel</div>
-  <div class="card"><h3>Access</h3><input id="key" type="password" placeholder="Admin key"><button class="btn" onclick="admLoad()">🔓 UNLOCK / REFRESH</button></div>
-  <div id="admBox" class="hide" style="display:flex;flex-direction:column;gap:16px">
-   <div class="two"><div class="card stat"><h3>👥 Users</h3><b id="a_u">0</b></div><div class="card stat"><h3>🎯 Per Refer</h3><b id="a_pr">0</b></div></div>
-   <div class="card"><div class="row" onclick="admTog('BotMode')"><div class="ico">🤖</div>Bot Status<div class="sw" id="sw-bm"></div></div>
-    <div class="row" onclick="admTog('WithdrawMode')"><div class="ico">💸</div>Withdrawals<div class="sw" id="sw-wm"></div></div></div>
+  <div class="sec">Admin Panel</div>
+  <div class="card hide" id="keyBox"><h3>Admin key</h3><input id="key" type="password" placeholder="Enter admin key"><button class="btn" onclick="admLoad()"><svg class="ic"><use href="#i-lock"/></svg>UNLOCK</button></div>
+  <div id="admBox" style="display:flex;flex-direction:column;gap:16px">
+   <div class="two"><div class="card stat"><h3>Users</h3><b id="a_u">0</b></div><div class="card stat"><h3>Per Refer</h3><b id="a_pr">0</b></div></div>
+   <div class="card" style="padding:6px 18px"><div class="row" onclick="admTog('BotMode')"><div class="ico g"><svg class="ic"><use href="#i-bot"/></svg></div>Bot Status<div class="sw" id="sw-bm"></div></div>
+    <div class="row" onclick="admTog('WithdrawMode')"><div class="ico"><svg class="ic"><use href="#i-wallet"/></svg></div>Withdrawals<div class="sw" id="sw-wm"></div></div></div>
    <div class="card"><h3>Settings</h3>
     <select id="sf"><option value="PerRefer">Per refer reward (5 or 2-6)</option><option value="DailyBonus">Daily bonus</option><option value="MinWith">Min withdraw</option><option value="MaxWith">Max withdraw</option><option value="SavedLinks">Channel / How-to-earn link</option><option value="WebBrand">App name</option><option value="WebLogo">Logo image URL</option><option value="WebTheme">Theme (green/blue/purple/red/dark)</option></select>
-    <input id="sv" placeholder="New value"><button class="btn" onclick="admSet()">💾 SAVE</button></div>
-   <div class="card"><h3>Add / Remove Balance</h3><input id="bt" inputmode="numeric" placeholder="User ID"><input id="ba" inputmode="decimal" placeholder="Amount (negative to deduct)"><button class="btn" onclick="admBal()">✅ APPLY</button></div>
-   <div class="card"><h3>Create Gift Code</h3><input id="gc" placeholder="Code (no spaces)"><input id="ga" inputmode="numeric" placeholder="Amount ₹"><input id="gm" inputmode="numeric" placeholder="Max users"><input id="gr" inputmode="numeric" placeholder="Min refers needed (0 = none)"><button class="btn" onclick="admGift()">🎟 CREATE CODE</button></div>
-   <div class="card"><h3>Message a User</h3><input id="mt" inputmode="numeric" placeholder="User ID"><input id="mm" placeholder="Message"><button class="btn" onclick="admMsg()">📨 SEND</button></div>
+    <input id="sv" placeholder="New value"><button class="btn" onclick="admSet()"><svg class="ic"><use href="#i-check"/></svg>SAVE</button></div>
+   <div class="card"><h3>Add / Remove Balance</h3><input id="bt" inputmode="numeric" placeholder="User ID"><input id="ba" inputmode="decimal" placeholder="Amount (negative to deduct)"><button class="btn" onclick="admBal()"><svg class="ic"><use href="#i-plus"/></svg>APPLY</button></div>
+   <div class="card"><h3>Create Gift Code</h3><input id="gc" placeholder="Code (no spaces)"><input id="ga" inputmode="numeric" placeholder="Amount"><input id="gm" inputmode="numeric" placeholder="Max users"><input id="gr" inputmode="numeric" placeholder="Min refers needed (0 = none)"><button class="btn" onclick="admGift()"><svg class="ic"><use href="#i-ticket"/></svg>CREATE CODE</button></div>
+   <div class="card"><h3>Message a User</h3><input id="mt" inputmode="numeric" placeholder="User ID"><input id="mm" placeholder="Message"><button class="btn" onclick="admMsg()"><svg class="ic"><use href="#i-send"/></svg>SEND</button></div>
   </div>
  </section>
 </div>
 
 <nav id="nav">
- <button data-t="home" class="on"><span>🏠</span>Home</button><button data-t="invite"><span>🤝</span>Invite</button>
- <button data-t="gift"><span>🎁</span>Gift</button><button data-t="profile"><span>👤</span>Profile</button></nav>
+ <button data-t="home" class="on"><svg class="ic"><use href="#i-home"/></svg>Home</button>
+ <button data-t="invite"><svg class="ic"><use href="#i-share"/></svg>Invite</button>
+ <button data-t="gift"><svg class="ic"><use href="#i-gift"/></svg>Gift</button>
+ <button data-t="profile"><svg class="ic"><use href="#i-user"/></svg>Profile</button>
+ <button data-t="admin" class="hide" id="navAdm"><svg class="ic"><use href="#i-shield"/></svg>Admin</button>
+</nav>
 
 <script>
-/* ===== CONFIG =====
-   One page serves MANY bots. Each bot's "Open App" button adds ?api=<its own API url>.
-   Optional fallback (only used if ?api= is missing): */
+/* One page serves MANY bots: each bot's "Open App" button adds ?api=<that bot's API url>.
+   Optional fallback only if ?api= is missing: */
 const DEFAULT_API = "";
-/* =================== */
+
 const $ = id => document.getElementById(id);
+const ic = (n, c) => `<svg class="ic ${c||""}"><use href="#i-${n}"/></svg>`;
 const tg = window.Telegram && Telegram.WebApp;
-if (tg) { try { tg.ready(); tg.expand(); tg.setHeaderColor && tg.setHeaderColor("#0b5a3b"); } catch(e){} }
+if (tg) { try { tg.ready(); tg.expand(); } catch(e){} }
 const U = (tg && tg.initDataUnsafe && tg.initDataUnsafe.user) || null;
 const qs = new URLSearchParams(location.search);
 let API = qs.get("api") || DEFAULT_API;
 try { if (API) sessionStorage.setItem("api", API); else API = sessionStorage.getItem("api") || ""; } catch(e){}
 const UID = U ? String(U.id) : (qs.get("uid") || "");
-let me = {}, cur = "home";
+let me = {}, cur = "home", KEYREQ = false;
 const store = { get:(k,d)=>{ try{ const v=localStorage.getItem(k); return v===null?d:v }catch(e){ return d } }, set:(k,v)=>{ try{ localStorage.setItem(k,v) }catch(e){} } };
 let pref = { snd: store.get("snd","1")==="1", hap: store.get("hap","1")==="1" };
 
-/* ---------- sound (WebAudio, no files) ---------- */
+/* ---------- sounds (WebAudio, generated, no files) ---------- */
 let ac;
+function unlock(){ try{ ac = ac || new (window.AudioContext||window.webkitAudioContext)(); if (ac.state==="suspended") ac.resume(); }catch(e){} }
 function tone(f, t, d, type, v, when){
   if(!pref.snd) return;
-  try{
-    ac = ac || new (window.AudioContext||window.webkitAudioContext)();
-    if (ac.state==="suspended") ac.resume();
+  try{ unlock();
     const o = ac.createOscillator(), g = ac.createGain(), s = ac.currentTime + (when||0);
     o.type = type||"sine"; o.frequency.setValueAtTime(f, s); if(t) o.frequency.exponentialRampToValueAtTime(t, s+d);
     g.gain.setValueAtTime(0.0001, s); g.gain.exponentialRampToValueAtTime(v||.15, s+.01); g.gain.exponentialRampToValueAtTime(0.0001, s+d);
@@ -241,35 +288,46 @@ function tone(f, t, d, type, v, when){
   }catch(e){}
 }
 const snd = {
-  tap:()=>tone(520,780,.07,"triangle",.12),
-  nav:()=>{tone(400,600,.08,"sine",.12);tone(600,900,.08,"sine",.1,.06)},
-  coin:()=>{tone(988,0,.1,"square",.08);tone(1319,0,.35,"square",.08,.09)},
-  win:()=>{[523,659,784,1047].forEach((f,i)=>tone(f,0,.22,"triangle",.14,i*.09));tone(1319,0,.5,"sine",.1,.4)},
+  tap:()=>{tone(620,900,.06,"triangle",.16);tone(1240,0,.05,"sine",.05,.01)},
+  nav:()=>{tone(420,640,.09,"sine",.14);tone(640,960,.09,"sine",.12,.07)},
+  coin:()=>{tone(988,0,.1,"square",.07);tone(1319,0,.35,"square",.07,.09)},
+  win:()=>{[523,659,784,1047].forEach((f,i)=>tone(f,0,.22,"triangle",.15,i*.09));tone(1319,0,.5,"sine",.1,.4)},
   err:()=>{tone(220,140,.25,"sawtooth",.12);tone(180,110,.3,"sawtooth",.1,.12)},
-  pop:()=>tone(300,900,.12,"sine",.15)
+  pop:()=>tone(300,900,.12,"sine",.16),
+  key:()=>tone(900+Math.random()*200,0,.03,"triangle",.06)
 };
-function hap(t){ if(!pref.hap) return; try{ tg && tg.HapticFeedback ? (t==="err"?tg.HapticFeedback.notificationOccurred("error"):t==="ok"?tg.HapticFeedback.notificationOccurred("success"):tg.HapticFeedback.impactOccurred("light")) : navigator.vibrate && navigator.vibrate(t==="err"?[40,30,40]:12) }catch(e){} }
+function hap(t){ if(!pref.hap) return; try{ if(tg&&tg.HapticFeedback){ t==="err"?tg.HapticFeedback.notificationOccurred("error"):t==="ok"?tg.HapticFeedback.notificationOccurred("success"):tg.HapticFeedback.impactOccurred("light"); } else if(navigator.vibrate) navigator.vibrate(t==="err"?[40,30,40]:10); }catch(e){} }
+
+/* EVERY tap anywhere makes a sound (+ ripple on buttons) */
+let lastTap=0;
+document.addEventListener("pointerdown", e=>{
+  unlock();
+  const now=Date.now(); if(now-lastTap>40){ snd.tap(); lastTap=now; } hap();
+  const b = e.target.closest(".btn,.ref");
+  if (b){ const r=b.getBoundingClientRect(), d=Math.max(r.width,r.height), s=document.createElement("span"); s.className="rip"; s.style.cssText=`width:${d}px;height:${d}px;left:${e.clientX-r.left-d/2}px;top:${e.clientY-r.top-d/2}px`; b.appendChild(s); setTimeout(()=>s.remove(),600); }
+}, true);
+document.addEventListener("input", ()=>snd.key(), true);
 
 /* ---------- ui helpers ---------- */
 let tt;
-function toast(m,k){ const t=$("toast"); t.textContent=m; t.className="on "+(k||""); clearTimeout(tt); tt=setTimeout(()=>t.className="",2800); if(k==="err"){snd.err();hap("err")} if(k==="ok"){hap("ok")} }
+function toast(m,k){ const t=$("toast"); t.innerHTML=(k==="err"?ic("x"):k==="ok"?ic("check"):ic("spark"))+"<span></span>"; t.lastChild.textContent=m; t.className="on "+(k||""); clearTimeout(tt); tt=setTimeout(()=>t.className="",2800); if(k==="err"){snd.err();hap("err")} if(k==="ok"){hap("ok")} }
 const rs = n => Number(n||0).toFixed(2);
 function countUp(el, to, pre){ const from=parseFloat(el.dataset.v||0); el.dataset.v=to; const t0=performance.now(), dur=900; el.classList.remove("sk");
   (function s(n){ const p=Math.min(1,(n-t0)/dur), e=1-Math.pow(1-p,3); el.textContent=(pre||"")+(from+(to-from)*e).toFixed(2); if(p<1) requestAnimationFrame(s); })(t0); }
-document.addEventListener("pointerdown", e=>{
-  const b = e.target.closest(".btn,.row,.ref,nav button,.lnk button"); if(!b) return;
-  if (b.classList.contains("btn")||b.classList.contains("ref")){ const r=b.getBoundingClientRect(), d=Math.max(r.width,r.height), s=document.createElement("span"); s.className="rip"; s.style.cssText=`width:${d}px;height:${d}px;left:${e.clientX-r.left-d/2}px;top:${e.clientY-r.top-d/2}px`; b.appendChild(s); setTimeout(()=>s.remove(),600); }
-  snd.tap(); hap();
-});
-/* confetti */
-const cv=$("fx"), cx=cv.getContext("2d"); let parts=[], raf;
-function burst(){ cv.width=innerWidth; cv.height=innerHeight; const em=["💰","🎉","✨","🪙","⭐"];
-  for(let i=0;i<46;i++) parts.push({x:innerWidth/2,y:innerHeight*.55,vx:(Math.random()-.5)*14,vy:-Math.random()*16-4,g:.45,r:Math.random()*6,e:em[i%5],s:18+Math.random()*16,l:1});
-  cancelAnimationFrame(raf); (function f(){ cx.clearRect(0,0,cv.width,cv.height); parts.forEach(p=>{p.vy+=p.g;p.x+=p.vx;p.y+=p.vy;p.l-=.012;cx.globalAlpha=Math.max(p.l,0);cx.font=p.s+"px serif";cx.fillText(p.e,p.x,p.y)}); parts=parts.filter(p=>p.l>0&&p.y<innerHeight+40); if(parts.length) raf=requestAnimationFrame(f); else cx.clearRect(0,0,cv.width,cv.height); })(); }
+const esc = s => String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+
+/* confetti (coins + shapes, drawn - no emoji) */
+const cv=$("fx"), cx=cv.getContext("2d"); let parts=[], raf; const COL=["#ffe14d","#ff9a00","#12b886","#ffffff","#ff5d73"];
+function burst(){ cv.width=innerWidth; cv.height=innerHeight;
+  for(let i=0;i<70;i++) parts.push({x:innerWidth/2,y:innerHeight*.55,vx:(Math.random()-.5)*15,vy:-Math.random()*17-4,g:.5,a:Math.random()*6,va:(Math.random()-.5)*.4,s:6+Math.random()*9,c:COL[i%5],coin:i%3===0,l:1});
+  cancelAnimationFrame(raf); (function f(){ cx.clearRect(0,0,cv.width,cv.height);
+    parts.forEach(p=>{p.vy+=p.g;p.x+=p.vx;p.y+=p.vy;p.a+=p.va;p.l-=.011;cx.save();cx.globalAlpha=Math.max(p.l,0);cx.translate(p.x,p.y);cx.rotate(p.a);cx.fillStyle=p.c;
+      if(p.coin){cx.beginPath();cx.arc(0,0,p.s,0,7);cx.fill();cx.fillStyle="#b86e00";cx.fillRect(-p.s/3,-p.s/2,p.s*.66,p.s*.2);cx.fillRect(-p.s/3,-p.s/6,p.s*.66,p.s*.2)}else cx.fillRect(-p.s/2,-p.s/4,p.s,p.s/2);cx.restore()});
+    parts=parts.filter(p=>p.l>0&&p.y<innerHeight+40); if(parts.length) raf=requestAnimationFrame(f); else cx.clearRect(0,0,cv.width,cv.height); })(); }
 
 /* ---------- api ---------- */
 async function api(body){
-  if (!API){ toast("App not linked to a bot. Open it from the bot menu.","err"); return {ok:false}; }
+  if (!API){ toast("Open this app from the bot menu","err"); return {ok:false}; }
   if (!UID){ toast("Please open inside Telegram","err"); return {ok:false}; }
   try{
     const r = await fetch(API,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(Object.assign({uid:UID},body))});
@@ -277,26 +335,24 @@ async function api(body){
   }catch(e){ toast("Network error. Try again","err"); return {ok:false}; }
 }
 
-/* ---------- avatar / name auto fetch ---------- */
-const fullName = U ? ((U.first_name||"")+" "+(U.last_name||"")).trim() || "Friend" : "Friend";
-function setAv(el){ if (U && U.photo_url){ const i=new Image(); i.onload=()=>{el.innerHTML="";el.appendChild(i)}; i.onerror=()=>{}; i.src=U.photo_url; } el.textContent=(fullName[0]||"👤").toUpperCase(); }
-["hAv","pAv"].forEach(id=>setAv($(id)));
+/* ---------- auto name + photo from Telegram ---------- */
+const fullName = U ? (((U.first_name||"")+" "+(U.last_name||"")).trim() || "Friend") : "Friend";
+function setAv(el){ el.textContent=(fullName[0]||"U").toUpperCase();
+  if (U && U.photo_url){ const i=new Image(); i.onload=()=>{el.innerHTML="";el.appendChild(i)}; i.src=U.photo_url; } }
+setAv($("hAv")); setAv($("pAv"));
 $("hName").textContent=fullName; $("pName").textContent=fullName;
-$("pUser").textContent = (U && U.username ? "@"+U.username+"  •  " : "")+"ID: "+(UID||"-");
+$("pUser").textContent=(U&&U.username?"@"+U.username+"   |   ":"")+"ID: "+(UID||"-");
 
 /* ---------- navigation ---------- */
+const TITLES={home:"PLAY & EARN",invite:"REFER & EARN",gift:"GIFT PROMO",profile:"ACCOUNT & SETTINGS",admin:"ADMIN PANEL"};
 function go(t){ if(t===cur) return; snd.nav();
   document.querySelectorAll(".view").forEach(v=>v.classList.remove("on")); $("v-"+t).classList.add("on");
   document.querySelectorAll("nav button").forEach(b=>b.classList.toggle("on",b.dataset.t===t));
-  $("sub").textContent={home:"PLAY & EARN",invite:"REFER & EARN",gift:"GIFT PROMO",profile:"ACCOUNT & SETTINGS",admin:"ADMIN PANEL"}[t];
-  cur=t; scrollTo({top:0,behavior:"smooth"}); }
+  $("sub").textContent=TITLES[t]; cur=t; scrollTo({top:0,behavior:"smooth"});
+  if(t==="admin" && !KEYREQ) admLoad(true); }
 document.querySelectorAll("nav button").forEach(b=>b.onclick=()=>go(b.dataset.t));
-/* swipe between tabs */
-let sx=0; const order=["home","invite","gift","profile"];
-document.addEventListener("touchstart",e=>sx=e.touches[0].clientX,{passive:true});
-document.addEventListener("touchend",e=>{ const dx=e.changedTouches[0].clientX-sx, i=order.indexOf(cur); if(i<0||Math.abs(dx)<90||/INPUT|SELECT/.test(e.target.tagName)) return; const n=dx<0?i+1:i-1; if(order[n]) go(order[n]); },{passive:true});
-
-/* banner */
+let sx=0; document.addEventListener("touchstart",e=>sx=e.touches[0].clientX,{passive:true});
+document.addEventListener("touchend",e=>{ const order=["home","invite","gift","profile"]; const dx=e.changedTouches[0].clientX-sx, i=order.indexOf(cur); if(i<0||Math.abs(dx)<90||/INPUT|SELECT/.test(e.target.tagName)) return; const n=dx<0?i+1:i-1; if(order[n]) go(order[n]); },{passive:true});
 let si=0; setInterval(()=>{ si=(si+1)%3; $("slides").style.transform=`translateX(-${si*100}%)`; document.querySelectorAll("#dots i").forEach((d,i)=>d.classList.toggle("on",i===si)); },4200);
 
 /* ---------- data ---------- */
@@ -305,50 +361,47 @@ async function refresh(manual){
   const d = await api({a:"me"}); $("refBtn").classList.remove("spin");
   if(!d.ok){ $("bal").classList.remove("sk"); if(d.error) toast(d.error,"err"); $("splash").classList.add("off"); return; }
   const first=!me.bot; me=d;
-  if(d.theme) document.documentElement.setAttribute("data-theme",d.theme==="green"?"":d.theme);
+  document.documentElement.setAttribute("data-theme",(d.theme&&d.theme!=="green")?d.theme:"");
   $("brand").textContent=d.brand; document.title=d.brand;
   if(d.logo){ const i=new Image(); i.onload=()=>{$("logo").innerHTML="";$("logo").appendChild(i)}; i.src=d.logo; } else $("logo").textContent=(d.brand||"B")[0].toUpperCase();
   countUp($("bal"),d.balance); $("topBal").textContent=rs(d.balance);
   $("inv").textContent=d.invites; countUp($("earn"),d.earned,"₹"); $("prx").textContent="₹"+d.perRef;
   $("lnk").textContent=d.link; $("invc").textContent=d.invites+" Total";
-  $("invTxt").textContent=d.invites>0?("🎉 "+d.invites+" friend(s) joined with your link!"):"Share your link to start earning! 🚀";
-  $("pEarn").textContent="₹"+rs(d.earned); $("pBal").textContent="₹"+rs(d.balance); $("pSince").textContent="📅 Member since "+(d.since||"today");
-  if(d.admin) $("admRow").classList.remove("hide");
+  $("invTxt").textContent=d.invites>0?(d.invites+" friend(s) joined with your link!"):"No friends invited yet. Share your link to start earning!";
+  $("pEarn").textContent="₹"+rs(d.earned); $("pBal").textContent="₹"+rs(d.balance); $("pSince").textContent="Member since "+(d.since||"today");
+  /* admin: auto-detected by the bot */
+  KEYREQ=!!d.keyReq; $("keyBox").classList.toggle("hide",!KEYREQ);
+  $("navAdm").classList.toggle("hide",!d.admin);
   renderAct(d.activity||[]);
-  if(manual){ snd.coin(); toast("Balance updated ✅","ok"); }
+  if(manual){ snd.coin(); toast("Balance updated","ok"); }
   if(first) setTimeout(()=>$("splash").classList.add("off"),250);
 }
-function renderAct(a){ const el=$("actList"); if(!a.length){ el.innerHTML='<div class="empty">No recent activity yet. Invite friends or redeem gift codes to earn! ✨</div>'; return; }
-  el.innerHTML=a.slice(0,8).map(x=>`<div class="li"><div class="ico">${/gift/i.test(x.t)?"🎟":/friend/i.test(x.t)?"🤝":"💰"}</div><div class="t"><b>${esc(x.t)}</b><small>${esc(x.d||"")}</small></div><div class="a">${x.a>0?"+":""}₹${x.a}</div></div>`).join(""); }
-const esc = s => String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+function renderAct(a){ const el=$("actList"); if(!a.length){ el.innerHTML='<div class="empty">No recent activity yet. Invite friends or complete offers to earn!</div>'; return; }
+  el.innerHTML=a.slice(0,8).map(x=>`<div class="li"><div class="ico ${/gift/i.test(x.t)?"p":/friend/i.test(x.t)?"b":"g"}">${ic(/gift/i.test(x.t)?"ticket":/friend/i.test(x.t)?"users":"rupee")}</div><div class="t"><b>${esc(x.t)}</b><small>${esc(x.d||"")}</small></div><div class="a">${x.a>0?"+":""}₹${x.a}</div></div>`).join(""); }
 
-async function act(a){
-  const d=await api({a}); if(!d.ok) return toast(d.error||"Failed","err");
-  snd.pop(); toast("Opening bot chat… 💬","ok"); setTimeout(()=>tg&&tg.close(),900);
-}
-async function redeem(){
-  const c=$("code").value.trim(); if(!c) return toast("Enter a gift code 🎟","err");
+async function act(a){ const d=await api({a}); if(!d.ok) return toast(d.error||"Failed","err");
+  snd.pop(); toast("Opening bot chat","ok"); setTimeout(()=>tg&&tg.close(),900); }
+async function redeem(){ const c=$("code").value.trim(); if(!c) return toast("Enter a gift code","err");
   const b=$("claimBtn"); b.disabled=true; const d=await api({a:"redeem",code:c}); b.disabled=false;
   if(!d.ok) return toast(d.error||"Failed","err");
-  snd.win(); burst(); toast("🎉 You got ₹"+d.amount+"!","ok"); $("code").value=""; refresh();
-}
-function copy(){ const t=me.link||""; (navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).catch(()=>{const i=document.createElement("input");i.value=t;document.body.appendChild(i);i.select();document.execCommand("copy");i.remove()}); snd.coin(); toast("Link copied 📋","ok"); }
-function share(){ const u="https://t.me/share/url?url="+encodeURIComponent(me.link||"")+"&text="+encodeURIComponent("🎁 Join & earn real rewards! Use my link:"); tg?tg.openTelegramLink(u):open(u); }
+  snd.win(); burst(); toast("You received ₹"+d.amount,"ok"); $("code").value=""; refresh(); }
+function copy(){ const t=me.link||""; (navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).catch(()=>{const i=document.createElement("input");i.value=t;document.body.appendChild(i);i.select();document.execCommand("copy");i.remove()}); snd.coin(); toast("Link copied","ok"); }
+function share(){ const u="https://t.me/share/url?url="+encodeURIComponent(me.link||"")+"&text="+encodeURIComponent("Join and earn real rewards! Use my link:"); tg?tg.openTelegramLink(u):open(u); }
 function openCh(){ const l=me.channel; if(l){ tg&&/t\.me/.test(l)?tg.openTelegramLink(l):(tg?tg.openLink(l):open(l)); } else toast("Channel not set yet","err"); }
 function openBot(){ const u="https://t.me/"+(me.bot||""); tg?tg.openTelegramLink(u):open(u); }
 function tgl(k){ pref[k]=!pref[k]; store.set(k,pref[k]?"1":"0"); sw(); if(pref[k]) snd.pop(); }
 function sw(){ $("sw-snd").classList.toggle("on",pref.snd); $("sw-hap").classList.toggle("on",pref.hap); } sw();
 
-/* ---------- admin ---------- */
-const K = () => $("key").value;
-async function admLoad(){ const d=await api({a:"adm_stats",key:K()}); if(!d.ok) return toast(d.error||"Failed","err");
-  $("admBox").classList.remove("hide"); $("a_u").textContent=d.users; $("a_pr").textContent="₹"+d.perRef;
-  $("sw-bm").classList.toggle("on",d.botMode==="ON"); $("sw-wm").classList.toggle("on",d.wdMode==="ON"); snd.win(); toast("Admin unlocked 🔓","ok"); }
-async function admTog(f){ const el=$(f==="BotMode"?"sw-bm":"sw-wm"), v=el.classList.contains("on")?"OFF":"ON"; const d=await api({a:"adm_set",key:K(),f,v}); if(d.ok){ el.classList.toggle("on",v==="ON"); toast(f+" → "+v,"ok"); } else toast(d.error||"Failed","err"); }
-async function admSet(){ const d=await api({a:"adm_set",key:K(),f:$("sf").value,v:$("sv").value}); if(d.ok){ toast("Saved ✅","ok"); $("sv").value=""; admLoad(); refresh(); } else toast(d.error||"Failed","err"); }
-async function admBal(){ const d=await api({a:"adm_addbal",key:K(),t:$("bt").value,amt:$("ba").value}); d.ok?toast("Done. New balance ₹"+rs(d.balance),"ok"):toast(d.error||"Failed","err"); }
-async function admGift(){ const d=await api({a:"adm_gift",key:K(),code:$("gc").value,amt:$("ga").value,max:$("gm").value,minref:$("gr").value}); d.ok?(toast("Gift code created 🎟","ok"),snd.win()):toast(d.error||"Failed","err"); }
-async function admMsg(){ const d=await api({a:"adm_msg",key:K(),t:$("mt").value,m:$("mm").value}); d.ok?toast("Sent 📨","ok"):toast(d.error||"Failed","err"); }
+/* ---------- admin (no key unless the owner set one) ---------- */
+const K = () => KEYREQ ? $("key").value : "";
+async function admLoad(silent){ const d=await api({a:"adm_stats",key:K()}); if(!d.ok) return toast(d.error||"Failed","err");
+  $("a_u").textContent=d.users; $("a_pr").textContent="₹"+d.perRef;
+  $("sw-bm").classList.toggle("on",d.botMode==="ON"); $("sw-wm").classList.toggle("on",d.wdMode==="ON"); if(!silent){ snd.win(); toast("Admin unlocked","ok"); } }
+async function admTog(f){ const el=$(f==="BotMode"?"sw-bm":"sw-wm"), v=el.classList.contains("on")?"OFF":"ON"; const d=await api({a:"adm_set",key:K(),f,v}); if(d.ok){ el.classList.toggle("on",v==="ON"); toast((f==="BotMode"?"Bot":"Withdrawals")+" "+v,"ok"); } else toast(d.error||"Failed","err"); }
+async function admSet(){ const d=await api({a:"adm_set",key:K(),f:$("sf").value,v:$("sv").value}); if(d.ok){ toast("Saved","ok"); $("sv").value=""; admLoad(true); refresh(); } else toast(d.error||"Failed","err"); }
+async function admBal(){ const d=await api({a:"adm_addbal",key:K(),t:$("bt").value,amt:$("ba").value}); d.ok?(snd.coin(),toast("Done. New balance ₹"+rs(d.balance),"ok")):toast(d.error||"Failed","err"); }
+async function admGift(){ const d=await api({a:"adm_gift",key:K(),code:$("gc").value,amt:$("ga").value,max:$("gm").value,minref:$("gr").value}); d.ok?(snd.win(),toast("Gift code created","ok")):toast(d.error||"Failed","err"); }
+async function admMsg(){ const d=await api({a:"adm_msg",key:K(),t:$("mt").value,m:$("mm").value}); d.ok?toast("Message sent","ok"):toast(d.error||"Failed","err"); }
 
 refresh();
 setTimeout(()=>$("splash").classList.add("off"),4000);
