@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<title>Refer & Earn</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<style>
+:root{--g1:#0d6b45;--g2:#052f1f;--bg1:#0b5a3b;--bg2:#042a1b;--y1:#ffe14d;--y2:#ff9a00;--ink:#0b4b33;--card:#f8fcf9;--mut:#5f7a6c;--ok:#12b886}
+[data-theme=blue]{--g1:#1456b8;--g2:#071d45;--bg1:#12489c;--bg2:#06142f;--ink:#0d3472;--card:#f7faff;--mut:#5c6f92}
+[data-theme=purple]{--g1:#6d28d9;--g2:#1e0a45;--bg1:#5b21b6;--bg2:#160733;--ink:#47209b;--card:#faf7ff;--mut:#74608f}
+[data-theme=red]{--g1:#c0262d;--g2:#3d0809;--bg1:#a51d24;--bg2:#2c0506;--ink:#7d1519;--card:#fff8f8;--mut:#8f6060}
+[data-theme=dark]{--g1:#2a2f3a;--g2:#0a0c10;--bg1:#1b1f27;--bg2:#07080b;--ink:#e9edf5;--card:#1f2430;--mut:#93a0b8}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;font-family:"Segoe UI",system-ui,-apple-system,Roboto,sans-serif}
+html,body{height:100%}
+body{background:linear-gradient(180deg,var(--bg1),var(--bg2)) fixed;color:#fff;overflow-x:hidden;user-select:none}
+#app{max-width:520px;margin:0 auto;min-height:100%;padding-bottom:calc(104px + env(safe-area-inset-bottom,0px))}
+/* header */
+.top{position:sticky;top:0;z-index:20;background:var(--card);color:var(--ink);border-radius:0 0 34px 34px;padding:calc(14px + env(safe-area-inset-top,0px)) 18px 16px;display:flex;align-items:center;gap:12px;box-shadow:0 10px 30px rgba(0,0,0,.28)}
+.logo{width:50px;height:50px;border-radius:50%;flex:none;background:linear-gradient(135deg,var(--y1),var(--y2));display:grid;place-items:center;font-size:24px;font-weight:900;color:#000;border:3px solid #fff;box-shadow:0 0 0 2px var(--y2),0 6px 14px rgba(0,0,0,.25);overflow:hidden}
+.logo img{width:100%;height:100%;object-fit:cover}
+.tt{flex:1;min-width:0}.tt h1{font-size:20px;line-height:1.1;font-weight:900;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tt small{display:block;margin-top:3px;font-size:11px;font-weight:800;letter-spacing:.9px;color:var(--ink);opacity:.8}
+.pill{display:flex;align-items:center;gap:8px;background:linear-gradient(var(--y1),var(--y2));color:#1a1000;font-weight:900;border-radius:999px;padding:7px 15px 7px 7px;box-shadow:0 5px 14px rgba(255,154,0,.45)}
+.pill i{width:28px;height:28px;border-radius:50%;background:#fff;color:var(--y2);display:grid;place-items:center;font-style:normal;font-size:16px}
+/* views */
+.view{display:none;padding:16px;gap:16px;flex-direction:column}
+.view.on{display:flex;animation:in .45s cubic-bezier(.2,.9,.3,1)}
+@keyframes in{from{opacity:0;transform:translateY(18px) scale(.985)}to{opacity:1;transform:none}}
+.card{background:var(--card);color:var(--ink);border-radius:30px;padding:20px;box-shadow:0 12px 30px rgba(0,0,0,.28);position:relative;overflow:hidden}
+.card h3{font-size:13px;font-weight:900;letter-spacing:1.1px;text-transform:uppercase;display:flex;align-items:center;gap:10px}
+.card h3:before{content:"";width:7px;height:22px;border-radius:5px;background:linear-gradient(var(--y1),var(--y2));box-shadow:0 0 10px rgba(255,170,0,.7)}
+.muted{color:var(--mut);font-size:14px;line-height:1.5}
+.sec{font-size:22px;font-weight:900;display:flex;align-items:center;gap:10px;padding:2px 4px}
+.sec:before{content:"";width:7px;height:26px;border-radius:5px;background:linear-gradient(var(--y1),var(--y2));box-shadow:0 0 12px rgba(255,170,0,.7)}
+.sec .sp{flex:1}
+/* buttons */
+.btn{position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;gap:10px;width:100%;border:0;border-radius:999px;padding:17px;font-size:16px;font-weight:900;letter-spacing:.8px;color:#1a1000;background:linear-gradient(var(--y1),var(--y2));box-shadow:0 8px 20px rgba(255,150,0,.45),inset 0 -3px 0 rgba(0,0,0,.12);cursor:pointer;transition:transform .15s,filter .15s}
+.btn:active{transform:scale(.96);filter:brightness(.95)}
+.btn.dark{background:var(--g1);color:#fff;box-shadow:0 8px 18px rgba(0,0,0,.3)}
+.btn.sm{width:auto;padding:10px 18px;font-size:14px;letter-spacing:.3px}
+.btn[disabled]{opacity:.6;pointer-events:none}
+.rip{position:absolute;border-radius:50%;background:rgba(255,255,255,.55);transform:scale(0);animation:rip .6s ease-out;pointer-events:none}
+@keyframes rip{to{transform:scale(4);opacity:0}}
+/* banner */
+.banner{padding:12px;background:var(--card);border-radius:34px;box-shadow:0 12px 30px rgba(0,0,0,.28)}
+.slides{display:flex;transition:transform .6s cubic-bezier(.3,.8,.2,1);border-radius:26px;overflow:hidden}
+.slide{min-width:100%;padding:20px;border-radius:26px;background:radial-gradient(circle at 85% 0,rgba(255,225,77,.22),transparent 45%),linear-gradient(135deg,var(--g1),var(--g2));position:relative;min-height:190px}
+.tag{display:inline-flex;gap:6px;align-items:center;background:linear-gradient(var(--y1),var(--y2));color:#1a1000;font-weight:900;font-size:13px;padding:7px 13px;border-radius:999px}
+.tag.o{background:rgba(0,0,0,.35);color:var(--y1);float:right}
+.slide h2{font-size:27px;line-height:1.12;margin:14px 0 8px;font-weight:900}
+.slide p{font-size:15px;opacity:.9;max-width:78%}
+.slide .btn{position:absolute;right:16px;bottom:14px;width:auto;padding:11px 18px;font-size:14px}
+.slide .big{position:absolute;right:14px;top:60px;font-size:54px;animation:fl 3s ease-in-out infinite}
+@keyframes fl{50%{transform:translateY(-8px) rotate(6deg)}}
+.dots{display:flex;gap:7px;justify-content:center;margin-top:10px}.dots i{width:9px;height:9px;border-radius:9px;background:rgba(0,0,0,.2);transition:all .4s}.dots i.on{width:30px;background:linear-gradient(var(--y1),var(--y2))}
+.hello{display:flex;align-items:center;gap:12px;color:#fff;padding:0 6px}
+.av{width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,var(--y1),var(--y2));color:#000;font-weight:900;display:grid;place-items:center;border:2px solid #fff;overflow:hidden;flex:none;font-size:18px}
+.av img{width:100%;height:100%;object-fit:cover}
+.hello b{font-size:17px}.hello small{display:block;opacity:.75;font-size:12px}
+/* balance */
+.bal{text-align:center}
+.bal .row0{display:flex;justify-content:space-between;align-items:center}
+.ref{width:42px;height:42px;border-radius:50%;border:1px solid #d9e8df;background:#fff;color:var(--ink);font-size:19px;display:grid;place-items:center}
+.ref.spin{animation:sp .8s linear infinite}@keyframes sp{to{transform:rotate(360deg)}}
+.amt{font-size:56px;font-weight:900;margin:14px 0 18px;letter-spacing:-1px;display:flex;justify-content:center;align-items:baseline;gap:4px}
+.amt span{color:var(--y2);font-size:40px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.stat b{display:block;font-size:34px;font-weight:900;margin-top:10px}.stat b.g{color:var(--ok)}
+/* list */
+.li{display:flex;align-items:center;gap:13px;padding:13px 4px;border-bottom:1px solid rgba(0,0,0,.07);color:var(--ink)}
+.li:last-child{border:0}
+.ico{width:42px;height:42px;border-radius:14px;display:grid;place-items:center;font-size:20px;background:#fff3cf;flex:none}
+.li .t{flex:1;min-width:0}.li .t b{display:block;font-size:15px}.li .t small{color:var(--mut);font-size:12px}
+.li .a{font-weight:900;color:var(--ok)}
+.empty{text-align:center;padding:14px 6px;font-weight:600;color:var(--ink);opacity:.8}
+/* invite */
+.hero{text-align:center}.hero h2{font-size:30px;font-weight:900;margin:12px 0 8px}.hero h2 span{color:var(--y2)}
+.coin{width:130px;height:130px;margin:16px auto 6px;border-radius:50%;background:radial-gradient(circle at 30% 25%,#fff3a1,var(--y1) 35%,var(--y2));display:grid;place-items:center;font-size:60px;border:6px solid #fff;box-shadow:0 0 0 3px var(--y2),0 14px 30px rgba(255,150,0,.5);animation:fl 3s ease-in-out infinite}
+.lnk{border:2px dashed #b9d3c5;border-radius:18px;padding:13px 14px;display:flex;align-items:center;gap:10px;margin:14px 0;font-size:14px;color:var(--ink)}
+.lnk span{flex:1;word-break:break-all}.lnk button{border:1px solid #d3e3da;background:#fff;border-radius:14px;width:44px;height:44px;font-size:19px}
+.step{display:flex;gap:14px;margin:16px 0}.step i{flex:none;width:36px;height:36px;border-radius:50%;background:linear-gradient(var(--y1),var(--y2));color:#1a1000;font-style:normal;font-weight:900;display:grid;place-items:center;box-shadow:0 4px 10px rgba(255,150,0,.4)}
+.step b{display:block;margin-bottom:2px}
+.cnt{background:linear-gradient(var(--y1),var(--y2));color:#1a1000;font-weight:900;padding:8px 16px;border-radius:999px;font-size:14px}
+/* inputs */
+input,select{width:100%;padding:16px 18px;border-radius:20px;border:2px solid #d7e6dd;font-size:16px;margin:8px 0;color:#222;background:#fff;outline:0;transition:border .2s,box-shadow .2s;user-select:text}
+input:focus,select:focus{border-color:var(--y2);box-shadow:0 0 0 4px rgba(255,170,0,.2)}
+.card.darkc input,.card.darkc select{background:#2a303d;color:#fff;border-color:#3b4354}
+/* profile */
+.pf{text-align:center}.pf .big{width:112px;height:112px;margin:4px auto 10px;position:relative}
+.pf .big .av{width:112px;height:112px;font-size:44px;border:5px solid #fff;box-shadow:0 0 0 3px var(--y2),0 10px 24px rgba(0,0,0,.3)}
+.pf .ck{position:absolute;right:-2px;bottom:4px;width:34px;height:34px;border-radius:50%;background:var(--ok);color:#fff;display:grid;place-items:center;border:3px solid #fff;font-size:16px}
+.pf h2{font-size:25px;font-weight:900}.pf .meta{color:var(--mut);font-size:14px;margin-top:6px}
+.mini{border:1.5px solid #cfe7da;border-radius:22px;padding:14px;text-align:center;font-size:12px;font-weight:900;letter-spacing:.8px}
+.mini b{display:block;font-size:26px;margin-top:6px;color:var(--ok)}.mini.o b{color:var(--y2)}
+.cap{font-size:13px;font-weight:900;letter-spacing:1.3px;padding:6px 8px 0;opacity:.95}
+.row{display:flex;align-items:center;gap:14px;padding:17px 6px;border-bottom:1px solid rgba(0,0,0,.07);color:var(--ink);font-weight:800;font-size:16px;cursor:pointer}
+.row:last-child{border:0}.row .ico{width:44px;height:44px}.row .go{margin-left:auto;opacity:.5}
+.sw{margin-left:auto;width:52px;height:30px;border-radius:30px;background:#c9d6cf;position:relative;transition:.3s}.sw:after{content:"";position:absolute;top:3px;left:3px;width:24px;height:24px;border-radius:50%;background:#fff;transition:.3s;box-shadow:0 2px 5px rgba(0,0,0,.3)}
+.sw.on{background:var(--ok)}.sw.on:after{left:25px}
+/* nav */
+nav{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(12px + env(safe-area-inset-bottom,0px));width:calc(100% - 22px);max-width:498px;background:var(--card);border-radius:34px;display:flex;padding:9px;box-shadow:0 14px 34px rgba(0,0,0,.4);z-index:30}
+nav button{flex:1;border:0;background:none;color:#6d7b95;font-weight:800;font-size:12px;padding:9px 0 7px;border-radius:26px;transition:all .35s cubic-bezier(.3,.9,.3,1);display:flex;flex-direction:column;align-items:center;gap:3px}
+nav button span{font-size:22px;transition:transform .35s}
+nav button.on{background:var(--g1);color:#fff;transform:translateY(-8px) scale(1.06);box-shadow:0 10px 20px rgba(0,0,0,.35),inset 0 0 0 2px rgba(255,255,255,.12)}
+nav button.on span{transform:scale(1.15)}
+[data-theme=dark] nav button{color:#93a0b8}
+/* toast + loader */
+#toast{position:fixed;left:50%;top:calc(90px + env(safe-area-inset-top,0px));transform:translate(-50%,-30px);background:#101820;color:#fff;padding:13px 22px;border-radius:999px;font-weight:700;font-size:14px;opacity:0;pointer-events:none;transition:.35s cubic-bezier(.3,1.4,.4,1);z-index:100;max-width:90%;text-align:center;box-shadow:0 10px 30px rgba(0,0,0,.5);border:1px solid rgba(255,255,255,.12)}
+#toast.on{opacity:1;transform:translate(-50%,0)}#toast.err{background:#7a1520}#toast.ok{background:#0b6b46}
+#splash{position:fixed;inset:0;background:linear-gradient(180deg,var(--bg1),var(--bg2));z-index:200;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;transition:opacity .5s,visibility .5s}
+#splash.off{opacity:0;visibility:hidden}
+#splash .coin{width:96px;height:96px;font-size:44px;margin:0}
+.bar{width:140px;height:5px;border-radius:5px;background:rgba(255,255,255,.18);overflow:hidden}.bar i{display:block;width:40%;height:100%;background:linear-gradient(90deg,var(--y1),var(--y2));animation:bar 1s infinite ease-in-out}
+@keyframes bar{0%{transform:translateX(-100%)}100%{transform:translateX(350%)}}
+canvas#fx{position:fixed;inset:0;pointer-events:none;z-index:150}
+.sk{background:linear-gradient(90deg,rgba(0,0,0,.06),rgba(0,0,0,.14),rgba(0,0,0,.06));background-size:200%;animation:sh 1.2s infinite;color:transparent!important;border-radius:10px}
+@keyframes sh{to{background-position:-200%}}
+.hide{display:none!important}
+</style></head><body>
+<div id="splash"><div class="coin">💰</div><div class="bar"><i></i></div></div>
+<canvas id="fx"></canvas><div id="toast"></div>
+<div id="app">
+ <div class="top"><div class="logo" id="logo">💎</div><div class="tt"><h1 id="brand">Loading…</h1><small id="sub">PLAY &amp; EARN</small></div><div class="pill"><i>₹</i><b id="topBal">0.00</b></div></div>
+
+ <!-- HOME -->
+ <section class="view on" id="v-home">
+  <div class="hello"><div class="av" id="hAv">👤</div><div><small>Welcome back 👋</small><b id="hName">Friend</b></div></div>
+  <div class="banner"><div class="slides" id="slides">
+    <div class="slide"><span class="tag">👑 EXCLUSIVE OFFER</span><span class="tag o">100% Free</span><div class="big">💸</div>
+      <h2>Claim Your Full Cash Reward</h2><p>Invite friends &amp; complete tasks, then withdraw directly!</p><button class="btn" onclick="go('invite')">Claim Now ➜</button></div>
+    <div class="slide"><span class="tag">🎁 DAILY BONUS</span><span class="tag o">Every day</span><div class="big">🎁</div>
+      <h2>Collect Your Daily Bonus</h2><p>Come back every day for a free reward.</p><button class="btn" onclick="act('bonus')">Get Bonus ➜</button></div>
+    <div class="slide"><span class="tag">🎟 GIFT CODES</span><span class="tag o">Instant</span><div class="big">🎟</div>
+      <h2>Redeem Gift Codes</h2><p>Enter a code from our channel to get cash instantly.</p><button class="btn" onclick="go('gift')">Redeem ➜</button></div>
+  </div><div class="dots" id="dots"><i class="on"></i><i></i><i></i></div></div>
+
+  <div class="card bal"><div class="row0"><h3>Available Balance</h3><button class="ref" id="refBtn" onclick="refresh(true)">🔄</button></div>
+   <div class="amt"><span>₹</span><b id="bal" class="sk">0.00</b></div>
+   <button class="btn" onclick="act('withdraw')">💸 WITHDRAW NOW ↗</button></div>
+
+  <div class="two"><div class="card stat"><h3>👥 Total Invites</h3><b id="inv">0</b></div><div class="card stat"><h3>💰 Total Income</h3><b class="g" id="earn">₹0.00</b></div></div>
+
+  <div class="sec">Recent Activity<span class="sp"></span><button class="btn sm" onclick="go('invite')">View All ›</button></div>
+  <div class="card" id="actList"><div class="empty">No recent activity yet. Invite friends or redeem gift codes to earn! ✨</div></div>
+ </section>
+
+ <!-- INVITE -->
+ <section class="view" id="v-invite">
+  <div class="card hero"><span class="tag">🔥 BIG REWARD OFFER</span><h2>Invite Friends &amp; Get <span id="prx">₹0</span></h2>
+   <p class="muted">When your friend joins the bot, the reward is added to your wallet instantly!</p><div class="coin">🤑</div></div>
+  <div class="card"><h3>Your Referral Link <span style="margin-left:auto" class="cnt">∞ Unlimited</span></h3>
+   <div class="lnk"><span id="lnk">…</span><button onclick="copy()">📋</button></div>
+   <button class="btn" onclick="share()">📤 SHARE LINK WITH FRIENDS</button></div>
+  <div class="sec">How It Works</div>
+  <div class="card"><div class="step"><i>1</i><div><b>Share Your Link</b><span class="muted">Send your referral link to friends on Telegram or WhatsApp.</span></div></div>
+   <div class="step"><i>2</i><div><b>Friend Starts The Bot</b><span class="muted">Your friend opens the bot with your link and joins.</span></div></div>
+   <div class="step"><i>3</i><div><b>Get Paid Instantly 💰</b><span class="muted">The reward lands in your wallet right away.</span></div></div></div>
+  <div class="sec">Invited Friends<span class="sp"></span><span class="cnt" id="invc">0 Total</span></div>
+  <div class="card"><div class="empty" id="invTxt">Share your link to start earning! 🚀</div></div>
+ </section>
+
+ <!-- GIFT -->
+ <section class="view" id="v-gift">
+  <div class="card hero"><span class="tag">🎁 EXCLUSIVE GIFT PROMO</span><h2>Redeem Gift Codes</h2>
+   <p class="muted">Get codes from our official Telegram channel and claim instant cash!</p><div class="coin">🎁</div></div>
+  <div class="card"><h3>Enter Promo / Gift Code <span class="cnt" style="margin-left:auto;font-size:11px">⚡ FAST CLAIM</span></h3>
+   <input id="code" placeholder="Enter gift code (e.g. WELCOME50)" autocapitalize="characters" autocomplete="off">
+   <button class="btn" id="claimBtn" onclick="redeem()">🎁 CLAIM GIFT REWARD</button></div>
+  <div class="card"><div class="row" onclick="openCh()"><div class="ico" style="background:#dff1ff">✈️</div>Join Telegram Channel for codes<span class="go">›</span></div></div>
+ </section>
+
+ <!-- PROFILE -->
+ <section class="view" id="v-profile">
+  <div class="card pf"><div class="big"><div class="av" id="pAv">👤</div><div class="ck">✔</div></div>
+   <h2 id="pName">User</h2><div class="meta" id="pUser">ID</div><div class="meta" id="pSince">📅 Member since …</div>
+   <div class="two" style="margin-top:18px"><div class="mini">TOTAL EARNED<b id="pEarn">₹0.00</b></div><div class="mini o">BALANCE<b id="pBal">₹0.00</b></div></div></div>
+  <div class="cap">ACCOUNT SETTINGS</div>
+  <div class="card" style="padding:8px 18px">
+   <div class="row" onclick="go('home')"><div class="ico">📊</div>Wallet &amp; Activity<span class="go">›</span></div>
+   <div class="row" onclick="act('withdraw')"><div class="ico" style="background:#e3fbe9">💸</div>Withdraw Voucher<span class="go">›</span></div>
+   <div class="row" onclick="go('gift')"><div class="ico">🎁</div>Redeem Gift / Promo Code<span class="go">›</span></div>
+   <div class="row" onclick="openCh()"><div class="ico" style="background:#dff1ff">✈️</div>Join Telegram Channel<span class="go">›</span></div></div>
+  <div class="cap">APP SETTINGS</div>
+  <div class="card" style="padding:8px 18px">
+   <div class="row" onclick="tgl('snd')"><div class="ico" style="background:#fde8ff">🔊</div>Sounds<div class="sw" id="sw-snd"></div></div>
+   <div class="row" onclick="tgl('hap')"><div class="ico" style="background:#e8eaff">📳</div>Vibration<div class="sw" id="sw-hap"></div></div>
+   <div class="row" onclick="openBot()"><div class="ico" style="background:#ffe8e8">🎫</div>Open Bot Chat / Support<span class="go">›</span></div>
+   <div class="row hide" id="admRow" onclick="go('admin')"><div class="ico" style="background:#ffeacc">⚙️</div>Admin Panel<span class="go">›</span></div></div>
+ </section>
+
+ <!-- ADMIN -->
+ <section class="view" id="v-admin">
+  <div class="sec">⚙️ Admin Panel</div>
+  <div class="card"><h3>Access</h3><input id="key" type="password" placeholder="Admin key"><button class="btn" onclick="admLoad()">🔓 UNLOCK / REFRESH</button></div>
+  <div id="admBox" class="hide" style="display:flex;flex-direction:column;gap:16px">
+   <div class="two"><div class="card stat"><h3>👥 Users</h3><b id="a_u">0</b></div><div class="card stat"><h3>🎯 Per Refer</h3><b id="a_pr">0</b></div></div>
+   <div class="card"><div class="row" onclick="admTog('BotMode')"><div class="ico">🤖</div>Bot Status<div class="sw" id="sw-bm"></div></div>
+    <div class="row" onclick="admTog('WithdrawMode')"><div class="ico">💸</div>Withdrawals<div class="sw" id="sw-wm"></div></div></div>
+   <div class="card"><h3>Settings</h3>
+    <select id="sf"><option value="PerRefer">Per refer reward (5 or 2-6)</option><option value="DailyBonus">Daily bonus</option><option value="MinWith">Min withdraw</option><option value="MaxWith">Max withdraw</option><option value="SavedLinks">Channel / How-to-earn link</option><option value="WebBrand">App name</option><option value="WebLogo">Logo image URL</option><option value="WebTheme">Theme (green/blue/purple/red/dark)</option></select>
+    <input id="sv" placeholder="New value"><button class="btn" onclick="admSet()">💾 SAVE</button></div>
+   <div class="card"><h3>Add / Remove Balance</h3><input id="bt" inputmode="numeric" placeholder="User ID"><input id="ba" inputmode="decimal" placeholder="Amount (negative to deduct)"><button class="btn" onclick="admBal()">✅ APPLY</button></div>
+   <div class="card"><h3>Create Gift Code</h3><input id="gc" placeholder="Code (no spaces)"><input id="ga" inputmode="numeric" placeholder="Amount ₹"><input id="gm" inputmode="numeric" placeholder="Max users"><input id="gr" inputmode="numeric" placeholder="Min refers needed (0 = none)"><button class="btn" onclick="admGift()">🎟 CREATE CODE</button></div>
+   <div class="card"><h3>Message a User</h3><input id="mt" inputmode="numeric" placeholder="User ID"><input id="mm" placeholder="Message"><button class="btn" onclick="admMsg()">📨 SEND</button></div>
+  </div>
+ </section>
+</div>
+
+<nav id="nav">
+ <button data-t="home" class="on"><span>🏠</span>Home</button><button data-t="invite"><span>🤝</span>Invite</button>
+ <button data-t="gift"><span>🎁</span>Gift</button><button data-t="profile"><span>👤</span>Profile</button></nav>
+
+<script>
+/* ===== CONFIG =====
+   One page serves MANY bots. Each bot's "Open App" button adds ?api=<its own API url>.
+   Optional fallback (only used if ?api= is missing): */
+const DEFAULT_API = "";
+/* =================== */
+const $ = id => document.getElementById(id);
+const tg = window.Telegram && Telegram.WebApp;
+if (tg) { try { tg.ready(); tg.expand(); tg.setHeaderColor && tg.setHeaderColor("#0b5a3b"); } catch(e){} }
+const U = (tg && tg.initDataUnsafe && tg.initDataUnsafe.user) || null;
+const qs = new URLSearchParams(location.search);
+let API = qs.get("api") || DEFAULT_API;
+try { if (API) sessionStorage.setItem("api", API); else API = sessionStorage.getItem("api") || ""; } catch(e){}
+const UID = U ? String(U.id) : (qs.get("uid") || "");
+let me = {}, cur = "home";
+const store = { get:(k,d)=>{ try{ const v=localStorage.getItem(k); return v===null?d:v }catch(e){ return d } }, set:(k,v)=>{ try{ localStorage.setItem(k,v) }catch(e){} } };
+let pref = { snd: store.get("snd","1")==="1", hap: store.get("hap","1")==="1" };
+
+/* ---------- sound (WebAudio, no files) ---------- */
+let ac;
+function tone(f, t, d, type, v, when){
+  if(!pref.snd) return;
+  try{
+    ac = ac || new (window.AudioContext||window.webkitAudioContext)();
+    if (ac.state==="suspended") ac.resume();
+    const o = ac.createOscillator(), g = ac.createGain(), s = ac.currentTime + (when||0);
+    o.type = type||"sine"; o.frequency.setValueAtTime(f, s); if(t) o.frequency.exponentialRampToValueAtTime(t, s+d);
+    g.gain.setValueAtTime(0.0001, s); g.gain.exponentialRampToValueAtTime(v||.15, s+.01); g.gain.exponentialRampToValueAtTime(0.0001, s+d);
+    o.connect(g); g.connect(ac.destination); o.start(s); o.stop(s+d+.02);
+  }catch(e){}
+}
+const snd = {
+  tap:()=>tone(520,780,.07,"triangle",.12),
+  nav:()=>{tone(400,600,.08,"sine",.12);tone(600,900,.08,"sine",.1,.06)},
+  coin:()=>{tone(988,0,.1,"square",.08);tone(1319,0,.35,"square",.08,.09)},
+  win:()=>{[523,659,784,1047].forEach((f,i)=>tone(f,0,.22,"triangle",.14,i*.09));tone(1319,0,.5,"sine",.1,.4)},
+  err:()=>{tone(220,140,.25,"sawtooth",.12);tone(180,110,.3,"sawtooth",.1,.12)},
+  pop:()=>tone(300,900,.12,"sine",.15)
+};
+function hap(t){ if(!pref.hap) return; try{ tg && tg.HapticFeedback ? (t==="err"?tg.HapticFeedback.notificationOccurred("error"):t==="ok"?tg.HapticFeedback.notificationOccurred("success"):tg.HapticFeedback.impactOccurred("light")) : navigator.vibrate && navigator.vibrate(t==="err"?[40,30,40]:12) }catch(e){} }
+
+/* ---------- ui helpers ---------- */
+let tt;
+function toast(m,k){ const t=$("toast"); t.textContent=m; t.className="on "+(k||""); clearTimeout(tt); tt=setTimeout(()=>t.className="",2800); if(k==="err"){snd.err();hap("err")} if(k==="ok"){hap("ok")} }
+const rs = n => Number(n||0).toFixed(2);
+function countUp(el, to, pre){ const from=parseFloat(el.dataset.v||0); el.dataset.v=to; const t0=performance.now(), dur=900; el.classList.remove("sk");
+  (function s(n){ const p=Math.min(1,(n-t0)/dur), e=1-Math.pow(1-p,3); el.textContent=(pre||"")+(from+(to-from)*e).toFixed(2); if(p<1) requestAnimationFrame(s); })(t0); }
+document.addEventListener("pointerdown", e=>{
+  const b = e.target.closest(".btn,.row,.ref,nav button,.lnk button"); if(!b) return;
+  if (b.classList.contains("btn")||b.classList.contains("ref")){ const r=b.getBoundingClientRect(), d=Math.max(r.width,r.height), s=document.createElement("span"); s.className="rip"; s.style.cssText=`width:${d}px;height:${d}px;left:${e.clientX-r.left-d/2}px;top:${e.clientY-r.top-d/2}px`; b.appendChild(s); setTimeout(()=>s.remove(),600); }
+  snd.tap(); hap();
+});
+/* confetti */
+const cv=$("fx"), cx=cv.getContext("2d"); let parts=[], raf;
+function burst(){ cv.width=innerWidth; cv.height=innerHeight; const em=["💰","🎉","✨","🪙","⭐"];
+  for(let i=0;i<46;i++) parts.push({x:innerWidth/2,y:innerHeight*.55,vx:(Math.random()-.5)*14,vy:-Math.random()*16-4,g:.45,r:Math.random()*6,e:em[i%5],s:18+Math.random()*16,l:1});
+  cancelAnimationFrame(raf); (function f(){ cx.clearRect(0,0,cv.width,cv.height); parts.forEach(p=>{p.vy+=p.g;p.x+=p.vx;p.y+=p.vy;p.l-=.012;cx.globalAlpha=Math.max(p.l,0);cx.font=p.s+"px serif";cx.fillText(p.e,p.x,p.y)}); parts=parts.filter(p=>p.l>0&&p.y<innerHeight+40); if(parts.length) raf=requestAnimationFrame(f); else cx.clearRect(0,0,cv.width,cv.height); })(); }
+
+/* ---------- api ---------- */
+async function api(body){
+  if (!API){ toast("App not linked to a bot. Open it from the bot menu.","err"); return {ok:false}; }
+  if (!UID){ toast("Please open inside Telegram","err"); return {ok:false}; }
+  try{
+    const r = await fetch(API,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(Object.assign({uid:UID},body))});
+    const j = await r.json(); return (j && j.result && typeof j.result==="object") ? j.result : j;
+  }catch(e){ toast("Network error. Try again","err"); return {ok:false}; }
+}
+
+/* ---------- avatar / name auto fetch ---------- */
+const fullName = U ? ((U.first_name||"")+" "+(U.last_name||"")).trim() || "Friend" : "Friend";
+function setAv(el){ if (U && U.photo_url){ const i=new Image(); i.onload=()=>{el.innerHTML="";el.appendChild(i)}; i.onerror=()=>{}; i.src=U.photo_url; } el.textContent=(fullName[0]||"👤").toUpperCase(); }
+["hAv","pAv"].forEach(id=>setAv($(id)));
+$("hName").textContent=fullName; $("pName").textContent=fullName;
+$("pUser").textContent = (U && U.username ? "@"+U.username+"  •  " : "")+"ID: "+(UID||"-");
+
+/* ---------- navigation ---------- */
+function go(t){ if(t===cur) return; snd.nav();
+  document.querySelectorAll(".view").forEach(v=>v.classList.remove("on")); $("v-"+t).classList.add("on");
+  document.querySelectorAll("nav button").forEach(b=>b.classList.toggle("on",b.dataset.t===t));
+  $("sub").textContent={home:"PLAY & EARN",invite:"REFER & EARN",gift:"GIFT PROMO",profile:"ACCOUNT & SETTINGS",admin:"ADMIN PANEL"}[t];
+  cur=t; scrollTo({top:0,behavior:"smooth"}); }
+document.querySelectorAll("nav button").forEach(b=>b.onclick=()=>go(b.dataset.t));
+/* swipe between tabs */
+let sx=0; const order=["home","invite","gift","profile"];
+document.addEventListener("touchstart",e=>sx=e.touches[0].clientX,{passive:true});
+document.addEventListener("touchend",e=>{ const dx=e.changedTouches[0].clientX-sx, i=order.indexOf(cur); if(i<0||Math.abs(dx)<90||/INPUT|SELECT/.test(e.target.tagName)) return; const n=dx<0?i+1:i-1; if(order[n]) go(order[n]); },{passive:true});
+
+/* banner */
+let si=0; setInterval(()=>{ si=(si+1)%3; $("slides").style.transform=`translateX(-${si*100}%)`; document.querySelectorAll("#dots i").forEach((d,i)=>d.classList.toggle("on",i===si)); },4200);
+
+/* ---------- data ---------- */
+async function refresh(manual){
+  if(manual) $("refBtn").classList.add("spin");
+  const d = await api({a:"me"}); $("refBtn").classList.remove("spin");
+  if(!d.ok){ $("bal").classList.remove("sk"); if(d.error) toast(d.error,"err"); $("splash").classList.add("off"); return; }
+  const first=!me.bot; me=d;
+  if(d.theme) document.documentElement.setAttribute("data-theme",d.theme==="green"?"":d.theme);
+  $("brand").textContent=d.brand; document.title=d.brand;
+  if(d.logo){ const i=new Image(); i.onload=()=>{$("logo").innerHTML="";$("logo").appendChild(i)}; i.src=d.logo; } else $("logo").textContent=(d.brand||"B")[0].toUpperCase();
+  countUp($("bal"),d.balance); $("topBal").textContent=rs(d.balance);
+  $("inv").textContent=d.invites; countUp($("earn"),d.earned,"₹"); $("prx").textContent="₹"+d.perRef;
+  $("lnk").textContent=d.link; $("invc").textContent=d.invites+" Total";
+  $("invTxt").textContent=d.invites>0?("🎉 "+d.invites+" friend(s) joined with your link!"):"Share your link to start earning! 🚀";
+  $("pEarn").textContent="₹"+rs(d.earned); $("pBal").textContent="₹"+rs(d.balance); $("pSince").textContent="📅 Member since "+(d.since||"today");
+  if(d.admin) $("admRow").classList.remove("hide");
+  renderAct(d.activity||[]);
+  if(manual){ snd.coin(); toast("Balance updated ✅","ok"); }
+  if(first) setTimeout(()=>$("splash").classList.add("off"),250);
+}
+function renderAct(a){ const el=$("actList"); if(!a.length){ el.innerHTML='<div class="empty">No recent activity yet. Invite friends or redeem gift codes to earn! ✨</div>'; return; }
+  el.innerHTML=a.slice(0,8).map(x=>`<div class="li"><div class="ico">${/gift/i.test(x.t)?"🎟":/friend/i.test(x.t)?"🤝":"💰"}</div><div class="t"><b>${esc(x.t)}</b><small>${esc(x.d||"")}</small></div><div class="a">${x.a>0?"+":""}₹${x.a}</div></div>`).join(""); }
+const esc = s => String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+
+async function act(a){
+  const d=await api({a}); if(!d.ok) return toast(d.error||"Failed","err");
+  snd.pop(); toast("Opening bot chat… 💬","ok"); setTimeout(()=>tg&&tg.close(),900);
+}
+async function redeem(){
+  const c=$("code").value.trim(); if(!c) return toast("Enter a gift code 🎟","err");
+  const b=$("claimBtn"); b.disabled=true; const d=await api({a:"redeem",code:c}); b.disabled=false;
+  if(!d.ok) return toast(d.error||"Failed","err");
+  snd.win(); burst(); toast("🎉 You got ₹"+d.amount+"!","ok"); $("code").value=""; refresh();
+}
+function copy(){ const t=me.link||""; (navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).catch(()=>{const i=document.createElement("input");i.value=t;document.body.appendChild(i);i.select();document.execCommand("copy");i.remove()}); snd.coin(); toast("Link copied 📋","ok"); }
+function share(){ const u="https://t.me/share/url?url="+encodeURIComponent(me.link||"")+"&text="+encodeURIComponent("🎁 Join & earn real rewards! Use my link:"); tg?tg.openTelegramLink(u):open(u); }
+function openCh(){ const l=me.channel; if(l){ tg&&/t\.me/.test(l)?tg.openTelegramLink(l):(tg?tg.openLink(l):open(l)); } else toast("Channel not set yet","err"); }
+function openBot(){ const u="https://t.me/"+(me.bot||""); tg?tg.openTelegramLink(u):open(u); }
+function tgl(k){ pref[k]=!pref[k]; store.set(k,pref[k]?"1":"0"); sw(); if(pref[k]) snd.pop(); }
+function sw(){ $("sw-snd").classList.toggle("on",pref.snd); $("sw-hap").classList.toggle("on",pref.hap); } sw();
+
+/* ---------- admin ---------- */
+const K = () => $("key").value;
+async function admLoad(){ const d=await api({a:"adm_stats",key:K()}); if(!d.ok) return toast(d.error||"Failed","err");
+  $("admBox").classList.remove("hide"); $("a_u").textContent=d.users; $("a_pr").textContent="₹"+d.perRef;
+  $("sw-bm").classList.toggle("on",d.botMode==="ON"); $("sw-wm").classList.toggle("on",d.wdMode==="ON"); snd.win(); toast("Admin unlocked 🔓","ok"); }
+async function admTog(f){ const el=$(f==="BotMode"?"sw-bm":"sw-wm"), v=el.classList.contains("on")?"OFF":"ON"; const d=await api({a:"adm_set",key:K(),f,v}); if(d.ok){ el.classList.toggle("on",v==="ON"); toast(f+" → "+v,"ok"); } else toast(d.error||"Failed","err"); }
+async function admSet(){ const d=await api({a:"adm_set",key:K(),f:$("sf").value,v:$("sv").value}); if(d.ok){ toast("Saved ✅","ok"); $("sv").value=""; admLoad(); refresh(); } else toast(d.error||"Failed","err"); }
+async function admBal(){ const d=await api({a:"adm_addbal",key:K(),t:$("bt").value,amt:$("ba").value}); d.ok?toast("Done. New balance ₹"+rs(d.balance),"ok"):toast(d.error||"Failed","err"); }
+async function admGift(){ const d=await api({a:"adm_gift",key:K(),code:$("gc").value,amt:$("ga").value,max:$("gm").value,minref:$("gr").value}); d.ok?(toast("Gift code created 🎟","ok"),snd.win()):toast(d.error||"Failed","err"); }
+async function admMsg(){ const d=await api({a:"adm_msg",key:K(),t:$("mt").value,m:$("mm").value}); d.ok?toast("Sent 📨","ok"):toast(d.error||"Failed","err"); }
+
+refresh();
+setTimeout(()=>$("splash").classList.add("off"),4000);
+setInterval(()=>{ if(!document.hidden && cur==="home") refresh(); },30000);
+</script></body></html>
