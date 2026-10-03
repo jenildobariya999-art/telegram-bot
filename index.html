@@ -134,6 +134,31 @@ canvas#fx{position:fixed;inset:0;pointer-events:none;z-index:150}
 .sk{background:linear-gradient(90deg,rgba(0,0,0,.06),rgba(0,0,0,.14),rgba(0,0,0,.06));background-size:200%;animation:sh 1.2s infinite;color:transparent!important;border-radius:12px}
 @keyframes sh{to{background-position:-200%}}
 .hide{display:none!important}
+
+#gate{position:fixed;inset:0;z-index:120;background:linear-gradient(180deg,var(--bg1),var(--bg2));display:none;overflow-y:auto;padding:calc(18px + env(safe-area-inset-top,0px)) 16px calc(24px + env(safe-area-inset-bottom,0px))}
+#gate.on{display:block;animation:in .4s cubic-bezier(.2,.9,.3,1)}
+.gbox{max-width:520px;margin:0 auto;background:var(--card);color:var(--ink);border-radius:34px;padding:22px 18px;box-shadow:0 18px 40px rgba(0,0,0,.4);text-align:center}
+.gtop{display:flex;justify-content:space-between;align-items:center;min-height:40px}
+.gtop .cnt{margin:0}.gtop button{width:40px;height:40px;border-radius:50%;border:0;background:rgba(0,0,0,.07);color:var(--ink);font-size:20px;display:grid;place-items:center}
+.gico{width:84px;height:84px;margin:6px auto 10px;border-radius:50%;background:linear-gradient(135deg,var(--y1),var(--y2));display:grid;place-items:center;font-size:40px;color:#1a1000;border:5px solid #fff;box-shadow:0 0 0 3px var(--y2),0 10px 22px rgba(255,150,0,.45)}
+.gbox h2{font-size:26px;font-weight:900}
+.gdots{display:flex;gap:8px;justify-content:center;margin:14px 0}.gdots i{width:34px;height:8px;border-radius:8px;background:rgba(0,0,0,.14)}.gdots i.done{background:var(--ok)}.gdots i.on{background:linear-gradient(90deg,var(--y1),var(--y2))}
+.gch{display:flex;align-items:center;gap:12px;padding:12px;border:1.5px solid var(--line);border-radius:22px;margin:10px 0;text-align:left}
+.chav{width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,var(--g1),var(--g2));color:var(--y1);font-weight:900;font-size:20px;display:grid;place-items:center;flex:none;overflow:hidden;position:relative;border:2px solid var(--y1)}
+.chav img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.gch .t{flex:1;min-width:0}.gch .t b{display:block;font-size:15.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.gch .t small{color:var(--mut);font-size:12.5px}
+.gch .btn{width:auto;padding:10px 20px;font-size:14px;letter-spacing:.3px}
+#gVer{margin-top:14px}
+.ptabs{display:flex;gap:8px;overflow-x:auto;padding:12px 0 6px;scrollbar-width:none}.ptabs::-webkit-scrollbar{display:none}
+.chip{flex:none;padding:9px 16px;border-radius:999px;border:2px solid var(--line);background:#fff;color:#0b4b33;font-weight:800;font-size:14px;cursor:pointer;transition:all .25s}
+.chip.on{background:linear-gradient(var(--y1),var(--y2));color:#1a1000;border-color:#fff;box-shadow:0 4px 10px rgba(255,150,0,.4)}
+.chrow{display:flex;align-items:center;gap:12px;padding:12px 4px;border-bottom:1px solid var(--line);cursor:pointer}.chrow:last-child{border:0}
+.chrow .t{flex:1;min-width:0}.chrow .t b{display:block;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.chrow .t small{color:var(--mut);font-size:12px}
+.chrow .go{opacity:.45;font-size:20px}
+.gl{padding:12px 0;border-bottom:1px solid var(--line)}.gl:last-child{border:0}.gl b{display:block;font-size:15px;margin-bottom:8px}.gl .ptabs{padding:0}
+.dang{background:linear-gradient(#ff7a7a,#e0343f);color:#fff;box-shadow:0 8px 18px rgba(224,52,63,.4)}
+.sbtns{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0}
+.sbtns .btn{width:100%}
 </style></head><body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
 <symbol id="i-home" viewBox="0 0 24 24"><path d="M12 2.6 2.8 10.3a.9.9 0 0 0-.3.7V20a1.5 1.5 0 0 0 1.5 1.5h4.2a.8.8 0 0 0 .8-.8v-5h5v5a.8.8 0 0 0 .8.8H20a1.5 1.5 0 0 0 1.5-1.5v-9a.9.9 0 0 0-.3-.7z" fill="currentColor" stroke="none"/></symbol>
@@ -175,6 +200,12 @@ canvas#fx{position:fixed;inset:0;pointer-events:none;z-index:150}
 </defs></svg>
 <div id="splash"><div class="coin" id="spCoin"><svg class="ic"><use href="#i-rupee"/></svg></div><div class="bar"><i></i></div></div>
 <canvas id="fx"></canvas><div id="toast"></div>
+<div id="gate"><div class="gbox">
+ <div class="gtop"><span class="cnt" id="gStep">Step 1 of 1</span><button id="gX" class="hide" onclick="gateClose()"><svg class="ic"><use href="#i-x"/></svg></button></div>
+ <div class="gico"><svg class="ic"><use href="#i-lock"/></svg></div>
+ <h2>Join Our Channels</h2><p class="muted" id="gSub">Join all channels below to continue.</p>
+ <div class="gdots" id="gDots"></div><div id="gList"></div>
+ <button class="btn" id="gVer" onclick="gateVerify()"><svg class="ic"><use href="#i-check"/></svg>I HAVE JOINED - VERIFY</button></div></div>
 <div id="ov" onclick="closeSheet()"></div>
 <div id="sheet"><div class="grab"></div><div class="sh"><h2 id="shT">Title</h2><button onclick="closeSheet()"><svg class="ic"><use href="#i-x"/></svg></button></div><div id="sbody"></div></div>
 
@@ -188,15 +219,13 @@ canvas#fx{position:fixed;inset:0;pointer-events:none;z-index:150}
   <div class="banner"><div class="slides" id="slides">
    <div class="slide"><div class="srow"><span class="tag"><svg class="ic"><use href="#i-crown"/></svg>EXCLUSIVE OFFER</span><span class="tag o">100% Free</span></div><svg class="ic deco"><use href="#i-wallet"/></svg>
     <h2>Claim Your Full Cash Reward</h2><p>Invite friends and complete simple tasks, then withdraw directly.</p><div class="sfoot"><button class="btn" onclick="go('invite')">Claim Now <svg class="ic"><use href="#i-right"/></svg></button></div></div>
-   <div class="slide"><div class="srow"><span class="tag"><svg class="ic"><use href="#i-gift"/></svg>DAILY BONUS</span><span class="tag o">Every day</span></div><svg class="ic deco"><use href="#i-gift"/></svg>
-    <h2>Collect Your Daily Bonus</h2><p>Come back every day for a free reward.</p><div class="sfoot"><button class="btn" onclick="act('bonus')">Get Bonus <svg class="ic"><use href="#i-right"/></svg></button></div></div>
    <div class="slide"><div class="srow"><span class="tag"><svg class="ic"><use href="#i-ticket"/></svg>GIFT CODES</span><span class="tag o">Instant</span></div><svg class="ic deco"><use href="#i-ticket"/></svg>
     <h2>Redeem Gift Codes</h2><p>Enter a code from our channel to get cash instantly.</p><div class="sfoot"><button class="btn" onclick="go('gift')">Redeem <svg class="ic"><use href="#i-right"/></svg></button></div></div>
-  </div><div class="dots" id="dots"><i class="on"></i><i></i><i></i></div></div>
+  </div><div class="dots" id="dots"><i class="on"></i><i></i></div></div>
 
   <div class="card bal"><div class="r0"><h3>Available Balance</h3><button class="ref" id="refBtn" onclick="refresh(true)"><svg class="ic"><use href="#i-refresh"/></svg></button></div>
    <div class="amt"><span>₹</span><b id="bal" class="sk">0.00</b></div>
-   <button class="btn" onclick="act('withdraw')">WITHDRAW VOUCHER <svg class="ic"><use href="#i-upright"/></svg></button></div>
+   <button class="btn" onclick="go('invite')"><svg class="ic"><use href="#i-share"/></svg>INVITE &amp; EARN MORE</button></div>
   <div class="two"><div class="card stat"><h3>Total Invites</h3><b id="inv">0</b></div><div class="card stat"><h3>Total Income</h3><b class="g" id="earn">₹0.00</b></div></div>
   <div class="sec">Recent Activity<span class="sp"></span><button class="btn sm" onclick="go('invite')">View All <svg class="ic"><use href="#i-chev"/></svg></button></div>
   <div class="card" id="actList"><div class="empty">No recent activity yet. Invite friends or complete offers to earn!</div></div>
@@ -232,14 +261,12 @@ canvas#fx{position:fixed;inset:0;pointer-events:none;z-index:150}
   <div class="cap">ACCOUNT SETTINGS</div>
   <div class="card" style="padding:6px 18px">
    <div class="row" onclick="go('home')"><div class="ico"><svg class="ic"><use href="#i-pulse"/></svg></div>Wallet &amp; Activity<svg class="ic go"><use href="#i-chev"/></svg></div>
-   <div class="row" onclick="act('withdraw')"><div class="ico g"><svg class="ic"><use href="#i-upright"/></svg></div>Withdraw Voucher<svg class="ic go"><use href="#i-chev"/></svg></div>
    <div class="row" onclick="go('gift')"><div class="ico"><svg class="ic"><use href="#i-gift"/></svg></div>Redeem Gift / Promo Code<svg class="ic go"><use href="#i-chev"/></svg></div>
    <div class="row" onclick="openCh()"><div class="ico b"><svg class="ic"><use href="#i-tg"/></svg></div>Join Telegram Channel<svg class="ic go"><use href="#i-chev"/></svg></div></div>
   <div class="cap">APP &amp; LEGAL</div>
   <div class="card" style="padding:6px 18px">
    <div class="row" onclick="tgl('snd')"><div class="ico p"><svg class="ic"><use href="#i-vol"/></svg></div>Sounds<div class="sw" id="sw-snd"></div></div>
    <div class="row" onclick="tgl('hap')"><div class="ico b"><svg class="ic"><use href="#i-vib"/></svg></div>Vibration<div class="sw" id="sw-hap"></div></div>
-   <div class="row" onclick="openBot()"><div class="ico r"><svg class="ic"><use href="#i-ticket"/></svg></div>Raise a Ticket / Support<svg class="ic go"><use href="#i-chev"/></svg></div>
    <div class="row" onclick="sheet('faq')"><div class="ico b"><svg class="ic"><use href="#i-help"/></svg></div>Help &amp; FAQs<svg class="ic go"><use href="#i-chev"/></svg></div>
    <div class="row" onclick="sheet('privacy')"><div class="ico"><svg class="ic"><use href="#i-shield"/></svg></div>Privacy Policy<svg class="ic go"><use href="#i-chev"/></svg></div>
    <div class="row" onclick="sheet('terms')"><div class="ico g"><svg class="ic"><use href="#i-doc"/></svg></div>Terms &amp; Conditions<svg class="ic go"><use href="#i-chev"/></svg></div></div>
@@ -250,7 +277,7 @@ canvas#fx{position:fixed;inset:0;pointer-events:none;z-index:150}
   <div class="sec">Admin Panel</div>
   <div class="two"><div class="card stat"><h3>Users</h3><b id="a_u">0</b></div><div class="card stat"><h3>Per Refer</h3><b id="a_pr">0</b></div></div>
   <div class="card" style="padding:6px 18px"><div class="row" onclick="admTog('BotMode')"><div class="ico g"><svg class="ic"><use href="#i-bot"/></svg></div>Bot Status<div class="sw" id="sw-bm"></div></div>
-   <div class="row" onclick="admTog('WithdrawMode')"><div class="ico"><svg class="ic"><use href="#i-wallet"/></svg></div>Withdrawals<div class="sw" id="sw-wm"></div></div></div>
+   </div>
   <div class="card"><h3>App Colour</h3>
    <p class="muted" style="margin-top:8px">Pick a colour. The preview updates live, then press Save.</p>
    <div class="swatches" id="swatches"></div>
@@ -259,6 +286,11 @@ canvas#fx{position:fixed;inset:0;pointer-events:none;z-index:150}
     <div class="sl">Claim Your Cash Reward<small>Invite friends and withdraw</small><span>Claim Now</span></div>
     <div class="bn"><i class="on"></i><i></i><i></i><i></i></div></div>
    <button class="btn" style="margin-top:16px" onclick="saveColor()"><svg class="ic"><use href="#i-check"/></svg>SAVE COLOUR</button></div>
+  <div class="card"><h3>Channels</h3><p class="muted" style="margin-top:8px">Users see one page at a time. When page 1 is joined, page 2 opens, and so on. Tap a channel to edit.</p>
+   <div class="ptabs" id="ptabs"></div><div id="chList"></div>
+   <input id="chRef" placeholder="@channel or chat id (-100...)"><input id="chLink" placeholder="Invite link (optional)">
+   <button class="btn" onclick="chAdd()"><svg class="ic"><use href="#i-plus"/></svg><span id="addTxt">ADD TO PAGE 1</span></button></div>
+  <div class="card"><h3>Button Gates</h3><p class="muted" style="margin:8px 0 4px">Choose which channel pages must be joined before a button or tab works. App start uses all pages by default.</p><div id="gateList"></div></div>
   <div class="card"><h3>Add / Remove Balance</h3><input id="bt" inputmode="numeric" placeholder="User ID"><input id="ba" inputmode="decimal" placeholder="Amount (negative to deduct)"><button class="btn" onclick="admBal()"><svg class="ic"><use href="#i-plus"/></svg>APPLY</button></div>
   <div class="card"><h3>Create Gift Code</h3><input id="gc" placeholder="Code (no spaces)"><input id="ga" inputmode="numeric" placeholder="Amount"><input id="gm" inputmode="numeric" placeholder="Max users"><input id="gr" inputmode="numeric" placeholder="Min refers needed (0 = none)"><button class="btn" onclick="admGift()"><svg class="ic"><use href="#i-ticket"/></svg>CREATE CODE</button></div>
   <div class="card"><h3>Message a User</h3><input id="mt" inputmode="numeric" placeholder="User ID"><input id="mm" placeholder="Message"><button class="btn" onclick="admMsg()"><svg class="ic"><use href="#i-send"/></svg>SEND</button></div>
@@ -382,11 +414,12 @@ $("pUser").textContent=(U&&U.username?"@"+U.username+"   |   ":"")+"ID: "+(UID||
 
 /* ================= navigation ================= */
 const TITLES={home:"PLAY & EARN",invite:"REFER & EARN",gift:"GIFT PROMO",profile:"ACCOUNT & SETTINGS",admin:"ADMIN PANEL"};
-function go(t){ if(t===cur) return; snd.nav();
+function go(t){ if(t===cur) return; guard("tab_"+t,()=>doGo(t)); }
+function doGo(t){ if(t===cur) return; snd.nav();
   document.querySelectorAll(".view").forEach(v=>v.classList.remove("on")); $("v-"+t).classList.add("on");
   document.querySelectorAll("nav button").forEach(b=>b.classList.toggle("on",b.dataset.t===t));
   $("sub").textContent=TITLES[t]; cur=t; scrollTo({top:0,behavior:"smooth"});
-  if(t==="admin") admLoad(); if(t==="gift") applyLogo(); }
+  if(t==="admin"){ admLoad(); chLoad(); } if(t==="gift") applyLogo(); }
 document.getElementById("nav").addEventListener("click",e=>{ const b=e.target.closest("button"); if(b) go(b.dataset.t); });
 let sx=0; document.addEventListener("touchstart",e=>sx=e.touches[0].clientX,{passive:true});
 document.addEventListener("touchend",e=>{ if(e.target.closest(".slides,#sheet")) return; const order=[...document.querySelectorAll("nav button")].map(b=>b.dataset.t); const dx=e.changedTouches[0].clientX-sx,i=order.indexOf(cur); if(i<0||Math.abs(dx)<90||/INPUT/.test(e.target.tagName)) return; const n=dx<0?i+1:i-1; if(order[n]) go(order[n]); },{passive:true});
@@ -397,7 +430,7 @@ function slideTo(i){ SL.scrollTo({left:SL.clientWidth*i,behavior:"smooth"}); }
 SL.addEventListener("scroll",()=>{ const n=Math.round(SL.scrollLeft/SL.clientWidth); if(n!==si){ si=n; document.querySelectorAll("#dots i").forEach((d,k)=>d.classList.toggle("on",k===si)); snd.swipe(); } },{passive:true});
 SL.addEventListener("touchstart",()=>userTouch=Date.now(),{passive:true});
 document.querySelectorAll("#dots i").forEach((d,k)=>d.onclick=()=>slideTo(k));
-setInterval(()=>{ if(cur!=="home"||Date.now()-userTouch<6000||document.hidden) return; slideTo((si+1)%3); },4500);
+setInterval(()=>{ if(cur!=="home"||Date.now()-userTouch<6000||document.hidden) return; slideTo((si+1)%2); },4500);
 
 /* ---- half-page bottom sheet ---- */
 const DOCS={
@@ -405,7 +438,8 @@ const DOCS={
  privacy:["Privacy Policy",()=>`<h4>What we use</h4><p>We use your Telegram ID, name and username to run your wallet, referrals and rewards.</p><h4>What we never ask</h4><p>We never ask for your OTP, password or card PIN. Never share them with anyone.</p><h4>Sharing</h4><p>Your data is not sold. It is used only to operate this bot and prevent misuse.</p><h4>Contact</h4><p>For any request, use Raise a Ticket / Support in Profile.</p>`],
  faq:["Help & FAQs",()=>`<h4>How do I earn?</h4><p>Share your referral link from the Invite tab. You earn when a friend joins the bot.</p><h4>How do I withdraw?</h4><p>Tap Withdraw on Home and follow the steps. Your balance must reach the minimum amount.</p><h4>How do gift codes work?</h4><p>Get codes from the official channel, enter them on the Gift tab and claim instantly.</p><h4>My balance did not update</h4><p>Tap the refresh button on Home. If it is still wrong, raise a ticket.</p>`]
 };
-function sheet(k){ const d=DOCS[k]; $("shT").textContent=d[0]; $("sbody").innerHTML=d[1](); $("sbody").scrollTop=0; $("ov").classList.add("on"); $("sheet").classList.add("on"); snd.up(); hap(); }
+function sheetHtml(t,h){ $("shT").textContent=t; $("sbody").innerHTML=h; $("sbody").scrollTop=0; $("ov").classList.add("on"); $("sheet").classList.add("on"); snd.up(); hap(); }
+function sheet(k){ const d=DOCS[k]; sheetHtml(d[0],d[1]()); }
 function closeSheet(){ if(!$("sheet").classList.contains("on")) return; $("ov").classList.remove("on"); $("sheet").classList.remove("on"); snd.down(); }
 (function(){ let y0=0,dy=0,drag=false; const s=$("sheet");
   s.addEventListener("touchstart",e=>{ if(e.target.closest("#sbody")&&$("sbody").scrollTop>0) return; y0=e.touches[0].clientY; drag=true; dy=0; s.style.transition="none"; },{passive:true});
@@ -425,7 +459,8 @@ async function refresh(manual){
   $("lnk").textContent=d.link; $("invc").textContent=d.invites+" Total";
   $("invTxt").textContent=d.invites>0?(d.invites+" friend(s) joined with your link!"):"No friends invited yet. Share your link to start earning!";
   $("pEarn").textContent="₹"+rs(d.earned); $("pBal").textContent="₹"+rs(d.balance); $("pSince").textContent="Member since "+(d.since||"today");
-  adminNav(!!d.admin);
+  adminNav(!!d.admin); GATES=d.gates||{};
+  if(d.gate){ showGate(d.gate,"start",null); } else if(GK==="start"){ $("gate").classList.remove("on"); GK=null; }
   renderAct(d.activity||[]);
   if(manual){ snd.coin(); toast("Balance updated","ok"); }
   if(first) setTimeout(()=>$("splash").classList.add("off"),250);
@@ -436,16 +471,63 @@ function adminNav(is){ const ex=$("navAdm"); if(is&&!ex){ const b=document.creat
 function renderAct(a){ const el=$("actList"); if(!a.length){ el.innerHTML='<div class="empty">No recent activity yet. Invite friends or complete offers to earn!</div>'; return; }
   el.innerHTML=a.slice(0,8).map(x=>`<div class="li"><div class="ico ${/gift/i.test(x.t)?"p":/friend/i.test(x.t)?"b":"g"}">${ic(/gift/i.test(x.t)?"ticket":/friend/i.test(x.t)?"users":"rupee")}</div><div class="t"><b>${esc(x.t)}</b><small>${esc(x.d||"")}</small></div><div class="a">${x.a>0?"+":""}₹${x.a}</div></div>`).join(""); }
 
-async function act(a){ const d=await api({a}); if(!d.ok) return toast(d.error||"Failed","err"); snd.pop(); toast("Opening bot chat","ok"); setTimeout(()=>tg&&tg.close(),900); }
 async function redeem(){ const c=$("code").value.trim(); if(!c) return toast("Enter a gift code","err");
   const b=$("claimBtn"); b.disabled=true; const d=await api({a:"redeem",code:c}); b.disabled=false;
-  if(!d.ok) return toast(d.error||"Failed","err"); snd.win(); burst(); toast("You received ₹"+d.amount,"ok"); $("code").value=""; refresh(); }
+  if(d.gate){ showGate(d.gate,"btn_claim",redeem); return; } if(!d.ok) return toast(d.error||"Failed","err"); snd.win(); burst(); toast("You received ₹"+d.amount,"ok"); $("code").value=""; refresh(); }
 function copy(){ const t=me.link||""; (navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).catch(()=>{const i=document.createElement("input");i.value=t;document.body.appendChild(i);i.select();document.execCommand("copy");i.remove()}); snd.coin(); toast("Link copied","ok"); }
-function share(){ const u="https://t.me/share/url?url="+encodeURIComponent(me.link||"")+"&text="+encodeURIComponent("Join and earn real rewards! Use my link:"); tg?tg.openTelegramLink(u):open(u); }
+function share(){ guard("btn_share",doShare); }
+function doShare(){ const u="https://t.me/share/url?url="+encodeURIComponent(me.link||"")+"&text="+encodeURIComponent("Join and earn real rewards! Use my link:"); tg?tg.openTelegramLink(u):open(u); }
 function openCh(){ const l=me.channel; if(l){ tg&&/t\.me/.test(l)?tg.openTelegramLink(l):(tg?tg.openLink(l):open(l)); } else toast("Channel not set yet","err"); }
 function openBot(){ const u="https://t.me/"+(me.bot||""); tg?tg.openTelegramLink(u):open(u); }
 function tgl(k){ pref[k]=!pref[k]; store.set(k,pref[k]?"1":"0"); sw(); if(pref[k]) snd.pop(); }
 function sw(){ $("sw-snd").classList.toggle("on",pref.snd); $("sw-hap").classList.toggle("on",pref.hap); } sw();
+
+/* ================= CHANNEL GATE ================= */
+let GATES={}, GK=null, GCB=null, GPAGE=null;
+async function guard(key,fn){ if(GATES[key]){ const d=await api({a:"gate",key}); if(d.ok&&d.gate){ showGate(d.gate,key,fn); return; } } fn(); }
+function chAvatar(c){ const L=esc((c.title||c.name||"C")[0].toUpperCase()); return `<div class="chav">${L}${c.av?`<img src="https://t.me/i/userpic/160/${esc(c.av)}.jpg" onerror="this.remove()">`:""}</div>`; }
+function showGate(g,key,cb){ GK=key; GCB=cb||null; renderGate(g); $("gX").classList.toggle("hide",key==="start"); if(!$("gate").classList.contains("on")){ $("gate").classList.add("on"); snd.up(); } $("splash").classList.add("off"); }
+function renderGate(g){ GPAGE=g.page; $("gStep").textContent="Step "+g.step+" of "+g.steps;
+  $("gSub").textContent=g.steps>1?("Join all channels on this page. More channels unlock after step "+g.step+"."):"Join all channels below to continue.";
+  $("gDots").innerHTML=Array.from({length:g.steps},(_,i)=>`<i class="${i+1<g.step?"done":i+1===g.step?"on":""}"></i>`).join("");
+  $("gList").innerHTML=g.channels.map((c,i)=>`<div class="gch">${chAvatar(c)}<div class="t"><b>${esc(c.title)}</b><small>${esc(c.name)}</small></div><button class="btn" data-l="${i}">Join</button></div>`).join("");
+  $("gList").querySelectorAll("button[data-l]").forEach((b,i)=>b.onclick=()=>openLinkSmart(g.channels[i].link)); }
+function openLinkSmart(l){ if(!l) return; try{ (/t\.me/.test(l)&&tg)?tg.openTelegramLink(l):(tg?tg.openLink(l):open(l)); }catch(e){ open(l); } }
+async function gateVerify(silent){ const b=$("gVer"); b.disabled=true; const d=await api({a:"gate",key:GK}); b.disabled=false;
+  if(!d.ok) return;
+  if(d.gate){ const nextPage=d.gate.page!==GPAGE; renderGate(d.gate); if(!silent){ if(nextPage){ snd.win(); burst(); toast("Step complete! Next channels unlocked","ok"); } else toast("Join all channels first","err"); } return; }
+  const cb=GCB, k=GK; $("gate").classList.remove("on"); GK=null; GCB=null; snd.win(); burst(); toast("All channels joined","ok");
+  if(k==="start") refresh(); if(cb) setTimeout(cb,350); }
+function gateClose(){ if(GK==="start") return; $("gate").classList.remove("on"); GK=null; GCB=null; snd.down(); }
+document.addEventListener("visibilitychange",()=>{ if(!document.hidden&&$("gate").classList.contains("on")&&GK) gateVerify(true); });
+
+/* ================= ADMIN: channel manager ================= */
+const GLABEL={start:"App start (first open)",tab_invite:"Invite tab",tab_gift:"Gift tab",tab_profile:"Profile tab",btn_share:"Share link button",btn_claim:"Claim gift button"};
+let CH={list:[],pages:1,gates:{},cur:1};
+async function chLoad(){ const d=await api({a:"adm_ch_list"}); if(!d.ok) return; CH.list=d.channels; CH.pages=d.pages; CH.gates=d.gates; if(CH.cur>CH.pages) CH.cur=1; chRender(); }
+function chRender(){
+  $("ptabs").innerHTML=Array.from({length:CH.pages},(_,i)=>`<div class="chip${i+1===CH.cur?" on":""}" data-p="${i+1}">Page ${i+1}</div>`).join("")+`<div class="chip" data-p="new">+ New</div>`;
+  $("addTxt").textContent="ADD TO PAGE "+CH.cur;
+  const rows=CH.list.filter(c=>c.page===CH.cur);
+  $("chList").innerHTML=rows.length?rows.map(c=>`<div class="chrow" data-id="${esc(c.id)}">${chAvatar(c)}<div class="t"><b>${esc(c.title)}</b><small>${esc(c.name)}</small></div><svg class="ic go"><use href="#i-chev"/></svg></div>`).join(""):'<div class="empty">No channels on this page yet.</div>';
+  $("gateList").innerHTML=Object.keys(GLABEL).map(k=>`<div class="gl"><b>${GLABEL[k]}</b><div class="ptabs">${Array.from({length:CH.pages},(_,i)=>`<div class="chip${(CH.gates[k]||[]).includes(i+1)?" on":""}" data-g="${k}" data-gp="${i+1}">Page ${i+1}</div>`).join("")}</div></div>`).join(""); }
+document.addEventListener("click",async e=>{
+  const t=e.target.closest(".chip[data-p]"); if(t){ if(t.dataset.p==="new"){ const d=await api({a:"adm_page_add"}); if(d.ok){ CH.pages=d.pages; CH.cur=d.pages; snd.coin(); chRender(); toast("Page "+d.pages+" added","ok"); } } else { CH.cur=+t.dataset.p; snd.pop(); chRender(); } return; }
+  const g=e.target.closest(".chip[data-g]"); if(g){ const k=g.dataset.g,p=+g.dataset.gp; let a=(CH.gates[k]||[]).slice(); a=a.includes(p)?a.filter(x=>x!==p):a.concat(p); a.sort((x,y)=>x-y);
+    const d=await api({a:"adm_gate_set",key:k,pages:a}); if(d.ok){ CH.gates[k]=a; snd.pop(); chRender(); if(k!=="start"){ if(a.length) GATES[k]=a; else delete GATES[k]; } toast(GLABEL[k]+": "+(a.length?"pages "+a.join(", "):"no gate"),"ok"); } else toast(d.error||"Failed","err"); return; }
+  const r=e.target.closest(".chrow"); if(r) chEdit(r.dataset.id); });
+async function chAdd(){ const d=await api({a:"adm_ch_add",ref:$("chRef").value,link:$("chLink").value,page:CH.cur});
+  if(!d.ok) return toast(d.error||"Failed","err"); snd.win(); toast(d.warn?"Added. Set an invite link (private channel)":"Channel added","ok"); $("chRef").value=""; $("chLink").value=""; chLoad(); }
+function chEdit(id){ const c=CH.list.find(x=>x.id===id); if(!c) return;
+  sheetHtml(c.title,`<p class="muted" style="margin-bottom:6px">${esc(c.name)} - Page ${c.page}</p>
+   <input id="eLink" value="${esc(c.link)}" placeholder="Invite link"><button class="btn" onclick="chSetLink('${esc(id)}')"><svg class="ic"><use href="#i-link"/></svg>SAVE LINK</button>
+   <h4>Move to page</h4><div class="ptabs" style="flex-wrap:wrap">${Array.from({length:CH.pages},(_,i)=>`<div class="chip${i+1===c.page?" on":""}" onclick="chSetPage('${esc(id)}',${i+1})">Page ${i+1}</div>`).join("")}</div>
+   <div class="sbtns"><button class="btn sm" onclick="chMove('${esc(id)}','up')"><svg class="ic" style="transform:rotate(-90deg)"><use href="#i-right"/></svg>Up</button><button class="btn sm" onclick="chMove('${esc(id)}','down')"><svg class="ic" style="transform:rotate(90deg)"><use href="#i-right"/></svg>Down</button></div>
+   <button class="btn dang" onclick="chDel('${esc(id)}')"><svg class="ic"><use href="#i-x"/></svg>REMOVE CHANNEL</button>`); }
+async function chSetLink(id){ const d=await api({a:"adm_ch_link",id,link:$("eLink").value}); if(d.ok){ snd.coin(); toast("Link saved","ok"); closeSheet(); chLoad(); } else toast(d.error||"Failed","err"); }
+async function chSetPage(id,p){ const d=await api({a:"adm_ch_page",id,page:p}); if(d.ok){ toast("Moved to page "+p,"ok"); closeSheet(); await chLoad(); CH.cur=p; chRender(); } else toast(d.error||"Failed","err"); }
+async function chMove(id,dir){ const d=await api({a:"adm_ch_move",id,dir}); if(d.ok){ snd.pop(); await chLoad(); } }
+async function chDel(id){ const d=await api({a:"adm_ch_del",id}); if(d.ok){ snd.down(); toast("Channel removed","ok"); closeSheet(); chLoad(); } else toast(d.error||"Failed","err"); }
 
 /* ================= admin ================= */
 const PRESETS=["#0b5a3b","#12489c","#5b21b6","#a51d24","#c2570c","#0f766e","#be185d","#1b1f27","#92650a","#3730a3"];
@@ -456,9 +538,9 @@ document.addEventListener("click",e=>{ const s=e.target.closest(".swc"); if(s){ 
 document.addEventListener("input",e=>{ if(e.target.id==="cpick") setPick(e.target.value); if(e.target.id==="chex"){ let v=e.target.value.trim(); if(v[0]!=="#") v="#"+v; setPick(v,true); } });
 async function admLoad(){ const d=await api({a:"adm_stats"}); if(!d.ok) return toast(d.error||"Failed","err");
   $("a_u").textContent=d.users; $("a_pr").textContent="₹"+d.perRef;
-  $("sw-bm").classList.toggle("on",d.botMode==="ON"); $("sw-wm").classList.toggle("on",d.wdMode==="ON");
+  $("sw-bm").classList.toggle("on",d.botMode==="ON");
   pickColor=d.color||"#0b5a3b"; setPick(pickColor); }
-async function admTog(f){ const el=$(f==="BotMode"?"sw-bm":"sw-wm"),v=el.classList.contains("on")?"OFF":"ON"; const d=await api({a:"adm_set",f,v}); if(d.ok){ el.classList.toggle("on",v==="ON"); toast((f==="BotMode"?"Bot":"Withdrawals")+" "+v,"ok"); } else toast(d.error||"Failed","err"); }
+async function admTog(f){ const el=$("sw-bm"),v=el.classList.contains("on")?"OFF":"ON"; const d=await api({a:"adm_set",f,v}); if(d.ok){ el.classList.toggle("on",v==="ON"); toast("Bot "+v,"ok"); } else toast(d.error||"Failed","err"); }
 async function saveColor(){ const d=await api({a:"adm_set",f:"WebColor",v:pickColor}); if(d.ok){ applyColor(pickColor); me.color=pickColor; snd.win(); toast("Colour saved","ok"); } else toast(d.error||"Failed","err"); }
 async function admBal(){ const d=await api({a:"adm_addbal",t:$("bt").value,amt:$("ba").value}); d.ok?(snd.coin(),toast("Done. New balance ₹"+rs(d.balance),"ok")):toast(d.error||"Failed","err"); }
 async function admGift(){ const d=await api({a:"adm_gift",code:$("gc").value,amt:$("ga").value,max:$("gm").value,minref:$("gr").value}); d.ok?(snd.win(),toast("Gift code created","ok")):toast(d.error||"Failed","err"); }
