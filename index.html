@@ -5,9 +5,9 @@
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#040a14;--c1:#0c1a2b;--c2:#0a2a2a;--g:#19e68c;--g2:#0fa968;--b:#2d8cff;--y:#ffc83d;--y2:#ff9a00;--p:#a855f7;--t:#e8f4ee;--m:#8fa6a0;--ln:rgba(60,255,170,.22)}
+:root{--gl:25,230,140;--bgg:#0b3a33;--bg:#040a14;--c1:#0c1a2b;--c2:#0a2a2a;--g:#19e68c;--g2:#0fa968;--b:#2d8cff;--y:#ffc83d;--y2:#ff9a00;--p:#a855f7;--t:#e8f4ee;--m:#8fa6a0;--ln:rgba(60,255,170,.22)}
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;font-family:'Plus Jakarta Sans','Segoe UI',system-ui,sans-serif}
-body{background:radial-gradient(circle at 50% -10%,#0b3a33,var(--bg) 55%) fixed;color:var(--t);min-height:100vh;overflow-x:hidden;user-select:none}
+body{background:radial-gradient(circle at 50% -10%,var(--bgg),var(--bg) 55%) fixed;color:var(--t);min-height:100vh;overflow-x:hidden;user-select:none}
 #app{max-width:480px;margin:0 auto;padding:0 16px calc(120px + env(safe-area-inset-bottom,0px))}
 .hide{display:none!important}
 .top{display:flex;align-items:center;gap:12px;padding:calc(14px + env(safe-area-inset-top,0px)) 0 12px}
@@ -19,13 +19,13 @@ body{background:radial-gradient(circle at 50% -10%,#0b3a33,var(--bg) 55%) fixed;
 .pill i{width:22px;height:22px;border-radius:50%;background:linear-gradient(var(--y),var(--y2));color:#3a2200;display:grid;place-items:center;font-style:normal;font-size:13px}
 .view{display:none;flex-direction:column;gap:14px}.view.on{display:flex;animation:in .35s ease}
 @keyframes in{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
-.card{background:linear-gradient(160deg,var(--c1),var(--c2));border:1.5px solid var(--ln);border-radius:20px;padding:14px;box-shadow:0 0 18px rgba(25,230,140,.08)}
-.card.hot{border-color:var(--g);box-shadow:0 0 22px rgba(25,230,140,.28)}
+.card{background:linear-gradient(160deg,var(--c1),var(--c2));border:1.5px solid var(--ln);border-radius:20px;padding:14px;box-shadow:0 0 18px rgba(var(--gl),.08)}
+.card.hot{border-color:var(--g);box-shadow:0 0 22px rgba(var(--gl),.28)}
 .row{display:flex;align-items:center;gap:12px}.row .f{flex:1;min-width:0}
 .mut{color:var(--m);font-size:12.5px;font-weight:600}
 h2{font-size:15px;font-weight:800}
 .amt{font-size:38px;font-weight:800;margin:4px 0 10px}.amt s{text-decoration:none;color:var(--y)}
-.btn{border:0;border-radius:99px;padding:12px 18px;font-weight:800;font-size:14px;color:#03150d;background:linear-gradient(var(--g),var(--g2));box-shadow:0 0 16px rgba(25,230,140,.4);display:inline-flex;align-items:center;justify-content:center;gap:8px;cursor:pointer;width:100%}
+.btn{border:0;border-radius:99px;padding:12px 18px;font-weight:800;font-size:14px;color:#03150d;background:linear-gradient(var(--g),var(--g2));box-shadow:0 0 16px rgba(var(--gl),.4);display:inline-flex;align-items:center;justify-content:center;gap:8px;cursor:pointer;width:100%}
 .btn:active{transform:scale(.97)}.btn.y{background:linear-gradient(var(--y),var(--y2));color:#2b1800;box-shadow:0 0 16px rgba(255,170,0,.4)}.btn.sm{width:auto;padding:9px 16px}.btn[disabled]{opacity:.55;pointer-events:none}
 .grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
 .tile{background:var(--c1);border:1.5px solid var(--ln);border-radius:16px;padding:12px 4px;text-align:center;font-size:11.5px;font-weight:700;cursor:pointer}
@@ -38,7 +38,7 @@ h2{font-size:15px;font-weight:800}
 .gm.a{background:linear-gradient(120deg,#3a2606,#1c1405);border-color:var(--y)}.gm.b{background:linear-gradient(120deg,#2b1250,#14102b);border-color:var(--p)}.gm.c{background:linear-gradient(120deg,#0b2d52,#0a1a33);border-color:var(--b)}.gm.d{background:linear-gradient(120deg,#0b3b2a,#08201a);border-color:var(--g)}
 .soon{font-size:10px;font-weight:800;color:#2b1800;background:var(--y);border-radius:99px;padding:3px 8px;margin-left:8px;vertical-align:middle}
 .li{display:flex;align-items:center;gap:12px;padding:11px 2px;border-bottom:1px solid rgba(255,255,255,.07)}.li:last-child{border:0}
-.li .ic{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;font-size:20px;background:rgba(25,230,140,.15)}.li .ic.n{background:rgba(255,80,110,.18)}
+.li .ic{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;font-size:20px;background:rgba(var(--gl),.15)}.li .ic.n{background:rgba(255,80,110,.18)}
 .li .a{font-weight:800;color:var(--g);font-size:14px}.li .a.n{color:#ff5d73}
 .empty{text-align:center;color:var(--m);font-size:13px;font-weight:600;padding:14px 6px}
 input,select{width:100%;padding:13px 14px;border-radius:14px;border:1.5px solid var(--ln);background:#06121f;color:var(--t);font-size:15px;font-weight:600;margin:6px 0;outline:0;user-select:text}
@@ -50,7 +50,7 @@ input:focus,select:focus{border-color:var(--g)}
 .tabs{display:flex;gap:8px;margin:4px 0}.tabs .btn{background:#06121f;color:var(--m);box-shadow:none;border:1.5px solid var(--ln)}.tabs .btn.on{background:linear-gradient(var(--g),var(--g2));color:#03150d}
 nav{position:fixed;left:50%;transform:translateX(-50%);bottom:0;width:100%;max-width:480px;display:flex;align-items:center;background:rgba(6,16,28,.96);backdrop-filter:blur(10px);border-top:1.5px solid var(--ln);border-radius:24px 24px 0 0;padding:10px 6px calc(10px + env(safe-area-inset-bottom,0px));z-index:30}
 nav button{flex:1;border:0;background:none;color:var(--m);font-size:11px;font-weight:700;display:flex;flex-direction:column;align-items:center;gap:3px}nav button span{font-size:22px}nav button.on{color:var(--g)}
-nav .mid{flex:none;width:62px;height:62px;margin:-34px 6px 0;border-radius:50%;border:3px solid var(--g);background:radial-gradient(circle,#0f3d2a,#06121f);box-shadow:0 0 22px rgba(25,230,140,.7);font-size:28px;color:var(--y);justify-content:center}
+nav .mid{flex:none;width:62px;height:62px;margin:-34px 6px 0;border-radius:50%;border:3px solid var(--g);background:radial-gradient(circle,#0f3d2a,#06121f);box-shadow:0 0 22px rgba(var(--gl),.7);font-size:28px;color:var(--y);justify-content:center}
 #toast{position:fixed;left:50%;top:calc(70px + env(safe-area-inset-top,0px));transform:translate(-50%,-30px);background:#10202e;color:#fff;padding:12px 20px;border-radius:99px;font-weight:700;font-size:13.5px;opacity:0;pointer-events:none;transition:.3s;z-index:300;max-width:92%;border:1.5px solid var(--ln);text-align:center}
 #toast.on{opacity:1;transform:translate(-50%,0)}#toast.err{border-color:#ff5d73}#toast.ok{border-color:var(--g)}
 #splash{position:fixed;inset:0;background:var(--bg);z-index:400;display:grid;place-items:center;font-size:64px;transition:opacity .4s,visibility .4s}#splash.off{opacity:0;visibility:hidden}
@@ -70,6 +70,17 @@ nav .mid{flex:none;width:62px;height:62px;margin:-34px 6px 0;border-radius:50%;b
 .logo .i{width:70%;height:70%}.pill i .i{width:100%;height:100%}.pill i{background:none}
 .steps div .i{display:block;margin:0 auto 4px}.row>span .i{display:block}
 nav button span{display:block;height:24px}nav button span .i{width:24px;height:24px}nav .mid .i{display:block}
+
+.crow{display:flex;gap:10px;align-items:center}.crow input[type=color]{width:54px;height:48px;padding:3px;margin:6px 0;flex:none}
+.swatches{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin:12px 0}.swc{aspect-ratio:1;border-radius:50%;border:3px solid #fff3;cursor:pointer;position:relative}.swc.on{border-color:#fff;transform:scale(1.14);box-shadow:0 0 14px rgba(255,255,255,.5)}
+.ptabs{display:flex;gap:8px;overflow-x:auto;padding:8px 0;scrollbar-width:none}.ptabs::-webkit-scrollbar{display:none}
+.chip{flex:none;padding:8px 14px;border-radius:99px;border:1.5px solid var(--ln);background:#06121f;color:var(--t);font-weight:700;font-size:13px;cursor:pointer}.chip.on{background:linear-gradient(var(--g),var(--g2));color:#03150d;border-color:transparent}
+.chrow{display:flex;align-items:center;gap:12px;padding:11px 2px;border-bottom:1px solid rgba(255,255,255,.07);cursor:pointer}.chrow:last-child{border:0}.chrow b{display:block;font-size:14px}.chrow small{color:var(--m);font-size:12px}.chrow .f{flex:1;min-width:0}
+.gl{padding:11px 0;border-bottom:1px solid rgba(255,255,255,.07)}.gl:last-child{border:0}.gl b{font-size:14px}
+.sw{width:50px;height:28px;border-radius:99px;background:#33424f;position:relative;transition:.25s;flex:none;cursor:pointer}.sw:after{content:"";position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:#fff;transition:.25s}.sw.on{background:var(--g2)}.sw.on:after{left:25px}
+.btn.dang{background:linear-gradient(#ff7a7a,#e0343f);color:#fff;box-shadow:0 0 14px rgba(224,52,63,.4)}
+.sbtns{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:10px 0}.sbtns .btn{width:100%}
+.chk{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--m);font-weight:600;margin:6px 0}.chk input{width:20px;height:20px;margin:0}
 </style></head><body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
 <linearGradient id="gGold" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff3a1"/><stop offset=".5" stop-color="#ffc83d"/><stop offset="1" stop-color="#e07b00"/></linearGradient>
@@ -114,6 +125,7 @@ nav button span{display:block;height:24px}nav button span .i{width:24px;height:2
   <div class="card hot"><div class="mut">Total balance</div><div class="amt"><s>&#8377;</s><span id="bal">0.00</span></div><div class="row"><button class="btn y sm" onclick="openWd()"><svg class="i sm"><use href="#g-up"/></svg> Withdraw</button><button class="btn sm" style="background:#06121f;color:var(--t);box-shadow:none;border:1.5px solid var(--ln)" onclick="refresh(true)">&#8635; Refresh</button></div></div>
   <div class="grid4"><div class="tile" onclick="go('games')"><b><svg class="i tl"><use href="#g-pad"/></svg></b>Play &amp; Earn</div><div class="tile" onclick="go('rewards')"><b><svg class="i tl"><use href="#g-gift"/></svg></b>Rewards</div><div class="tile" onclick="go('refer')"><b><svg class="i tl"><use href="#g-users"/></svg></b>Refer &amp; Earn</div><div class="tile" onclick="go('wallet')"><b><svg class="i tl"><use href="#g-wallet"/></svg></b>Wallet</div></div>
   <div class="hero" onclick="go('refer')"><h3>Bigger rewards for you</h3><p>Invite friends and earn <span class="pr">&#8377;0</span> for each one.</p><div class="e"><svg class="i"><use href="#g-gift"/></svg></div></div>
+  <div class="row"><h2 class="f">History</h2><button class="btn sm" onclick="go('wallet')">View all</button></div><div class="card" id="hList"></div>
   <h2>Quick access</h2>
   <div class="card" style="padding:4px 14px"><div class="mrow" onclick="openCh()"><span><svg class="i"><use href="#g-head"/></svg></span>Support &amp; updates channel<span class="go">&#8250;</span></div><div class="mrow" onclick="go('rewards')"><span><svg class="i"><use href="#g-gift"/></svg></span>Redeem a gift code<span class="go">&#8250;</span></div></div>
  </section>
@@ -162,9 +174,13 @@ nav button span{display:block;height:24px}nav button span .i{width:24px;height:2
  </section>
 
  <section class="view" id="v-admin">
-  <div class="two"><div class="card stat"><span class="mut">Users</span><b id="a_u">0</b></div><div class="card stat"><span class="mut">Verified</span><b id="a_v">0</b></div><div class="card stat"><span class="mut">Bonus given</span><b id="a_bc">0</b></div><div class="card stat"><span class="mut">Total withdrawn</span><b id="a_w">0</b></div></div>
+  <div class="two"><div class="card stat"><span class="mut">Users</span><b id="a_u">0</b></div><div class="card stat"><span class="mut">Verified</span><b id="a_v">0</b></div><div class="card stat"><span class="mut">Bonus given</span><b id="a_bc">0</b></div><div class="card stat"><span class="mut">Bonus paid</span><b id="a_bt">0</b></div><div class="card stat"><span class="mut">Total withdrawn</span><b id="a_w">0</b></div><div class="card stat"><span class="mut">Withdrawals</span><b id="a_wc">0</b></div><div class="card stat"><span class="mut">Channels</span><b id="a_ch">0</b></div><div class="card stat"><span class="mut">Per refer</span><b id="a_pr">0</b></div></div>
+  <div class="card"><h2>Support channel</h2><p class="mut" style="margin:4px 0">Users open this link from every Support button. Use a t.me link or @username.</p><input id="sup" placeholder="https://t.me/yourchannel" autocapitalize="off"><button class="btn" onclick="saveSup()">Save support channel</button></div>
+  <div class="card"><h2>App name</h2><input id="brandIn" maxlength="40" placeholder="App name"><button class="btn" onclick="saveBrand()">Save name</button></div>
+  <div class="card"><h2>App colour</h2><p class="mut" style="margin:4px 0">Pick a colour. The whole app changes live, then press Save.</p><div class="swatches" id="swatches"></div><div class="crow"><input type="color" id="cpick" value="#0b5a3b"><input id="chex" maxlength="7" placeholder="#0b5a3b" autocapitalize="off"></div><button class="btn" onclick="saveColor()">Save colour</button></div>
   <div class="card"><h2>Sign-up bonus</h2><p class="mut" style="margin:4px 0">Every new user gets this amount one time only, when they first start the bot. Enter 0 to turn it off.</p><input id="sb" inputmode="decimal" placeholder="Bonus amount in rupees"><button class="btn" onclick="saveBonus()">Save sign-up bonus</button><div class="mut" id="sbNow" style="margin-top:8px"></div></div>
-  <div class="card"><p class="mut">Channels, gift codes, balance and broadcasts are managed from the bot admin panel.</p></div>
+  <div class="card"><h2>Channels</h2><p class="mut" style="margin:4px 0">Users join one page at a time. When page 1 is joined, page 2 opens. Tap a channel to edit.</p><div class="ptabs" id="ptabs"></div><div id="chList"></div><button class="btn" style="margin-top:12px" onclick="chAddSheet()" id="addTxt">Add channel</button></div>
+  <div class="card"><h2>Button gates</h2><p class="mut" style="margin:4px 0">Switch channel join ON or OFF for each button or tab.</p><div id="gateList"></div></div>
  </section>
 </div>
 <nav id="nav"><button data-t="home" class="on"><span><svg class="i"><use href="#n-home"/></svg></span>Home</button><button data-t="games"><span><svg class="i"><use href="#n-game"/></svg></span>Games</button><button class="mid" data-t="home"><svg class="i xl2"><use href="#g-crown"/></svg></button><button data-t="rewards"><span><svg class="i"><use href="#n-gift"/></svg></span>Rewards</button><button data-t="profile"><span><svg class="i"><use href="#n-user"/></svg></span>Profile</button></nav>
@@ -191,11 +207,11 @@ async function apiRetry(b){let r=await api(b);if(!r.ok&&(r.net||/did not answer|
 const HEAD={home:()=>[me.brand||me.bot||"Play & Earn","Play • Earn • Win"],games:()=>["Play & Earn","Choose your game"],wallet:()=>["Wallet","Balance & transactions"],refer:()=>["Refer & Earn","Invite friends"],rewards:()=>["Rewards","Gifts & bonuses"],profile:()=>["Profile","Your account"],admin:()=>["Admin Panel","Manage your bot"]};
 const MAIN=["home","games","rewards","profile"];
 async function guard(key,fn){if((me.gates||{})[key]){const d=await api({a:"gate",key});if(d.ok&&d.gate){showGate(d.gate,key,fn);return}}fn()}
-function go(t){if(t===cur)return;guard("tab_"+t,()=>doGo(t))}
+function go(t){if(t===cur)return;guard(({refer:"tab_invite",rewards:"tab_gift",profile:"tab_profile"})[t]||"tab_"+t,()=>doGo(t))}
 function doGo(t){document.querySelectorAll(".view").forEach(v=>v.classList.remove("on"));$("v-"+t).classList.add("on");cur=t;
  document.querySelectorAll("nav button:not(.mid)").forEach(b=>b.classList.toggle("on",b.dataset.t===t));
  $("back").classList.toggle("hide",MAIN.includes(t));$("logo").classList.toggle("hide",!MAIN.includes(t));
- const h=HEAD[t]();$("brand").textContent=h[0];$("sub").textContent=h[1];scrollTo({top:0});if(t==="admin")admLoad()}
+ const h=HEAD[t]();$("brand").textContent=h[0];$("sub").textContent=h[1];scrollTo({top:0});if(t==="admin"){admLoad();chLoad()}}
 $("nav").addEventListener("click",e=>{const b=e.target.closest("button");if(b)go(b.dataset.t)});
 
 /* ---- logo + names ---- */
@@ -211,12 +227,12 @@ function paint(d){document.title=d.brand||d.bot||"Play & Earn";const h=HEAD[cur]
  $("inv").textContent=d.invites||0;$("lnk").textContent=d.link||"";
  $("wEarn").textContent="₹"+rs(d.earned);$("rEarn").textContent="₹"+rs(d.earned);$("wWd").textContent="₹"+rs(d.withdrawn);
  $("pSince").textContent="Member since "+(d.since||"today");
- if(d.admin)$("admRow").classList.remove("hide");
+ if(d.color)applyColor(d.color);if(d.admin)$("admRow").classList.remove("hide");
  const wbA=(d.activity||[]).find(x=>/sign-?up bonus|welcome bonus/i.test(x.t));$("wb").textContent=wbA?"₹"+wbA.a:"-";
  const u=[d.logo].concat(d.bot?["https://t.me/i/userpic/320/"+encodeURIComponent(d.bot)+".jpg"]:[]);setImg($("logo"),u,null);
  renderTx(d.activity||[]);
 }
-function renderTx(a){$("txList").innerHTML=a.length?a.slice(0,10).map(x=>{const n=x.a<0,ic=/withdraw/i.test(x.t)?"up":/gift/i.test(x.t)?"gift":/friend|refer/i.test(x.t)?"users":/bonus/i.test(x.t)?"gift":"coin";return `<div class="li"><div class="ic${n?" n":""}"><svg class="i"><use href="#g-${ic}"/></svg></div><div class="f" style="flex:1;min-width:0"><b style="font-size:14px">${esc(x.t)}</b><div class="mut">${esc(x.d||"")}</div></div><div class="a${n?" n":""}">${x.a>0?"+":""}₹${x.a}</div></div>`}).join(""):'<div class="empty">No transactions yet. Invite friends or redeem a gift code to start earning.</div>'}
+function renderTx(a){$("txList").innerHTML=txH(a,10);$("hList").innerHTML=txH(a,5)}function txH(a,n){return a.length?a.slice(0,n).map(x=>{const n=x.a<0,ic=/withdraw/i.test(x.t)?"up":/gift/i.test(x.t)?"gift":/friend|refer/i.test(x.t)?"users":/bonus/i.test(x.t)?"gift":"coin";return `<div class="li"><div class="ic${n?" n":""}"><svg class="i"><use href="#g-${ic}"/></svg></div><div class="f" style="flex:1;min-width:0"><b style="font-size:14px">${esc(x.t)}</b><div class="mut">${esc(x.d||"")}</div></div><div class="a${n?" n":""}">${x.a>0?"+":""}₹${x.a}</div></div>`}).join(""):'<div class="empty">No transactions yet. Invite friends or redeem a gift code to start earning.</div>'}
 async function refresh(manual){const d=await apiRetry({a:"me"});
  if(!d.ok){$("splash").classList.add("off");if(manual||!me.ok){$("diagT").textContent=d.error||LASTERR||"Could not load data";$("diag").classList.remove("hide")}return}
  $("diag").classList.add("hide");me=Object.assign({},me,d);paint(me);
@@ -264,14 +280,58 @@ async function wdDo(){const b=$("wGo");b.disabled=true;const d=await api({a:"wd_
  if(d.gate){showGate(d.gate,"btn_withdraw",openWd);return}if(!d.ok)return toast(d.error||"Failed","err");
  toast(d.status==="success"?"Withdrawal sent":(d.message||"Withdrawal failed"),d.status==="success"?"ok":"err");closeSheet();refresh()}
 
-/* ---- admin: welcome bonus only (no gift codes / send money / messages) ---- */
+/* ---- colour engine ---- */
+function hsl(h,s,l){s/=100;l/=100;const k=n=>(n+h/30)%12,a=s*Math.min(l,1-l),f=n=>l-a*Math.max(-1,Math.min(k(n)-3,Math.min(9-k(n),1)));return[f(0),f(8),f(4)].map(x=>Math.round(x*255))}
+function hexhsl(x){let[r,g,b]=[1,3,5].map(i=>parseInt(x.substr(i,2),16)/255);const mx=Math.max(r,g,b),mn=Math.min(r,g,b),d=mx-mn;let h=0;if(d){h=mx===r?((g-b)/d)%6:mx===g?(b-r)/d+2:(r-g)/d+4;h*=60;if(h<0)h+=360}const l=(mx+mn)/2,s=d?d/(1-Math.abs(2*l-1)):0;return[h,s*100,l*100]}
+const hx=a=>"#"+a.map(v=>v.toString(16).padStart(2,"0")).join("");
+function applyColor(c){if(!/^#[0-9a-f]{6}$/i.test(c||""))return;const[h,sat]=hexhsl(c),S=Math.max(55,Math.min(90,sat)),r=document.documentElement.style,g=hsl(h,S,56),g2=hsl(h,S,34);
+ r.setProperty("--g",hx(g));r.setProperty("--g2",hx(g2));r.setProperty("--gl",g.join(","));r.setProperty("--bg",hx(hsl(h,55,4)));r.setProperty("--bgg",hx(hsl(h,55,13)));r.setProperty("--c1",hx(hsl(h,40,9)));r.setProperty("--c2",hx(hsl(h,45,11)));r.setProperty("--ln","rgba("+g.join(",")+",.24)")}
+const PRESETS=["#0b5a3b","#12489c","#5b21b6","#a51d24","#c2570c","#0f766e","#be185d","#1b1f27","#92650a","#3730a3"];
+let pick="#0b5a3b";
+function swatches(){$("swatches").innerHTML=PRESETS.map(c=>`<div class="swc${c===pick?" on":""}" data-c="${c}" style="background:${c}"></div>`).join("")}
+function setPick(c,fromInput){if(!/^#[0-9a-f]{6}$/i.test(c))return;pick=c.toLowerCase();applyColor(pick);$("cpick").value=pick;if(!fromInput)$("chex").value=pick;swatches()}
+document.addEventListener("click",e=>{const x=e.target.closest(".swc");if(x)setPick(x.dataset.c)});
+document.addEventListener("input",e=>{if(e.target.id==="cpick")setPick(e.target.value);if(e.target.id==="chex"){let v=e.target.value.trim();if(v[0]!=="#")v="#"+v;setPick(v,true)}});
+async function saveColor(){const d=await api({a:"adm_set",f:"WebColor",v:pick});d.ok?(me.color=pick,toast("Colour saved","ok")):toast(d.error||"Failed","err")}
+
+/* ---- admin: stats, support channel, name, colour, sign-up bonus ---- */
 async function admLoad(){const d=await api({a:"adm_stats"});if(!d.ok)return toast(d.error||"Failed","err");
- $("a_u").textContent=d.users;$("a_v").textContent=d.verified;$("a_bc").textContent=d.bonusCount;$("a_w").textContent="₹"+rs(d.withdrawn);$("sb").value=d.bonus||"";
- $("sbNow").textContent=d.bonus>0?`Now: ₹${d.bonus} per new user. Total given ₹${rs(d.bonusTotal)} to ${d.bonusCount} users.`:"Sign-up bonus is off."}
+ $("a_u").textContent=d.users;$("a_v").textContent=d.verified;$("a_bc").textContent=d.bonusCount;$("a_bt").textContent="₹"+rs(d.bonusTotal);$("a_w").textContent="₹"+rs(d.withdrawn);$("a_wc").textContent=d.withdrawCount;$("a_ch").textContent=d.channels;$("a_pr").textContent="₹"+d.perRef;
+ $("sb").value=d.bonus||"";$("sup").value=d.support||"";$("brandIn").value=d.brand||"";me.channel=d.support||me.channel;
+ $("sbNow").textContent=d.bonus>0?`Now: ₹${d.bonus} per new user. Total given ₹${rs(d.bonusTotal)} to ${d.bonusCount} users.`:"Sign-up bonus is off.";
+ pick=d.color||"#0b5a3b";setPick(pick)}
 async function saveBonus(){const d=await api({a:"adm_set",f:"StartBonus",v:$("sb").value});d.ok?(toast("Sign-up bonus saved","ok"),admLoad()):toast(d.error||"Failed","err")}
+async function saveSup(){const d=await api({a:"adm_set",f:"SavedLinks",v:$("sup").value});if(!d.ok)return toast(d.error||"Failed","err");let v=$("sup").value.trim();if(v[0]==="@")v="https://t.me/"+v.slice(1);me.channel=v;$("sup").value=v;toast(v?"Support channel saved":"Support channel removed","ok")}
+async function saveBrand(){const d=await api({a:"adm_set",f:"WebBrand",v:$("brandIn").value});if(!d.ok)return toast(d.error||"Failed","err");me.brand=$("brandIn").value.trim()||me.bot;paint(me);toast("Name saved","ok")}
+
+/* ---- admin: channel manager (same lists as the bot panel) ---- */
+const GLABEL={start:"App start (first open)",tab_invite:"Refer tab",tab_gift:"Rewards tab",tab_profile:"Profile tab",btn_share:"Share link button",btn_claim:"Claim gift button",btn_withdraw:"Withdraw button"};
+let CH={list:[],pages:1,gates:{},cur:1},ADDP=1;
+async function chLoad(){const d=await apiRetry({a:"adm_ch_list"});if(!d.ok)return toast(d.error||"Could not load channels","err");CH.list=d.channels;CH.pages=d.pages;CH.gates=d.gates;if(CH.cur>CH.pages)CH.cur=1;chRender()}
+const pgChips=(att,sel)=>Array.from({length:CH.pages},(_,i)=>`<div class="chip${sel(i+1)?" on":""}" ${att(i+1)}>Page ${i+1}</div>`).join("");
+function chRender(){
+ $("ptabs").innerHTML=pgChips(n=>`data-p="${n}"`,n=>n===CH.cur)+'<div class="chip" data-p="new">+ New</div>';
+ $("addTxt").textContent="Add channel to page "+CH.cur;
+ const rows=CH.list.filter(c=>c.page===CH.cur);
+ $("chList").innerHTML=rows.length?rows.map(c=>`<div class="chrow" data-id="${esc(c.id)}"><svg class="i md"><use href="#g-plane"/></svg><div class="f"><b>${esc(c.title)}</b><small>${esc(c.name)} - Page ${c.page}</small></div><span class="mut">&#8250;</span></div>`).join(""):'<div class="empty">No channels on this page yet.</div>';
+ $("gateList").innerHTML=Object.keys(GLABEL).map(k=>{const g=CH.gates[k]||{on:false,sel:[]};return `<div class="gl"><div class="row"><b class="f">${GLABEL[k]}</b><div class="sw${g.on?" on":""}" data-gsw="${k}"></div></div>`+(g.on?`<div class="ptabs">${pgChips(n=>`data-g="${k}" data-gp="${n}"`,n=>g.sel.includes(n))}</div><div class="mut">${g.sel.length?"Only the selected pages are required.":"All pages are required. Tap pages to choose only some."}</div>`:"")+"</div>"}).join("")}
+document.addEventListener("click",async e=>{
+ const t=e.target.closest(".chip[data-p]");if(t){if(t.dataset.p==="new"){const d=await api({a:"adm_page_add"});if(d.ok){CH.pages=d.pages;CH.cur=d.pages;chRender();toast("Page "+d.pages+" added","ok")}}else{CH.cur=+t.dataset.p;chRender()}return}
+ const sw=e.target.closest(".sw[data-gsw]");if(sw){const k=sw.dataset.gsw,cur=CH.gates[k]||{on:false,sel:[]},on=!cur.on,d=await api({a:"adm_gate_set",key:k,on});if(d.ok){CH.gates[k]={on,sel:cur.sel};chRender();refresh();toast(GLABEL[k]+": join "+(on?"ON":"OFF"),"ok")}else toast(d.error||"Failed","err");return}
+ const g=e.target.closest(".chip[data-g]");if(g){const k=g.dataset.g,pn=+g.dataset.gp,cur=CH.gates[k]||{on:true,sel:[]};let a=cur.sel.includes(pn)?cur.sel.filter(x=>x!==pn):cur.sel.concat(pn);a.sort((x,y)=>x-y);const d=await api({a:"adm_gate_set",key:k,pages:a});if(d.ok){CH.gates[k]={on:cur.on,sel:a};chRender();refresh()}else toast(d.error||"Failed","err");return}
+ const ap=e.target.closest(".chip[data-ap]");if(ap){ADDP=+ap.dataset.ap;document.querySelectorAll("#sheet .chip[data-ap]").forEach(x=>x.classList.toggle("on",+x.dataset.ap===ADDP));return}
+ const r=e.target.closest(".chrow");if(r)chEdit(r.dataset.id)});
+function chAddSheet(){ADDP=CH.cur;sheet("Add channel",`<p>Add the bot as admin in the channel first.</p><input id="chRef" placeholder="@channel or chat id (-100...)" autocapitalize="off"><input id="chLink" placeholder="Invite link (optional)" autocapitalize="off"><label class="chk"><input type="checkbox" id="chReq"> Create a join-request link</label><h4>Add to page</h4><div class="ptabs">${pgChips(n=>`data-ap="${n}"`,n=>n===ADDP)}</div><button class="btn" style="margin-top:8px" onclick="chAdd()">Add channel</button>`)}
+async function chAdd(){const d=await api({a:"adm_ch_add",ref:$("chRef").value,link:$("chLink").value,req:$("chReq").checked,page:ADDP});if(!d.ok)return toast(d.error||"Failed","err");toast(d.warn?"Added. Set an invite link (private channel)":"Channel added","ok");$("ov").classList.remove("on");CH.cur=ADDP;chLoad()}
+function chEdit(id){const c=CH.list.find(x=>x.id===id);if(!c)return;sheet(esc(c.title),`<p>${esc(c.name)} - Page ${c.page}</p><input id="eLink" value="${esc(c.link)}" placeholder="Invite link" autocapitalize="off"><button class="btn" onclick="chSetLink('${esc(id)}')">Save link</button><button class="btn sm" style="margin-top:8px" onclick="chReq('${esc(id)}')">Make join-request link</button><h4>Move to page</h4><div class="ptabs">${pgChips(n=>`onclick="chSetPage('${esc(id)}',${n})"`,n=>n===c.page)}</div><div class="sbtns"><button class="btn sm" onclick="chMove('${esc(id)}','up')">Move up</button><button class="btn sm" onclick="chMove('${esc(id)}','down')">Move down</button></div><button class="btn dang" onclick="chDel('${esc(id)}')">Remove channel</button>`)}
+async function chSetLink(id){const d=await api({a:"adm_ch_link",id,link:$("eLink").value});if(d.ok){toast("Link saved","ok");$("ov").classList.remove("on");chLoad()}else toast(d.error||"Failed","err")}
+async function chReq(id){const d=await api({a:"adm_ch_reqlink",id});if(d.ok){toast("Join-request link created","ok");$("ov").classList.remove("on");chLoad()}else toast(d.error||"Failed","err")}
+async function chSetPage(id,p){const d=await api({a:"adm_ch_page",id,page:p});if(d.ok){toast("Moved to page "+p,"ok");$("ov").classList.remove("on");await chLoad();CH.cur=p;chRender()}else toast(d.error||"Failed","err")}
+async function chMove(id,dir){const d=await api({a:"adm_ch_move",id,dir});if(d.ok){await chLoad();chEdit(id)}}
+async function chDel(id){const d=await api({a:"adm_ch_del",id});if(d.ok){toast("Channel removed","ok");$("ov").classList.remove("on");chLoad()}else toast(d.error||"Failed","err")}
 
 /* ---- boot: instant data from the Open App link ---- */
-if(qs.get("bu")){const g=k=>qs.get(k)||"";me={ok:true,bot:g("bu"),brand:g("bn")||g("bu"),logo:g("bl"),balance:parseFloat(g("b"))||0,invites:parseInt(g("i"))||0,earned:parseFloat(g("e"))||0,perRef:g("p")||"0",since:g("s"),channel:g("ch"),admin:g("ad")==="1",link:"https://t.me/"+g("bu")+"?start="+UID,activity:[]};paint(me);const wbq=parseFloat(g("wb"));if(wbq>0)setTimeout(()=>welcome(wbq),700);setTimeout(()=>$("splash").classList.add("off"),600)}
+if(qs.get("bu")){const g=k=>qs.get(k)||"";me={ok:true,bot:g("bu"),brand:g("bn")||g("bu"),logo:g("bl"),color:g("c"),balance:parseFloat(g("b"))||0,invites:parseInt(g("i"))||0,earned:parseFloat(g("e"))||0,perRef:g("p")||"0",since:g("s"),channel:g("ch"),admin:g("ad")==="1",link:"https://t.me/"+g("bu")+"?start="+UID,activity:[]};paint(me);const wbq=parseFloat(g("wb"));if(wbq>0)setTimeout(()=>welcome(wbq),700);setTimeout(()=>$("splash").classList.add("off"),600)}
 refresh();setTimeout(()=>$("splash").classList.add("off"),4000);
 setInterval(()=>{if(!document.hidden&&cur==="home")refresh()},30000);
 </script></body></html>
