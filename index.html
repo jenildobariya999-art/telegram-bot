@@ -3,6 +3,8 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
 <title>Refer & Earn</title>
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
 <style>
 :root{--g1:#0d6b45;--g2:#052f1f;--bg1:#0b5a3b;--bg2:#042a1b;--y1:#ffe14d;--y2:#ff9a00;--ink:#0b4b33;--card:#f8fcf9;--mut:#5f7a6c;--ok:#12b886;--line:rgba(0,0,0,.08)}
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;font-family:"Segoe UI",system-ui,-apple-system,Roboto,sans-serif}
@@ -170,6 +172,94 @@ canvas#fx{position:fixed;inset:0;pointer-events:none;z-index:150}
 .sbtns .btn{width:100%}
 #diag{position:fixed;left:50%;transform:translateX(-50%);top:calc(86px + env(safe-area-inset-top,0px));width:calc(100% - 28px);max-width:490px;background:#7a1520;color:#fff;border-radius:20px;padding:12px 14px;z-index:60;display:flex;gap:10px;align-items:center;font-size:13px;line-height:1.35;box-shadow:0 10px 26px rgba(0,0,0,.5)}
 #diag button{flex:none;border:0;border-radius:999px;padding:9px 14px;font-weight:900;background:linear-gradient(var(--y1),var(--y2));color:#1a1000}
+
+/* ===== v7: matched to the reference screenshots (css px = screenshot px / 2.75) ===== */
+*{font-family:'Plus Jakarta Sans',Poppins,'Segoe UI',system-ui,sans-serif}
+body{letter-spacing:-.1px}
+#app{max-width:480px;padding-bottom:calc(118px + env(safe-area-inset-bottom,0px))}
+.top{min-height:103px;padding:calc(14px + env(safe-area-inset-top,0px)) 22px 16px 25px;gap:14px;border-radius:0 0 36px 36px}
+.logo{width:44px;height:44px;border:3px solid #f2b705;box-shadow:0 0 0 3px #fff,0 5px 12px rgba(0,0,0,.25)}
+.tt h1{font-size:19px;line-height:1.14;font-weight:800;letter-spacing:-.4px;white-space:normal;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.tt small{font-size:10.5px;letter-spacing:1.8px;margin-top:5px;font-weight:800;color:#0e1a15}
+.pill{height:36px;padding:0 15px 0 5px;gap:8px;font-size:15px;font-weight:800}
+.pill i{width:27px;height:27px;font-size:15px;color:#ff8a00}
+.view{padding:18px 22px;gap:16px}
+.card{border-radius:30px;padding:20px}
+.card h3{font-size:12.5px;letter-spacing:1.6px;gap:11px;font-weight:800}
+.card h3:before{width:8px;height:23px}
+.sec{font-size:20px;letter-spacing:-.3px;font-weight:800;gap:11px;padding:2px 0}
+.sec:before{width:8px;height:25px}
+/* banner */
+.banner{padding:13px;border-radius:36px;margin-top:0}
+.slides{border-radius:27px}
+.slide{padding:18px 19px;border-radius:27px;min-height:170px;gap:0;position:relative;overflow:hidden;
+ background:radial-gradient(circle at 10% -10%,rgba(0,220,150,.30),transparent 55%),linear-gradient(135deg,var(--sl1) 0%,var(--sl2) 42%,var(--sl3) 100%)}
+.srow{display:flex;justify-content:space-between;align-items:center}
+.tag{height:24px;padding:0 11px;font-size:11px;font-weight:800;border:2.5px solid #fff;gap:5px;letter-spacing:-.1px;box-shadow:none}
+.tag.o{height:23px;padding:0 16px;font-size:13.5px;color:var(--y1);background:rgba(0,0,0,.34);border:1px solid rgba(255,255,255,.08)}
+.tag .ic{color:#f59e00;font-size:14px}
+.slide h2{font-size:22px;line-height:27px;font-weight:800;margin:10px 0 6px;max-width:100%;letter-spacing:-.4px}
+.slide p{font-size:13px;line-height:18px;font-weight:500;max-width:100%;opacity:.95}
+.slide .sfoot{position:absolute;right:19px;bottom:1px;margin:0}
+.slide .btn{width:auto;height:33px;padding:0 15px;font-size:14px;letter-spacing:0;border:2.5px solid #fff;gap:6px;box-shadow:0 4px 10px rgba(0,0,0,.25)}
+.slide .btn .ic{font-size:16px}
+.slide .deco{display:none}
+.dots{margin:-2px 0 -2px;gap:6px;justify-content:center}
+.dots i{width:7px;height:7px;background:rgba(150,178,196,.9)}.dots i.on{width:24px;background:linear-gradient(var(--y1),var(--y2))}
+/* balance */
+.bal{padding:24px 25px 25px}
+.bal .r0{min-height:34px}
+.ref{width:34px;height:34px;font-size:17px}
+.amt{font-size:44px;line-height:1;margin:15px 0 20px;letter-spacing:-.6px;gap:3px;font-weight:800}
+.amt span{font-size:31px}
+.bal .btn{height:62px;padding:0 14px;font-size:16px;letter-spacing:2.2px;font-weight:800;border:3px solid rgba(255,255,255,.9);box-shadow:0 8px 20px rgba(255,150,0,.4),0 0 0 1px rgba(0,0,0,.04)}
+.bal .btn .ic{font-size:20px}
+.two{gap:13px}
+.stat{padding:20px 20px 17px;min-height:88px}
+.stat h3{font-size:11.5px;letter-spacing:1.4px}.stat h3:before{display:none}
+.stat b{font-size:30px;margin-top:9px;letter-spacing:-.5px;font-weight:800}
+.sec .btn.sm{height:37px;padding:0 14px 0 17px;font-size:15px;border:3px solid rgba(255,255,255,.92);letter-spacing:-.1px;gap:4px}
+.empty{font-size:15px;font-weight:700;line-height:1.35;padding:10px 6px}
+/* floating home button + nav */
+#fab{position:fixed;right:22px;bottom:calc(97px + env(safe-area-inset-bottom,0px));width:59px;height:59px;border-radius:50%;border:3px solid #fff;background:linear-gradient(#ffd84a,#ff9d00);color:#10161d;font-size:26px;display:grid;place-items:center;box-shadow:0 8px 20px rgba(0,0,0,.35);z-index:35;cursor:pointer}
+#fab:active{transform:scale(.94)}
+nav{bottom:calc(17px + env(safe-area-inset-bottom,0px));width:calc(100% - 34px);max-width:446px;height:75px;padding:7px 8px;border-radius:999px;align-items:stretch;box-shadow:0 12px 30px rgba(0,0,0,.4)}
+nav button{padding:0;border-radius:999px;gap:3px;justify-content:center;font-size:12.5px;font-weight:700;color:#66779b;transform:none!important;box-shadow:none;margin:0 2px}
+nav button .ic{font-size:24px}
+nav button.on{background:var(--g1);color:#fff;box-shadow:inset 0 0 0 3px rgba(0,0,0,.30),0 6px 14px rgba(0,0,0,.28)!important;transform:none!important}
+nav button.on .ic{transform:none}
+/* invite / gift hero */
+.coinw{position:relative;width:104px;margin:16px auto 14px}
+.coinw .coin{width:104px;height:104px;margin:0;font-size:48px;border-width:4px}
+.cbadge{position:absolute;left:50%;bottom:-11px;transform:translateX(-50%);background:linear-gradient(var(--y1),var(--y2));color:#1a1000;font-weight:800;font-size:12px;padding:6px 14px;border-radius:999px;border:2.5px solid #fff;white-space:nowrap}
+.hero .tag{height:30px;font-size:13px;padding:0 17px;margin:0 auto}
+.hero h2{font-size:27px;letter-spacing:-.5px}
+.hero .muted{font-weight:500;font-size:14px}
+/* ===== channel join popup: exact like the reference ===== */
+#gate{background:rgba(0,0,0,.42);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);padding:calc(33px + env(safe-area-inset-top,0px)) 22px calc(33px + env(safe-area-inset-bottom,0px))}
+.gcard{max-width:446px;max-height:100%;border-radius:40px;padding:28px 29px 29px}
+.ghead{gap:11px;margin-bottom:14px}
+.ghead:before{width:8px;height:25px}
+.ghead h2{font-size:19px;font-weight:800;letter-spacing:-.3px}
+.ghead button{width:35px;height:35px;font-size:17px}
+.gintro{border:1.5px solid #e4e8ef;border-radius:29px;padding:17px 14px 16px}
+.gpill{font-size:10px;letter-spacing:1px;padding:0 16px;height:21px;line-height:16px;border:2.5px solid #fff}
+.gintro h3{font-size:16px;margin:9px 0 3px;font-weight:800;letter-spacing:-.2px}
+.gintro p{font-size:12.5px;line-height:1.35;font-weight:600}
+.gmeta{font-size:13px;padding:14px 4px 12px;gap:6px;white-space:nowrap}
+.gmeta span{font-weight:600}
+.ggrid{gap:12px;padding:2px 3px 6px 0}
+.gc{min-width:0;border:1.5px solid #e4e8ef;border-radius:27px;padding:14px 12px 14px;gap:0;background:transparent}
+.gc.ok{border-color:var(--ok)}
+.gic{width:44px;height:44px;border-radius:13px;box-shadow:0 5px 12px rgba(255,150,0,.32)}
+.gic span{width:23px;height:23px;font-size:12px}
+.gic.sm{width:40px;height:40px;border-radius:12px}.gic.sm span{width:21px;height:21px;font-size:11px}
+.gc b{font-size:15px;margin-top:11px;font-weight:800;letter-spacing:-.2px}
+.gc small{font-size:13px;margin-top:3px;font-weight:600}
+.gc .btn{height:31px;padding:0 8px;font-size:13.5px;letter-spacing:1.2px;margin-top:11px;width:100%;gap:4px;box-shadow:0 4px 10px rgba(255,150,0,.3);font-weight:800}
+.gc .btn .ic{font-size:14px}
+#gVer{height:58px;padding:0 14px;font-size:18px;letter-spacing:1.6px;margin-top:14px;font-weight:800}
+.chrow .gic{flex:none}
 </style></head><body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
 <symbol id="i-home" viewBox="0 0 24 24"><path d="M12 2.6 2.8 10.3a.9.9 0 0 0-.3.7V20a1.5 1.5 0 0 0 1.5 1.5h4.2a.8.8 0 0 0 .8-.8v-5h5v5a.8.8 0 0 0 .8.8H20a1.5 1.5 0 0 0 1.5-1.5v-9a.9.9 0 0 0-.3-.7z" fill="currentColor" stroke="none"/></symbol>
@@ -227,17 +317,17 @@ canvas#fx{position:fixed;inset:0;pointer-events:none;z-index:150}
   <div class="pill"><i><svg class="ic"><use href="#i-rupee"/></svg></i><b id="topBal">0.00</b></div></div>
 
  <section class="view on" id="v-home">
-  <div class="hello"><div class="av" id="hAv"></div><div><small>Welcome back</small><b id="hName">Friend</b></div></div>
   <div class="banner"><div class="slides" id="slides">
-   <div class="slide"><div class="srow"><span class="tag"><svg class="ic"><use href="#i-crown"/></svg>EXCLUSIVE OFFER</span><span class="tag o">100% Free</span></div><svg class="ic deco"><use href="#i-wallet"/></svg>
-    <h2>Claim Your Full Cash Reward</h2><p>Invite friends and complete simple tasks, then withdraw directly.</p><div class="sfoot"><button class="btn" onclick="go('invite')">Claim Now <svg class="ic"><use href="#i-right"/></svg></button></div></div>
-   <div class="slide"><div class="srow"><span class="tag"><svg class="ic"><use href="#i-ticket"/></svg>GIFT CODES</span><span class="tag o">Instant</span></div><svg class="ic deco"><use href="#i-ticket"/></svg>
-    <h2>Redeem Gift Codes</h2><p>Enter a code from our channel to get cash instantly.</p><div class="sfoot"><button class="btn" onclick="go('gift')">Redeem <svg class="ic"><use href="#i-right"/></svg></button></div></div>
-  </div><div class="dots" id="dots"><i class="on"></i><i></i></div></div>
+   <div class="slide"><div class="srow"><span class="tag"><svg class="ic"><use href="#i-crown"/></svg>EXCLUSIVE OFFER</span><span class="tag o">100% Free</span></div>
+    <h2>Claim Your Full Cash Voucher</h2><p>Simple tasks complete karo aur direct withdraw pao!</p><div class="sfoot"><button class="btn" onclick="go('invite')">Claim Now <svg class="ic"><use href="#i-right"/></svg></button></div></div>
+   <div class="slide"><div class="srow"><span class="tag"><svg class="ic"><use href="#i-gift"/></svg>GIFT CODES</span><span class="tag o">Instant</span></div>
+    <h2>Redeem Gift Codes</h2><p>Official Telegram channel se code enter karein aur instant cash reward claim karein!</p><div class="sfoot"><button class="btn" onclick="go('gift')">Redeem <svg class="ic"><use href="#i-right"/></svg></button></div></div>
+  </div></div>
+  <div class="dots" id="dots"><i class="on"></i><i></i></div>
 
   <div class="card bal"><div class="r0"><h3>Available Balance</h3><button class="ref" id="refBtn" onclick="refresh(true)"><svg class="ic"><use href="#i-refresh"/></svg></button></div>
    <div class="amt"><span>₹</span><b id="bal" class="sk">0.00</b></div>
-   <button class="btn" onclick="go('invite')"><svg class="ic"><use href="#i-share"/></svg>INVITE &amp; EARN MORE</button></div>
+   <button class="btn" onclick="act('withdraw')">WITHDRAW VOUCHER <svg class="ic"><use href="#i-upright"/></svg></button></div>
   <div class="two"><div class="card stat"><h3>Total Invites</h3><b id="inv">0</b></div><div class="card stat"><h3>Total Income</h3><b class="g" id="earn">₹0.00</b></div></div>
   <div class="sec">Recent Activity<span class="sp"></span><button class="btn sm" onclick="go('invite')">View All <svg class="ic"><use href="#i-chev"/></svg></button></div>
   <div class="card" id="actList"><div class="empty">No recent activity yet. Invite friends or complete offers to earn!</div></div>
@@ -245,23 +335,23 @@ canvas#fx{position:fixed;inset:0;pointer-events:none;z-index:150}
 
  <section class="view" id="v-invite">
   <div class="card hero"><span class="tag"><svg class="ic"><use href="#i-fire"/></svg>BIG REWARD OFFER</span><h2>Invite Friends &amp; Get <span id="prx">₹0</span></h2>
-   <p class="muted">When your friend joins the bot, the reward is added to your wallet instantly!</p><div class="coin"><svg class="ic"><use href="#i-rupee"/></svg></div></div>
+   <p class="muted">Jab aapka friend task complete karega, turant <span id="prx2">₹0</span> direct aapke wallet me add ho jayenge!</p><div class="coinw"><div class="coin" id="iCoin"><svg class="ic"><use href="#i-rupee"/></svg></div><span class="cbadge" id="cbadge">+₹0 Cash</span></div></div>
   <div class="card"><h3>Your Referral Link <span class="cnt">UNLIMITED EARNINGS</span></h3>
    <div class="lnk"><svg class="ic"><use href="#i-link"/></svg><span id="lnk">…</span><button onclick="copy()"><svg class="ic"><use href="#i-copy"/></svg></button></div>
    <button class="btn" onclick="share()"><svg class="ic"><use href="#i-send"/></svg>SHARE LINK WITH FRIENDS</button></div>
   <div class="sec">How It Works</div>
-  <div class="card"><div class="step"><i>1</i><div><b>Share Your Link</b><span class="muted">Send your referral link to friends on Telegram or WhatsApp.</span></div></div>
-   <div class="step"><i>2</i><div><b>Friend Starts Bot</b><span class="muted">Your friend opens the bot from your link and joins.</span></div></div>
-   <div class="step"><i>3</i><div><b>Get Paid Instantly</b><span class="muted">The reward lands in your wallet right away.</span></div></div></div>
+  <div class="card"><div class="step"><i>1</i><div><b>Share Your Link</b><span class="muted">Apna referral link Telegram ya WhatsApp par dosto ke sath share karein.</span></div></div>
+   <div class="step"><i>2</i><div><b>Friend Starts Bot</b><span class="muted">Aapka dost link se <b style="display:inline" id="botU">@bot</b> ko start karega aur app open karega.</span></div></div>
+   <div class="step"><i>3</i><div><b>Task Done &rarr; Get <span class="px3">₹0</span> Instant!</b><span class="muted">Jaise hi naya user koi 1 task/offer complete karega, aapko turant <span class="px3">₹0</span> mil jayenge!</span></div></div></div>
   <div class="sec">Invited Friends<span class="sp"></span><span class="cnt" style="margin:0" id="invc">0 Total</span></div>
   <div class="card"><div class="empty" id="invTxt">No friends invited yet. Share your link to start earning!</div></div>
  </section>
 
  <section class="view" id="v-gift">
   <div class="card hero"><span class="tag"><svg class="ic"><use href="#i-gift"/></svg>EXCLUSIVE GIFT PROMO</span><h2>Redeem Gift Codes</h2>
-   <p class="muted">Get codes from our official Telegram channel and claim instant cash!</p><div class="coin" id="gCoin"><svg class="ic"><use href="#i-gift"/></svg></div></div>
+   <p class="muted">Official Telegram channel se code enter karein aur instant cash reward claim karein!</p><div class="coinw"><div class="coin" id="gCoin"><svg class="ic"><use href="#i-gift"/></svg></div><span class="cbadge">Instant Cash</span></div></div>
   <div class="card"><h3>Enter Promo / Gift Code <span class="cnt" style="font-size:12px">FAST CLAIM</span></h3>
-   <input id="code" placeholder="Enter gift code (e.g. WELCOME50)" autocapitalize="characters" autocomplete="off">
+   <input id="code" placeholder="Enter gift code (e.g. BONUS50)" autocapitalize="characters" autocomplete="off">
    <button class="btn" id="claimBtn" onclick="redeem()"><svg class="ic"><use href="#i-gift"/></svg>CLAIM GIFT REWARD</button></div>
   <div class="card" style="padding:6px 18px"><div class="row" onclick="openCh()"><div class="ico b"><svg class="ic"><use href="#i-tg"/></svg></div>Join Telegram Channel for codes<svg class="ic go"><use href="#i-chev"/></svg></div></div>
  </section>
@@ -273,6 +363,7 @@ canvas#fx{position:fixed;inset:0;pointer-events:none;z-index:150}
   <div class="cap">ACCOUNT SETTINGS</div>
   <div class="card" style="padding:6px 18px">
    <div class="row" onclick="go('home')"><div class="ico"><svg class="ic"><use href="#i-pulse"/></svg></div>Wallet &amp; Activity<svg class="ic go"><use href="#i-chev"/></svg></div>
+   <div class="row" onclick="act('withdraw')"><div class="ico g"><svg class="ic"><use href="#i-upright"/></svg></div>Withdraw Voucher<svg class="ic go"><use href="#i-chev"/></svg></div>
    <div class="row" onclick="go('gift')"><div class="ico"><svg class="ic"><use href="#i-gift"/></svg></div>Redeem Gift / Promo Code<svg class="ic go"><use href="#i-chev"/></svg></div>
    <div class="row" onclick="openCh()"><div class="ico b"><svg class="ic"><use href="#i-tg"/></svg></div>Join Telegram Channel<svg class="ic go"><use href="#i-chev"/></svg></div></div>
   <div class="cap">APP &amp; LEGAL</div>
@@ -288,8 +379,7 @@ canvas#fx{position:fixed;inset:0;pointer-events:none;z-index:150}
  <section class="view" id="v-admin">
   <div class="sec">Admin Panel</div>
   <div class="two"><div class="card stat"><h3>Users</h3><b id="a_u">0</b></div><div class="card stat"><h3>Per Refer</h3><b id="a_pr">0</b></div></div>
-  <div class="card" style="padding:6px 18px"><div class="row" onclick="admTog('BotMode')"><div class="ico g"><svg class="ic"><use href="#i-bot"/></svg></div>Bot Status<div class="sw" id="sw-bm"></div></div>
-   </div>
+      </div>
   <div class="card"><h3>App Colour</h3>
    <p class="muted" style="margin-top:8px">Pick a colour. The preview updates live, then press Save.</p>
    <div class="swatches" id="swatches"></div>
@@ -300,8 +390,7 @@ canvas#fx{position:fixed;inset:0;pointer-events:none;z-index:150}
    <button class="btn" style="margin-top:16px" onclick="saveColor()"><svg class="ic"><use href="#i-check"/></svg>SAVE COLOUR</button></div>
   <div class="card"><h3>Channels</h3><p class="muted" style="margin-top:8px">Users see one page at a time. When page 1 is joined, page 2 opens, and so on. Tap a channel to edit.</p>
    <div class="ptabs" id="ptabs"></div><div id="chList"></div>
-   <input id="chRef" placeholder="@channel or chat id (-100...)"><input id="chLink" placeholder="Invite link (optional)">
-   <button class="btn" onclick="chAdd()"><svg class="ic"><use href="#i-plus"/></svg><span id="addTxt">ADD TO PAGE 1</span></button></div>
+   <button class="btn" style="margin-top:12px" onclick="chAddSheet()"><svg class="ic"><use href="#i-plus"/></svg><span id="addTxt">ADD CHANNEL TO PAGE 1</span></button></div>
   <div class="card"><h3>Button Gates</h3><p class="muted" style="margin:8px 0 4px">Switch channel join ON or OFF for each button or tab. When ON, users must join the channels (page by page) before it works.</p><div id="gateList"></div></div>
   <div class="card"><h3>Add / Remove Balance</h3><input id="bt" inputmode="numeric" placeholder="User ID"><input id="ba" inputmode="decimal" placeholder="Amount (negative to deduct)"><button class="btn" onclick="admBal()"><svg class="ic"><use href="#i-plus"/></svg>APPLY</button></div>
   <div class="card"><h3>Create Gift Code</h3><input id="gc" placeholder="Code (no spaces)"><input id="ga" inputmode="numeric" placeholder="Amount"><input id="gm" inputmode="numeric" placeholder="Max users"><input id="gr" inputmode="numeric" placeholder="Min refers needed (0 = none)"><button class="btn" onclick="admGift()"><svg class="ic"><use href="#i-ticket"/></svg>CREATE CODE</button></div>
@@ -309,6 +398,7 @@ canvas#fx{position:fixed;inset:0;pointer-events:none;z-index:150}
  </section>
 </div>
 
+<button id="fab" onclick="fabGo()" aria-label="Home"><svg class="ic"><use href="#i-home"/></svg></button>
 <nav id="nav">
  <button data-t="home" class="on"><svg class="ic"><use href="#i-home"/></svg>Home</button>
  <button data-t="invite"><svg class="ic"><use href="#i-share"/></svg>Invite</button>
@@ -390,7 +480,7 @@ function rgb2hex(a){ return "#"+a.map(v=>Math.max(0,Math.min(255,Math.round(v)))
 function mix(h,t,p){ const a=hex2rgb(h),b=hex2rgb(t); return rgb2hex(a.map((v,i)=>v+(b[i]-v)*p)); }
 function lum(h){ const [r,g,b]=hex2rgb(h); return (.299*r+.587*g+.114*b)/255; }
 function palette(c){ let base=c; if(lum(c)>.62) base=mix(c,"#000000",.45);
-  return {"--bg1":base,"--bg2":mix(base,"#000000",.68),"--g1":mix(base,"#ffffff",.06),"--g2":mix(base,"#000000",.72),"--ink":mix(base,"#000000",.4),"--card":mix(base,"#ffffff",.965),"--mut":mix(mix(base,"#000000",.2),"#7c8a85",.55)}; }
+  return {"--bg1":base,"--bg2":mix(base,"#000000",.68),"--g1":mix(base,"#ffffff",.06),"--g2":mix(base,"#000000",.72),"--ink":mix(base,"#000000",.4),"--card":mix(base,"#ffffff",.965),"--mut":mix(mix(base,"#000000",.2),"#7c8a85",.55),"--sl1":mix(base,"#00d68f",.22),"--sl2":mix(base,"#000000",.12),"--sl3":mix(base,"#000000",.68)}; }
 function applyColor(c,el){ const p=palette(c),t=el||document.documentElement; for(const k in p) t.style.setProperty(k,p[k]); }
 
 /* ================= bot logo (auto) ================= */
@@ -400,7 +490,7 @@ function setImg(el,urls,fallbackHtml){ urls=[].concat(urls).filter(Boolean); let
 function logoUrls(name){ name=String(name||"").replace(/^@/,""); if(!name) return []; return ["/api/logo?u="+encodeURIComponent(name),"https://t.me/i/userpic/320/"+encodeURIComponent(name)+".jpg"]; }
 function botLogoUrls(){ return [me.logo].concat(me.bot?logoUrls(me.bot):[]); }
 function applyLogo(){ const u=botLogoUrls().filter(Boolean); if(!u.length) return; const L=(me.brand||"B")[0].toUpperCase();
-  setImg($("logo"),u,L); setImg($("gCoin"),u,ic("gift")); setImg($("spCoin"),u,ic("rupee")); }
+  setImg($("logo"),u,L); setImg($("gCoin"),u,ic("gift")); setImg($("iCoin"),u,ic("rupee")); setImg($("spCoin"),u,ic("rupee")); }
 
 /* ================= api ================= */
 let MODE="direct", LASTERR=""; try{ MODE=sessionStorage.getItem("mode")||"direct"; }catch(e){}
@@ -433,17 +523,20 @@ function hideDiag(){ $("diag").classList.add("hide"); }
 /* auto name + photo from Telegram */
 const fullName=U?(((U.first_name||"")+" "+(U.last_name||"")).trim()||"Friend"):"Friend";
 function setAv(el){ el.textContent=(fullName[0]||"U").toUpperCase(); if(U&&U.photo_url) setImg(el,U.photo_url,null); }
-setAv($("hAv")); setAv($("pAv"));
-$("hName").textContent=fullName; $("pName").textContent=fullName;
+setAv($("pAv"));
+$("pName").textContent=fullName;
 $("pUser").textContent=(U&&U.username?"@"+U.username+"   |   ":"")+"ID: "+(UID||"-");
 
 /* ================= navigation ================= */
-const TITLES={home:"PLAY & EARN",invite:"REFER & EARN",gift:"GIFT PROMO",profile:"ACCOUNT & SETTINGS",admin:"ADMIN PANEL"};
+const HEAD={home:()=>[me.brand||me.bot||"App","PLAY & WIN 777"],invite:()=>["Refer & Earn","INSTANT ₹"+(me.perRef||0)+" PER FRIEND"],gift:()=>["Gift Promo","REDEEM CODES & BONUSES"],profile:()=>["Profile","ACCOUNT & SETTINGS"],admin:()=>["Admin Panel","MANAGE YOUR BOT"]};
+function setHead(t){ const h=HEAD[t](); $("brand").textContent=h[0]; $("sub").textContent=h[1]; }
+function fabGo(){ if(cur==="home") scrollTo({top:0,behavior:"smooth"}); else go("home"); }
+async function act(a){ const d=await api({a}); if(!d.ok) return toast(d.error||"Failed","err"); snd.pop(); toast("Opening bot chat","ok"); setTimeout(()=>tg&&tg.close(),900); }
 function go(t){ if(t===cur) return; guard("tab_"+t,()=>doGo(t)); }
 function doGo(t){ if(t===cur) return; snd.nav();
   document.querySelectorAll(".view").forEach(v=>v.classList.remove("on")); $("v-"+t).classList.add("on");
   document.querySelectorAll("nav button").forEach(b=>b.classList.toggle("on",b.dataset.t===t));
-  $("sub").textContent=TITLES[t]; cur=t; scrollTo({top:0,behavior:"smooth"});
+  cur=t; setHead(t); scrollTo({top:0,behavior:"smooth"});
   if(t==="admin"){ admLoad(); chLoad(); } if(t==="gift") applyLogo(); }
 document.getElementById("nav").addEventListener("click",e=>{ const b=e.target.closest("button"); if(b) go(b.dataset.t); });
 let sx=0; document.addEventListener("touchstart",e=>sx=e.touches[0].clientX,{passive:true});
@@ -475,7 +568,8 @@ function closeSheet(){ if(!$("sheet").classList.contains("on")) return; $("ov").
 let loaded=false, busy=false, lastOk=Date.now();
 function paint(d,manual){
   if(d.color) applyColor(d.color);
-  $("brand").textContent=d.brand||d.bot||"App"; document.title=d.brand||d.bot||"App"; applyLogo();
+  document.title=d.brand||d.bot||"App"; setHead(cur); applyLogo();
+  $("prx2").textContent="₹"+(d.perRef||0); $("cbadge").textContent="+₹"+(d.perRef||0)+" Cash"; document.querySelectorAll(".px3").forEach(e=>e.textContent="₹"+(d.perRef||0)); $("botU").textContent="@"+(d.bot||"bot");
   countUp($("bal"),d.balance||0); $("topBal").textContent=rs(d.balance);
   $("inv").textContent=d.invites||0; countUp($("earn"),d.earned||0,"₹"); $("prx").textContent="₹"+(d.perRef||0);
   $("lnk").textContent=d.link||""; $("invc").textContent=(d.invites||0)+" Total";
@@ -512,8 +606,8 @@ function sw(){ $("sw-snd").classList.toggle("on",pref.snd); $("sw-hap").classLis
 /* ================= CHANNEL GATE ================= */
 let GATES={}, GK=null, GCB=null, GPAGE=null;
 async function guard(key,fn){ if(GATES[key]){ const d=await api({a:"gate",key}); if(d.ok&&d.gate){ showGate(d.gate,key,fn); return; } } fn(); }
-function chAvatar(c){ const L=esc((c.title||c.name||"C")[0].toUpperCase()); const u=c.av?"/api/logo?u="+encodeURIComponent(c.av):""; return `<div class="chav">${L}${u?`<img src="${u}" onerror="this.remove()">`:""}</div>`; }
-function showGate(g,key,cb){ GK=key; GCB=cb||null; renderGate(g); $("gX").classList.toggle("hide",key==="start"); if(!$("gate").classList.contains("on")){ $("gate").classList.add("on"); snd.up(); } $("splash").classList.add("off"); }
+function chAvatar(c){ return `<div class="gic sm"><span>${ic("tg")}</span></div>`; }
+function showGate(g,key,cb){ GK=key; GCB=cb||null; renderGate(g); $("gX").classList.remove("hide"); if(!$("gate").classList.contains("on")){ $("gate").classList.add("on"); snd.up(); } $("splash").classList.add("off"); }
 function renderGate(g){ GPAGE=g.page; const t="Step "+g.step+" of "+g.steps;
   $("gTitle").textContent=t; $("gPill").textContent=t.toUpperCase();
   $("gSub").textContent="Join all channels in Step "+g.step+(g.step<g.steps?" to unlock the next step.":" to continue.");
@@ -526,7 +620,7 @@ async function gateVerify(silent){ const b=$("gVer"); b.disabled=true; const d=a
   if(d.gate){ const nextPage=d.gate.page!==GPAGE; renderGate(d.gate); if(!silent){ if(nextPage){ snd.win(); burst(); toast("Step complete! Next step unlocked","ok"); } else toast("Join all channels first","err"); } return; }
   const cb=GCB, k=GK; $("gate").classList.remove("on"); GK=null; GCB=null; snd.win(); burst(); toast("All channels joined","ok");
   if(k==="start") refresh(); if(cb) setTimeout(cb,350); }
-function gateClose(){ if(GK==="start") return; $("gate").classList.remove("on"); GK=null; GCB=null; snd.down(); }
+function gateClose(){ if(GK==="start"){ if(tg) tg.close(); else toast("Join the channels to continue","err"); return; } $("gate").classList.remove("on"); GK=null; GCB=null; snd.down(); }
 document.addEventListener("visibilitychange",()=>{ if(!document.hidden&&$("gate").classList.contains("on")&&GK) setTimeout(()=>gateVerify(true),1500); });
 
 /* ================= ADMIN: channel manager ================= */
@@ -535,9 +629,9 @@ let CH={list:[],pages:1,gates:{},cur:1};
 async function chLoad(){ const d=await apiRetry({a:"adm_ch_list"}); if(!d.ok) toast(d.error||"Could not load channels","err"); if(!d.ok) return; CH.list=d.channels; CH.pages=d.pages; CH.gates=d.gates; if(CH.cur>CH.pages) CH.cur=1; chRender(); }
 function chRender(){
   $("ptabs").innerHTML=Array.from({length:CH.pages},(_,i)=>`<div class="chip${i+1===CH.cur?" on":""}" data-p="${i+1}">Page ${i+1}</div>`).join("")+`<div class="chip" data-p="new">+ New</div>`;
-  $("addTxt").textContent="ADD TO PAGE "+CH.cur;
+  $("addTxt").textContent="ADD CHANNEL TO PAGE "+CH.cur;
   const rows=CH.list.filter(c=>c.page===CH.cur);
-  $("chList").innerHTML=rows.length?rows.map(c=>`<div class="chrow" data-id="${esc(c.id)}">${chAvatar(c)}<div class="t"><b>${esc(c.title)}</b><small>${esc(c.name)}</small></div><svg class="ic go"><use href="#i-chev"/></svg></div>`).join(""):'<div class="empty">No channels on this page yet.</div>';
+  $("chList").innerHTML=rows.length?rows.map(c=>`<div class="chrow" data-id="${esc(c.id)}">${chAvatar(c)}<div class="t"><b>${esc(c.title)}</b><small>${esc(c.name)} &middot; Page ${c.page}</small></div><svg class="ic go"><use href="#i-chev"/></svg></div>`).join(""):'<div class="empty">No channels on this page yet.</div>';
   $("gateList").innerHTML=Object.keys(GLABEL).map(k=>{ const g=CH.gates[k]||{on:false,sel:[]};
     return `<div class="gl"><div class="grow"><b>${GLABEL[k]}</b><div class="sw${g.on?" on":""}" data-gsw="${k}"></div></div>`+
       (g.on?`<div class="ptabs" style="margin-top:10px">${Array.from({length:CH.pages},(_,i)=>`<div class="chip${g.sel.includes(i+1)?" on":""}" data-g="${k}" data-gp="${i+1}">Page ${i+1}</div>`).join("")}</div><div class="muted" style="font-size:12.5px;margin-top:4px">${g.sel.length?"Only the selected pages are required.":"All pages are required (tap pages to choose only some)."}</div>`:"")+`</div>`; }).join(""); }
@@ -548,8 +642,14 @@ document.addEventListener("click",async e=>{
   const g=e.target.closest(".chip[data-g]"); if(g){ const k=g.dataset.g,pn=+g.dataset.gp; const cur=CH.gates[k]||{on:true,sel:[]}; let a=cur.sel.slice(); a=a.includes(pn)?a.filter(x=>x!==pn):a.concat(pn); a.sort((x,y)=>x-y);
     const d=await api({a:"adm_gate_set",key:k,pages:a}); if(d.ok){ CH.gates[k]={on:cur.on,sel:a}; snd.pop(); chRender(); refresh(); toast(GLABEL[k]+": "+(a.length?"pages "+a.join(", "):"all pages"),"ok"); } else toast(d.error||"Failed","err"); return; }
   const r=e.target.closest(".chrow"); if(r) chEdit(r.dataset.id); });
-async function chAdd(){ const d=await api({a:"adm_ch_add",ref:$("chRef").value,link:$("chLink").value,page:CH.cur});
-  if(!d.ok) return toast(d.error||"Failed","err"); snd.win(); toast(d.warn?"Added. Set an invite link (private channel)":"Channel added","ok"); $("chRef").value=""; $("chLink").value=""; chLoad(); }
+let ADDP=1;
+function chAddSheet(){ ADDP=CH.cur; sheetHtml("Add Channel",`<p class="muted" style="margin-bottom:4px">Add the bot as admin in the channel first.</p>
+  <input id="chRef" placeholder="@channel or chat id (-100...)" autocapitalize="off"><input id="chLink" placeholder="Invite link (optional)">
+  <h4>Add to page</h4><div class="ptabs" id="addPages">${Array.from({length:CH.pages},(_,i)=>`<div class="chip${i+1===ADDP?" on":""}" data-ap="${i+1}">Page ${i+1}</div>`).join("")}</div>
+  <button class="btn" style="margin-top:8px" onclick="chAdd()"><svg class="ic"><use href="#i-plus"/></svg>ADD CHANNEL</button>`); }
+document.addEventListener("click",e=>{ const c=e.target.closest(".chip[data-ap]"); if(c){ ADDP=+c.dataset.ap; document.querySelectorAll("#addPages .chip").forEach(x=>x.classList.toggle("on",+x.dataset.ap===ADDP)); snd.pop(); } });
+async function chAdd(){ const d=await api({a:"adm_ch_add",ref:$("chRef").value,link:$("chLink").value,page:ADDP});
+  if(!d.ok) return toast(d.error||"Failed","err"); snd.win(); toast(d.warn?"Added. Set an invite link (private channel)":"Channel added","ok"); closeSheet(); CH.cur=ADDP; chLoad(); }
 function chEdit(id){ const c=CH.list.find(x=>x.id===id); if(!c) return;
   sheetHtml(c.title,`<p class="muted" style="margin-bottom:6px">${esc(c.name)} - Page ${c.page}</p>
    <input id="eLink" value="${esc(c.link)}" placeholder="Invite link"><button class="btn" onclick="chSetLink('${esc(id)}')"><svg class="ic"><use href="#i-link"/></svg>SAVE LINK</button>
@@ -570,9 +670,8 @@ document.addEventListener("click",e=>{ const s=e.target.closest(".swc"); if(s){ 
 document.addEventListener("input",e=>{ if(e.target.id==="cpick") setPick(e.target.value); if(e.target.id==="chex"){ let v=e.target.value.trim(); if(v[0]!=="#") v="#"+v; setPick(v,true); } });
 async function admLoad(){ const d=await api({a:"adm_stats"}); if(!d.ok) return toast(d.error||"Failed","err");
   $("a_u").textContent=d.users; $("a_pr").textContent="₹"+d.perRef;
-  $("sw-bm").classList.toggle("on",d.botMode==="ON");
+
   pickColor=d.color||"#0b5a3b"; setPick(pickColor); }
-async function admTog(f){ const el=$("sw-bm"),v=el.classList.contains("on")?"OFF":"ON"; const d=await api({a:"adm_set",f,v}); if(d.ok){ el.classList.toggle("on",v==="ON"); toast("Bot "+v,"ok"); } else toast(d.error||"Failed","err"); }
 async function saveColor(){ const d=await api({a:"adm_set",f:"WebColor",v:pickColor}); if(d.ok){ applyColor(pickColor); me.color=pickColor; snd.win(); toast("Colour saved","ok"); } else toast(d.error||"Failed","err"); }
 async function admBal(){ const d=await api({a:"adm_addbal",t:$("bt").value,amt:$("ba").value}); d.ok?(snd.coin(),toast("Done. New balance ₹"+rs(d.balance),"ok")):toast(d.error||"Failed","err"); }
 async function admGift(){ const d=await api({a:"adm_gift",code:$("gc").value,amt:$("ga").value,max:$("gm").value,minref:$("gr").value}); d.ok?(snd.win(),toast("Gift code created","ok")):toast(d.error||"Failed","err"); }
