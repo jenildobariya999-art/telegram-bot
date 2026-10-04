@@ -126,6 +126,9 @@ canvas#fx{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-in
 .vrow{display:flex;justify-content:space-between;gap:12px;font-size:13px;padding:6px 0;font-weight:600}.vrow span{color:var(--m)}.vrow b{text-align:right;word-break:break-all}.vrow .vid{font-family:ui-monospace,Menlo,monospace;font-size:12px;color:var(--g);letter-spacing:.4px}
 .vpaid{position:absolute;right:14px;top:70px;border:3px solid var(--g);color:var(--g);border-radius:10px;padding:2px 10px;font-weight:800;font-size:18px;letter-spacing:2px;transform:rotate(-14deg);opacity:.85;animation:stamp .6s .3s both}
 .li[data-vi]{cursor:pointer}
+
+.refamt{text-align:center;border-color:var(--y);box-shadow:0 0 24px rgba(255,200,61,.22)}.refamt .big{font-size:50px;font-weight:800;color:var(--y);line-height:1.1;margin:4px 0;text-shadow:0 0 22px rgba(255,200,61,.45);animation:flt 3.2s ease-in-out infinite}.refamt .big s{text-decoration:none;font-size:30px;margin-right:3px}
+.prbig{font-size:22px;color:var(--y);font-weight:800}
 </style></head><body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
 <linearGradient id="gGold" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff3a1"/><stop offset=".5" stop-color="#ffc83d"/><stop offset="1" stop-color="#e07b00"/></linearGradient>
@@ -173,7 +176,7 @@ canvas#fx{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-in
   <div class="card row" onclick="go('profile')"><div class="logo" id="hAv" style="width:42px;height:42px;border-color:var(--g)"><svg class="i"><use href="#g-user"/></svg></div><div class="f"><div class="mut">Welcome back</div><h2 id="hName">Player</h2></div><span class="mut" style="color:var(--g)">Verified</span></div>
   <div class="card hot"><div class="mut">Total balance</div><div class="amt"><s>&#8377;</s><span id="bal">0.00</span></div><div class="row"><button class="btn y sm" onclick="openWd()"><svg class="i sm"><use href="#g-up"/></svg> Withdraw</button><button class="btn sm" style="background:#06121f;color:var(--t);box-shadow:none;border:1.5px solid var(--ln)" onclick="refresh(true)">&#8635; Refresh</button></div></div>
   <div class="grid4"><div class="tile" onclick="go('games')"><b><svg class="i tl"><use href="#g-pad"/></svg></b>Play &amp; Earn</div><div class="tile" onclick="go('rewards')"><b><svg class="i tl"><use href="#g-gift"/></svg></b>Rewards</div><div class="tile" onclick="go('refer')"><b><svg class="i tl"><use href="#g-users"/></svg></b>Refer &amp; Earn</div><div class="tile" onclick="go('wallet')"><b><svg class="i tl"><use href="#g-wallet"/></svg></b>Wallet</div></div>
-  <div class="hero" onclick="go('refer')"><h3>Bigger rewards for you</h3><p>Invite friends and earn <span class="pr">&#8377;0</span> for each one.</p><div class="e"><svg class="i"><use href="#g-gift"/></svg></div></div>
+  <div class="hero" onclick="go('refer')"><h3>Bigger rewards for you</h3><p>Invite friends and earn <b class="prbig pr">&#8377;0</b> per refer.</p><div class="e"><svg class="i"><use href="#g-gift"/></svg></div></div>
   <div class="row"><h2 class="f">History</h2><button class="btn sm" onclick="go('wallet')">View all</button></div><div class="card" id="hList"></div>
   <h2>Quick access</h2>
   <div class="card" style="padding:4px 14px"><div class="mrow" onclick="openCh()"><span><svg class="i"><use href="#g-head"/></svg></span>Support &amp; updates channel<span class="go">&#8250;</span></div><div class="mrow" onclick="go('rewards')"><span><svg class="i"><use href="#g-gift"/></svg></span>Redeem a gift code<span class="go">&#8250;</span></div></div>
@@ -188,14 +191,16 @@ canvas#fx{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-in
  </section>
 
  <section class="view" id="v-wallet">
-  <div class="card hot"><div class="mut">Your balance</div><div class="amt"><s>&#8377;</s><span id="wBal">0.00</span></div><button class="btn y" onclick="openWd()"><svg class="i sm"><use href="#g-up"/></svg> Withdraw money</button></div>
+  <div class="card hot"><div class="mut">Your balance</div><div class="amt"><s>&#8377;</s><span id="wBal">0.00</span></div><button class="btn y" onclick="openWd()"><svg class="i sm"><use href="#g-up"/></svg> Get withdraw voucher</button></div>
   <div class="two"><div class="card stat"><span class="mut">Total earned</span><b id="wEarn">&#8377;0.00</b></div><div class="card stat"><span class="mut">Withdrawn</span><b id="wWd">&#8377;0.00</b></div></div>
+  <h2>My vouchers</h2><div class="card" id="vList"></div>
   <h2>Recent transactions</h2><div class="card" id="txList"></div>
   <div class="card row"><span><svg class="i md"><use href="#g-shield"/></svg></span><div class="f"><b>Secure &amp; safe</b><div class="mut">Your transactions are protected</div></div></div>
  </section>
 
  <section class="view" id="v-refer">
   <div class="hero"><h3>Invite your friends</h3><p>Get <span class="pr">&#8377;0</span> for each user who joins and plays.</p><div class="e"><svg class="i"><use href="#g-users"/></svg></div></div>
+  <div class="card refamt"><div class="mut">You earn per refer</div><div class="big"><s>&#8377;</s><span class="prn">0</span></div><div class="mut">Added to your balance when your friend joins</div></div>
   <div class="card"><div class="mut" style="margin-bottom:6px">Your referral link</div><div class="code"><span class="f" id="lnk">...</span><button class="btn sm" style="padding:8px 12px" onclick="copy()">Copy</button></div><button class="btn" style="margin-top:12px" onclick="share()"><svg class="i sm"><use href="#g-send"/></svg> Share with friends</button></div>
   <h2>How it works</h2>
   <div class="steps"><div><svg class="i md"><use href="#g-plane"/></svg><b>Share link</b>Send to friends</div><div><svg class="i md"><use href="#g-user"/></svg><b>They join</b>Sign up and play</div><div><svg class="i md"><use href="#g-coin"/></svg><b>You get paid</b>Rewards instantly</div></div>
@@ -228,7 +233,8 @@ canvas#fx{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-in
   <div class="card"><h2>Support channel</h2><p class="mut" style="margin:4px 0">Users open this link from every Support button. Use a t.me link or @username.</p><input id="sup" placeholder="https://t.me/yourchannel" autocapitalize="off"><button class="btn" onclick="saveSup()">Save support channel</button></div>
   <div class="card"><h2>App name</h2><input id="brandIn" maxlength="40" placeholder="App name"><button class="btn" onclick="saveBrand()">Save name</button></div>
   <div class="card"><h2>App colour</h2><p class="mut" style="margin:4px 0">Pick a colour. The whole app changes live, then press Save.</p><div class="swatches" id="swatches"></div><div class="crow"><input type="color" id="cpick" value="#0b5a3b"><input id="chex" maxlength="7" placeholder="#0b5a3b" autocapitalize="off"></div><button class="btn" onclick="saveColor()">Save colour</button></div>
-  <div class="card"><h2>Withdraw limits</h2><p class="mut" style="margin:4px 0">Smallest and largest amount a user can withdraw at one time.</p><div class="mut" style="margin-top:8px">Wallet</div><div class="two"><input id="wMin" inputmode="decimal" placeholder="Min"><input id="wMax" inputmode="decimal" placeholder="Max"></div><div class="mut">UPI</div><div class="two"><input id="uMin" inputmode="decimal" placeholder="Min"><input id="uMax" inputmode="decimal" placeholder="Max"></div><button class="btn" onclick="saveWd()">Save limits</button></div>
+  <div class="card"><h2>Per refer reward</h2><p class="mut" style="margin:4px 0">Amount a user earns for each verified refer. Enter a number like 5, or a range like 2-5 for a random amount.</p><input id="pr" placeholder="e.g. 5 or 2-5" autocapitalize="off"><button class="btn" onclick="saveRef()">Save per refer</button></div>
+  <div class="card"><h2>Withdraw limits</h2><p class="mut" style="margin:4px 0">Smallest and largest voucher a user can withdraw at one time.</p><div class="two"><input id="wMin" inputmode="decimal" placeholder="Min amount"><input id="wMax" inputmode="decimal" placeholder="Max amount"></div><button class="btn" onclick="saveWd()">Save limits</button></div>
   <div class="card"><h2>Sign-up bonus</h2><p class="mut" style="margin:4px 0">Every new user gets this amount one time only, when they first start the bot. Enter 0 to turn it off.</p><input id="sb" inputmode="decimal" placeholder="Bonus amount in rupees"><button class="btn" onclick="saveBonus()">Save sign-up bonus</button><div class="mut" id="sbNow" style="margin-top:8px"></div></div>
   <div class="card"><h2>Channels</h2><p class="mut" style="margin:4px 0">Users join one page at a time. When page 1 is joined, page 2 opens. Tap a channel to edit.</p><div class="ptabs" id="ptabs"></div><div id="chList"></div><button class="btn" style="margin-top:12px" onclick="chAddSheet()" id="addTxt">Add channel</button></div>
   <div class="card"><h2>Button gates</h2><p class="mut" style="margin:4px 0">Switch channel join ON or OFF for each button or tab.</p><div id="gateList"></div></div>
@@ -299,11 +305,12 @@ function paint(d){document.title=d.brand||d.bot||"Play & Earn";const h=HEAD[cur]
  renderTx(d.activity||[]);
 }
 let ACT=[];
-function renderTx(a){ACT=a;$("txList").innerHTML=txH(a,10);$("hList").innerHTML=txH(a,5)}
+function vH(a){const l=a.map((x,i)=>[x,i]).filter(([x])=>x.v).slice(0,5);return l.length?l.map(([x,i])=>`<div class="li" data-vi="${i}"><div class="ic"><svg class="i"><use href="#g-gift"/></svg></div><div class="f" style="flex:1;min-width:0"><b style="font-size:12.5px;font-family:ui-monospace,Menlo,monospace">${esc(x.v.slice(0,12))}...</b><div class="mut">${esc(x.d||"")} &middot; tap to open</div></div><div class="a">&#8377;${-x.a}</div></div>`).join(""):'<div class="empty">No vouchers yet. Withdraw to get your first voucher.</div>'}
+function renderTx(a){ACT=a;$("vList").innerHTML=vH(a);$("txList").innerHTML=txH(a,10);$("hList").innerHTML=txH(a,5)}
 function txH(a,n){return a.length?a.slice(0,n).map((x,ix)=>{const ng=x.a<0,ic=/withdraw/i.test(x.t)?"up":/gift/i.test(x.t)?"gift":/friend|refer/i.test(x.t)?"users":/bonus/i.test(x.t)?"gift":"coin";return `<div class="li"${x.v?` data-vi="${ix}"`:""}><div class="ic${ng?" n":""}"><svg class="i"><use href="#g-${ic}"/></svg></div><div class="f" style="flex:1;min-width:0"><b style="font-size:14px">${esc(x.t)}</b><div class="mut">${esc(x.d||"")}${x.v?" &middot; tap for voucher":""}</div></div><div class="a${ng?" n":""}">${x.a>0?"+":""}&#8377;${x.a}</div></div>`}).join(""):'<div class="empty">No transactions yet. Invite friends or redeem a gift code to start earning.</div>'}
-document.addEventListener("click",e=>{const r=e.target.closest(".li[data-vi]");if(!r)return;const x=ACT[+r.dataset.vi];if(x&&x.v)voucher({id:x.v,brand:me.brand||me.bot,bot:me.bot,amount:-x.a,gateway:x.g,to:x.to,date:x.d,time:x.tm},true)});
+document.addEventListener("click",e=>{const r=e.target.closest(".li[data-vi]");if(!r)return;const x=ACT[+r.dataset.vi];if(x&&x.v)voucher({id:x.v,brand:me.brand||me.bot,bot:me.bot,amount:-x.a,date:x.d,time:x.tm},true)});
 function voucher(v,quiet){if(!quiet){snd.win();burst(120)}else snd.pop();
- sheet("Withdrawal voucher",`<div class="vch"><div class="vpaid">PAID</div><div class="vtop"><svg class="i"><use href="#g-crown"/></svg><b>${esc(v.brand||v.bot)}</b><small>@${esc(v.bot||"")}</small></div><div class="vamt">&#8377;${rs(v.amount)}</div><div class="vst">WITHDRAWAL SUCCESSFUL</div><div class="vperf"></div><div class="vrow"><span>Voucher ID</span><b class="vid">${esc(v.id)}</b></div><div class="vrow"><span>Date</span><b>${esc(v.date||"")}${v.time?" &middot; "+esc(v.time):""}</b></div><div class="vrow"><span>Paid to</span><b>${esc(v.to||"-")}</b></div><div class="vrow"><span>Method</span><b>${esc(v.gateway||"-")}</b></div><div class="vrow"><span>Bot</span><b>${esc(v.brand||v.bot)}</b></div></div><div class="sbtns"><button class="btn sm" onclick="copyText('${esc(v.id)}','Voucher ID copied')">Copy ID</button><button class="btn y sm" onclick="closeSheet()">Done</button></div>`)}
+ sheet("Your voucher",`<div class="vch"><div class="vpaid">ISSUED</div><div class="vtop"><svg class="i"><use href="#g-crown"/></svg><b>${esc(v.brand||v.bot)}</b><small>@${esc(v.bot||"")}</small></div><div class="vamt">&#8377;${rs(v.amount)}</div><div class="vst">WITHDRAWAL VOUCHER</div><div class="vperf"></div><div class="vrow"><span>Voucher ID</span><b class="vid">${esc(v.id)}</b></div><div class="vrow"><span>Value</span><b>&#8377;${rs(v.amount)}</b></div><div class="vrow"><span>Date</span><b>${esc(v.date||"")}${v.time?" &middot; "+esc(v.time):""}</b></div><div class="vrow"><span>Status</span><b style="color:var(--g)">Issued</b></div><div class="vrow"><span>Bot</span><b>${esc(v.brand||v.bot)}</b></div></div><div class="sbtns"><button class="btn sm" onclick="copyText('${esc(v.id)}','Voucher ID copied')">Copy ID</button><button class="btn y sm" onclick="closeSheet()">Done</button></div>`)}
 async function refresh(manual){const d=await apiRetry({a:"me"});
  if(!d.ok){$("splash").classList.add("off");if(manual||!me.ok){$("diagT").textContent=d.error||LASTERR||"Could not load data";$("diag").classList.remove("hide")}return}
  $("diag").classList.add("hide");me=Object.assign({},me,d);paint(me);
@@ -342,20 +349,17 @@ function copy(){copyText(me.link||"","Link copied")}function copyText(t,msg){(na
 function share(){guard("btn_share",()=>{const u="https://t.me/share/url?url="+encodeURIComponent(me.link||"")+"&text="+encodeURIComponent("Join and earn real rewards! Use my link:");tg?tg.openTelegramLink(u):open(u)})}
 function openCh(){const l=me.channel;l?openLink(l):toast("Channel not set yet","err")}
 
-/* ---- withdraw (all inside the app) ---- */
-let WD=null,WK="wallet";
-async function openWd(){const d=await apiRetry({a:"wd_info"});if(!d.ok)return toast(d.error||"Failed","err");WD=d;WK=d.wallet.on?"wallet":(d.upi.on?"upi":"");wdRender()}
-function wdRender(){const d=WD;if(!WK)return sheet("Withdraw","<p>Withdrawals are switched off right now. Please try again later.</p>");
- const o=d[WK],lab=WK==="upi"?"UPI ID":"wallet number";
- const tabs=(d.wallet.on&&d.upi.on)?`<div class="tabs"><button class="btn sm ${WK==="wallet"?"on":""}" onclick="WK='wallet';wdRender()">Wallet</button><button class="btn sm ${WK==="upi"?"on":""}" onclick="WK='upi';wdRender()">UPI</button></div>`:"";
- const gw=WK==="wallet"?`<select id="wGw">${(o.gws||[]).map(g=>`<option value="${esc(g.key)}">${esc(g.name)}</option>`).join("")}</select>`:"";
- sheet("Withdraw",`<p>Balance: <b style="color:var(--g)">₹${rs(d.balance)}</b> | Min ₹${o.min} | Max ₹${o.max}${o.refNeed?` | Needs ${o.refNeed} refers`:""}</p>${tabs}
- <input id="wAddr" value="${esc(o.linked||"")}" placeholder="Your ${lab}" ${WK==="wallet"?'inputmode="numeric" maxlength="10"':""}><button class="btn sm" style="margin:2px 0 6px" onclick="wdLink()">${o.linked?"Update":"Link"} ${lab}</button>
- ${gw}<input id="wAmt" inputmode="decimal" placeholder="Amount"><button class="btn y" id="wGo" onclick="wdDo()">Withdraw now</button>`)}
-async function wdLink(){const d=await api({a:"wd_link",type:WK,value:$("wAddr").value});if(!d.ok)return toast(d.error||"Failed","err");WD[WK].linked=d.linked;toast("Saved","ok")}
-async function wdDo(){const b=$("wGo");b.disabled=true;const d=await api({a:"wd_do",type:WK,amount:$("wAmt").value,gw:$("wGw")?$("wGw").value:""});b.disabled=false;
- if(d.gate){showGate(d.gate,"btn_withdraw",openWd);return}if(!d.ok)return toast(d.error||"Failed","err");
- if(d.status==="success"&&d.voucher){closeSheet();refresh();setTimeout(()=>voucher(d.voucher),250);return}toast(d.message||"Withdrawal failed","err");closeSheet();refresh()}
+/* ---- withdraw = voucher (channel join is forced first) ---- */
+let WD=null;
+function openWd(){guard("btn_withdraw",wdOpen)}
+async function wdOpen(){const d=await apiRetry({a:"wd_info"});if(!d.ok)return toast(d.error||"Failed","err");WD=d;wdRender()}
+function wdSet(v){$("wAmt").value=v;snd.pop()}
+function wdRender(){const d=WD;if(!d.on)return sheet("Withdraw","<p>Withdrawals are switched off right now. Please try again later.</p>");
+ const mx=Math.min(d.max,d.balance);
+ sheet("Withdraw voucher",`<div class="card" style="text-align:center;padding:12px"><div class="mut">Your balance</div><div class="amt" style="font-size:32px;margin:2px 0"><s>&#8377;</s>${rs(d.balance)}</div><div class="mut">Min &#8377;${d.min} &bull; Max &#8377;${d.max}${d.refNeed?` &bull; Needs ${d.refNeed} refers`:""}</div></div><input id="wAmt" inputmode="decimal" placeholder="Voucher amount"><div class="ptabs"><div class="chip" onclick="wdSet(${d.min})">Min &#8377;${d.min}</div><div class="chip" onclick="wdSet(${mx>0?mx:d.max})">Max &#8377;${mx>0?mx:d.max}</div></div><button class="btn y" id="wGo" onclick="wdDo()">Get voucher</button><p>You get a voucher with a unique ID. Keep it safe.</p>`)}
+async function wdDo(){const b=$("wGo");b.disabled=true;const d=await api({a:"wd_do",amount:$("wAmt").value});b.disabled=false;
+ if(d.gate){showGate(d.gate,"btn_withdraw",wdOpen);return}if(!d.ok)return toast(d.error||"Failed","err");
+ closeSheet();refresh();setTimeout(()=>voucher(d.voucher),250)}
 
 /* ---- colour engine ---- */
 function hsl(h,s,l){s/=100;l/=100;const k=n=>(n+h/30)%12,a=s*Math.min(l,1-l),f=n=>l-a*Math.max(-1,Math.min(k(n)-3,Math.min(9-k(n),1)));return[f(0),f(8),f(4)].map(x=>Math.round(x*255))}
@@ -377,10 +381,11 @@ async function saveColor(){const d=await api({a:"adm_set",f:"WebColor",v:pick});
 /* ---- admin: stats, support channel, name, colour, sign-up bonus ---- */
 async function admLoad(){const d=await api({a:"adm_stats"});if(!d.ok)return toast(d.error||"Failed","err");
  $("a_u").textContent=d.users;$("a_v").textContent=d.verified;$("a_bc").textContent=d.bonusCount;$("a_bt").textContent="₹"+rs(d.bonusTotal);$("a_w").textContent="₹"+rs(d.withdrawn);$("a_wc").textContent=d.withdrawCount;$("a_ch").textContent=d.channels;$("a_pr").textContent="₹"+d.perRef;
- $("sb").value=d.bonus||"";if(d.wd){$("wMin").value=d.wd.wmin;$("wMax").value=d.wd.wmax;$("uMin").value=d.wd.umin;$("uMax").value=d.wd.umax}$("sup").value=d.support||"";$("brandIn").value=d.brand||"";me.channel=d.support||me.channel;
+ $("sb").value=d.bonus||"";$("pr").value=d.perRef;if(d.wd){$("wMin").value=d.wd.wmin;$("wMax").value=d.wd.wmax}$("sup").value=d.support||"";$("brandIn").value=d.brand||"";me.channel=d.support||me.channel;
  $("sbNow").textContent=d.bonus>0?`Now: ₹${d.bonus} per new user. Total given ₹${rs(d.bonusTotal)} to ${d.bonusCount} users.`:"Sign-up bonus is off.";
  pick=d.color||"#0b5a3b";setPick(pick)}
-async function saveWd(){const d=await api({a:"adm_wd_set",wmin:$("wMin").value,wmax:$("wMax").value,umin:$("uMin").value,umax:$("uMax").value});d.ok?toast("Withdraw limits saved","ok"):toast(d.error||"Failed","err")}
+async function saveRef(){const d=await api({a:"adm_set",f:"PerRefer",v:$("pr").value});if(!d.ok)return toast(d.error||"Failed","err");me.perRef=$("pr").value.trim();paint(me);toast("Per refer saved","ok")}
+async function saveWd(){const d=await api({a:"adm_wd_set",wmin:$("wMin").value,wmax:$("wMax").value});d.ok?toast("Withdraw limits saved","ok"):toast(d.error||"Failed","err")}
 async function saveBonus(){const d=await api({a:"adm_set",f:"StartBonus",v:$("sb").value});d.ok?(toast("Sign-up bonus saved","ok"),admLoad()):toast(d.error||"Failed","err")}
 async function saveSup(){const d=await api({a:"adm_set",f:"SavedLinks",v:$("sup").value});if(!d.ok)return toast(d.error||"Failed","err");let v=$("sup").value.trim();if(v[0]==="@")v="https://t.me/"+v.slice(1);me.channel=v;$("sup").value=v;toast(v?"Support channel saved":"Support channel removed","ok")}
 async function saveBrand(){const d=await api({a:"adm_set",f:"WebBrand",v:$("brandIn").value});if(!d.ok)return toast(d.error||"Failed","err");me.brand=$("brandIn").value.trim()||me.bot;paint(me);toast("Name saved","ok")}
@@ -395,7 +400,7 @@ function chRender(){
  $("ptabs").innerHTML=pgChips(n=>`data-p="${n}"`,n=>n===CH.cur)+'<div class="chip" data-p="new">+ New</div>';
  $("addTxt").textContent="Add channel to page "+CH.cur;
  const rows=CH.list.filter(c=>c.page===CH.cur);
- $("chList").innerHTML=rows.length?rows.map(c=>`<div class="chrow" data-id="${esc(c.id)}"><svg class="i md"><use href="#g-plane"/></svg><div class="f"><b>${esc(c.title)}</b><small>${esc(c.name)} - Page ${c.page}</small></div><span class="mut">&#8250;</span></div>`).join(""):'<div class="empty">No channels on this page yet.</div>';
+ $("chList").innerHTML=rows.length?rows.map(c=>`<div class="chrow" data-id="${esc(c.id)}"><svg class="i md"><use href="#g-plane"/></svg><div class="f"><b>${esc(c.title)}</b><small>${esc(c.name)} - Page ${c.page}</small>${c.botok===false?'<small style="color:#ff5d73;display:block">Bot is not admin here. Joins cannot be checked.</small>':""}</div><span class="mut">&#8250;</span></div>`).join(""):'<div class="empty">No channels on this page yet.</div>';
  $("gateList").innerHTML=Object.keys(GLABEL).map(k=>{const g=CH.gates[k]||{on:false,sel:[]};return `<div class="gl"><div class="row"><b class="f">${GLABEL[k]}</b><div class="sw${g.on?" on":""}" data-gsw="${k}"></div></div>`+(g.on?`<div class="ptabs">${pgChips(n=>`data-g="${k}" data-gp="${n}"`,n=>g.sel.includes(n))}</div><div class="mut">${g.sel.length?"Only the selected pages are required.":"All pages are required. Tap pages to choose only some."}</div>`:"")+"</div>"}).join("")}
 document.addEventListener("click",async e=>{
  const t=e.target.closest(".chip[data-p]");if(t){if(t.dataset.p==="new"){const d=await api({a:"adm_page_add"});if(d.ok){CH.pages=d.pages;CH.cur=d.pages;chRender();toast("Page "+d.pages+" added","ok")}}else{CH.cur=+t.dataset.p;chRender()}return}
@@ -404,7 +409,7 @@ document.addEventListener("click",async e=>{
  const ap=e.target.closest(".chip[data-ap]");if(ap){ADDP=+ap.dataset.ap;document.querySelectorAll("#sheet .chip[data-ap]").forEach(x=>x.classList.toggle("on",+x.dataset.ap===ADDP));return}
  const r=e.target.closest(".chrow");if(r)chEdit(r.dataset.id)});
 function chAddSheet(){ADDP=CH.cur;sheet("Add channel",`<p>Add the bot as admin in the channel first.</p><input id="chRef" placeholder="@channel or chat id (-100...)" autocapitalize="off"><input id="chLink" placeholder="Invite link (optional)" autocapitalize="off"><label class="chk"><input type="checkbox" id="chReq"> Create a join-request link</label><h4>Add to page</h4><div class="ptabs">${pgChips(n=>`data-ap="${n}"`,n=>n===ADDP)}</div><button class="btn" style="margin-top:8px" onclick="chAdd()">Add channel</button>`)}
-async function chAdd(){const d=await api({a:"adm_ch_add",ref:$("chRef").value,link:$("chLink").value,req:$("chReq").checked,page:ADDP});if(!d.ok)return toast(d.error||"Failed","err");toast(d.warn?"Added. Set an invite link (private channel)":"Channel added","ok");$("ov").classList.remove("on");CH.cur=ADDP;chLoad()}
+async function chAdd(){const d=await api({a:"adm_ch_add",ref:$("chRef").value,link:$("chLink").value,req:$("chReq").checked,page:ADDP});if(!d.ok)return toast(d.error||"Failed","err");toast(d.botok===false?"Added, but make the bot ADMIN there or joins cannot be checked":(d.warn?"Added. Set an invite link (private channel)":"Channel added"),d.botok===false?"err":"ok");$("ov").classList.remove("on");CH.cur=ADDP;chLoad()}
 function chEdit(id){const c=CH.list.find(x=>x.id===id);if(!c)return;sheet(esc(c.title),`<p>${esc(c.name)} - Page ${c.page}</p><input id="eLink" value="${esc(c.link)}" placeholder="Invite link" autocapitalize="off"><button class="btn" onclick="chSetLink('${esc(id)}')">Save link</button><button class="btn sm" style="margin-top:8px" onclick="chReq('${esc(id)}')">Make join-request link</button><h4>Move to page</h4><div class="ptabs">${pgChips(n=>`onclick="chSetPage('${esc(id)}',${n})"`,n=>n===c.page)}</div><div class="sbtns"><button class="btn sm" onclick="chMove('${esc(id)}','up')">Move up</button><button class="btn sm" onclick="chMove('${esc(id)}','down')">Move down</button></div><button class="btn dang" onclick="chDel('${esc(id)}')">Remove channel</button>`)}
 async function chSetLink(id){const d=await api({a:"adm_ch_link",id,link:$("eLink").value});if(d.ok){toast("Link saved","ok");$("ov").classList.remove("on");chLoad()}else toast(d.error||"Failed","err")}
 async function chReq(id){const d=await api({a:"adm_ch_reqlink",id});if(d.ok){toast("Join-request link created","ok");$("ov").classList.remove("on");chLoad()}else toast(d.error||"Failed","err")}
