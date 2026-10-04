@@ -135,27 +135,36 @@ canvas#fx{position:fixed;inset:0;pointer-events:none;z-index:150}
 @keyframes sh{to{background-position:-200%}}
 .hide{display:none!important}
 
-#gate{position:fixed;inset:0;z-index:120;background:linear-gradient(180deg,var(--bg1),var(--bg2));display:none;overflow-y:auto;padding:calc(18px + env(safe-area-inset-top,0px)) 16px calc(24px + env(safe-area-inset-bottom,0px))}
-#gate.on{display:block;animation:in .4s cubic-bezier(.2,.9,.3,1)}
-.gbox{max-width:520px;margin:0 auto;background:var(--card);color:var(--ink);border-radius:34px;padding:22px 18px;box-shadow:0 18px 40px rgba(0,0,0,.4);text-align:center}
-.gtop{display:flex;justify-content:space-between;align-items:center;min-height:40px}
-.gtop .cnt{margin:0}.gtop button{width:40px;height:40px;border-radius:50%;border:0;background:rgba(0,0,0,.07);color:var(--ink);font-size:20px;display:grid;place-items:center}
-.gico{width:84px;height:84px;margin:6px auto 10px;border-radius:50%;background:linear-gradient(135deg,var(--y1),var(--y2));display:grid;place-items:center;font-size:40px;color:#1a1000;border:5px solid #fff;box-shadow:0 0 0 3px var(--y2),0 10px 22px rgba(255,150,0,.45)}
-.gbox h2{font-size:26px;font-weight:900}
-.gdots{display:flex;gap:8px;justify-content:center;margin:14px 0}.gdots i{width:34px;height:8px;border-radius:8px;background:rgba(0,0,0,.14)}.gdots i.done{background:var(--ok)}.gdots i.on{background:linear-gradient(90deg,var(--y1),var(--y2))}
-.gch{display:flex;align-items:center;gap:12px;padding:12px;border:1.5px solid var(--line);border-radius:22px;margin:10px 0;text-align:left}
-.chav{width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,var(--g1),var(--g2));color:var(--y1);font-weight:900;font-size:20px;display:grid;place-items:center;flex:none;overflow:hidden;position:relative;border:2px solid var(--y1)}
-.chav img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
-.gch .t{flex:1;min-width:0}.gch .t b{display:block;font-size:15.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.gch .t small{color:var(--mut);font-size:12.5px}
-.gch .btn{width:auto;padding:10px 20px;font-size:14px;letter-spacing:.3px}
-#gVer{margin-top:14px}
+#gate{position:fixed;inset:0;z-index:120;background:rgba(2,28,17,.58);backdrop-filter:blur(7px);-webkit-backdrop-filter:blur(7px);display:none;align-items:center;justify-content:center;padding:calc(16px + env(safe-area-inset-top,0px)) 16px calc(16px + env(safe-area-inset-bottom,0px))}
+#gate.on{display:flex;animation:in .4s cubic-bezier(.2,.9,.3,1)}
+.gcard{width:100%;max-width:500px;max-height:100%;display:flex;flex-direction:column;background:var(--card);color:var(--ink);border-radius:40px;padding:22px 20px 20px;box-shadow:0 24px 60px rgba(0,0,0,.5)}
+.ghead{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+.ghead:before{content:"";width:8px;height:34px;border-radius:6px;background:linear-gradient(var(--y1),var(--y2));box-shadow:0 0 12px rgba(255,170,0,.7);flex:none}
+.ghead h2{flex:1;font-size:27px;font-weight:900}
+.ghead button{width:54px;height:54px;border-radius:50%;border:0;background:#eceff6;color:#5b6783;font-size:24px;display:grid;place-items:center}
+.gintro{border:2px solid var(--line);border-radius:32px;padding:18px 16px;text-align:center;flex:none}
+.gpill{display:inline-block;background:linear-gradient(var(--y1),var(--y2));color:#1a1000;font-weight:900;font-size:15px;letter-spacing:.8px;padding:9px 20px;border-radius:999px;border:3px solid #fff;box-shadow:0 4px 10px rgba(255,150,0,.35)}
+.gintro h3{font-size:25px;font-weight:900;margin:12px 0 6px}
+.gintro p{font-size:15.5px;line-height:1.35;font-weight:600}
+.gmeta{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:14px 2px 10px;font-size:13.5px;font-weight:700;flex:none;white-space:nowrap}
+.gmeta b{font-weight:900}
+.ggrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;overflow-y:auto;min-height:0;flex:1;padding:4px 2px 8px;-webkit-overflow-scrolling:touch}
+.gc{min-width:0;border:2px solid var(--line);border-radius:32px;padding:16px 12px 14px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:6px;background:var(--card)}
+.gc.ok{border-color:var(--ok)}
+.gic{width:62px;height:62px;border-radius:21px;background:linear-gradient(var(--y1),var(--y2));display:grid;place-items:center;box-shadow:0 6px 14px rgba(255,150,0,.35)}
+.gic span{width:36px;height:36px;border-radius:50%;background:#10161d;color:#fff;display:grid;place-items:center;font-size:20px}
+.gc b{max-width:100%;font-size:17px;font-weight:900;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:4px}
+.gc small{font-size:15px;font-weight:700}
+.gc .btn{padding:13px 10px;font-size:16px;margin-top:8px}
+.gc.ok .btn{background:linear-gradient(#34d399,var(--ok));color:#04281c;box-shadow:0 6px 14px rgba(18,184,134,.4);opacity:1}
+#gVer{margin-top:14px;flex:none;font-size:19px;padding:20px}
 .ptabs{display:flex;gap:8px;overflow-x:auto;padding:12px 0 6px;scrollbar-width:none}.ptabs::-webkit-scrollbar{display:none}
 .chip{flex:none;padding:9px 16px;border-radius:999px;border:2px solid var(--line);background:#fff;color:#0b4b33;font-weight:800;font-size:14px;cursor:pointer;transition:all .25s}
 .chip.on{background:linear-gradient(var(--y1),var(--y2));color:#1a1000;border-color:#fff;box-shadow:0 4px 10px rgba(255,150,0,.4)}
 .chrow{display:flex;align-items:center;gap:12px;padding:12px 4px;border-bottom:1px solid var(--line);cursor:pointer}.chrow:last-child{border:0}
 .chrow .t{flex:1;min-width:0}.chrow .t b{display:block;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.chrow .t small{color:var(--mut);font-size:12px}
 .chrow .go{opacity:.45;font-size:20px}
-.gl{padding:12px 0;border-bottom:1px solid var(--line)}.gl:last-child{border:0}.gl b{display:block;font-size:15px;margin-bottom:8px}.gl .ptabs{padding:0}
+.grow{display:flex;align-items:center;gap:10px}.grow b{margin:0!important}.gl{padding:12px 0;border-bottom:1px solid var(--line)}.gl:last-child{border:0}.gl b{display:block;font-size:15px;margin-bottom:8px}.gl .ptabs{padding:0}
 .dang{background:linear-gradient(#ff7a7a,#e0343f);color:#fff;box-shadow:0 8px 18px rgba(224,52,63,.4)}
 .sbtns{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0}
 .sbtns .btn{width:100%}
@@ -203,12 +212,12 @@ canvas#fx{position:fixed;inset:0;pointer-events:none;z-index:150}
 <div id="splash"><div class="coin" id="spCoin"><svg class="ic"><use href="#i-rupee"/></svg></div><div class="bar"><i></i></div></div>
 <div id="diag" class="hide"><span id="diagT"></span><button onclick="refresh(true)">Retry</button></div>
 <canvas id="fx"></canvas><div id="toast"></div>
-<div id="gate"><div class="gbox">
- <div class="gtop"><span></span><button id="gX" class="hide" onclick="gateClose()"><svg class="ic"><use href="#i-x"/></svg></button></div>
- <div class="gico"><svg class="ic"><use href="#i-lock"/></svg></div>
- <h2>Join Our Channels</h2><p class="muted" id="gSub">Join all channels below to continue.</p>
- <div id="gList"></div>
- <button class="btn" id="gVer" onclick="gateVerify()"><svg class="ic"><use href="#i-check"/></svg>I HAVE JOINED - VERIFY</button></div></div>
+<div id="gate"><div class="gcard">
+ <div class="ghead"><h2 id="gTitle">Step 1 of 1</h2><button id="gX" class="hide" onclick="gateClose()"><svg class="ic"><use href="#i-x"/></svg></button></div>
+ <div class="gintro"><span class="gpill" id="gPill">STEP 1 OF 1</span><h3>Join Required Channels</h3><p id="gSub">Join all channels to continue.</p></div>
+ <div class="gmeta"><span>Completed Channels: <b id="gDone">0/0</b></span><b>100% Free Task</b></div>
+ <div class="ggrid" id="gList"></div>
+ <button class="btn" id="gVer" onclick="gateVerify()">CONTINUE <svg class="ic"><use href="#i-right"/></svg></button></div></div>
 <div id="ov" onclick="closeSheet()"></div>
 <div id="sheet"><div class="grab"></div><div class="sh"><h2 id="shT">Title</h2><button onclick="closeSheet()"><svg class="ic"><use href="#i-x"/></svg></button></div><div id="sbody"></div></div>
 
@@ -293,7 +302,7 @@ canvas#fx{position:fixed;inset:0;pointer-events:none;z-index:150}
    <div class="ptabs" id="ptabs"></div><div id="chList"></div>
    <input id="chRef" placeholder="@channel or chat id (-100...)"><input id="chLink" placeholder="Invite link (optional)">
    <button class="btn" onclick="chAdd()"><svg class="ic"><use href="#i-plus"/></svg><span id="addTxt">ADD TO PAGE 1</span></button></div>
-  <div class="card"><h3>Button Gates</h3><p class="muted" style="margin:8px 0 4px">Choose which channel pages must be joined before a button or tab works. App start uses all pages by default.</p><div id="gateList"></div></div>
+  <div class="card"><h3>Button Gates</h3><p class="muted" style="margin:8px 0 4px">Switch channel join ON or OFF for each button or tab. When ON, users must join the channels (page by page) before it works.</p><div id="gateList"></div></div>
   <div class="card"><h3>Add / Remove Balance</h3><input id="bt" inputmode="numeric" placeholder="User ID"><input id="ba" inputmode="decimal" placeholder="Amount (negative to deduct)"><button class="btn" onclick="admBal()"><svg class="ic"><use href="#i-plus"/></svg>APPLY</button></div>
   <div class="card"><h3>Create Gift Code</h3><input id="gc" placeholder="Code (no spaces)"><input id="ga" inputmode="numeric" placeholder="Amount"><input id="gm" inputmode="numeric" placeholder="Max users"><input id="gr" inputmode="numeric" placeholder="Min refers needed (0 = none)"><button class="btn" onclick="admGift()"><svg class="ic"><use href="#i-ticket"/></svg>CREATE CODE</button></div>
   <div class="card"><h3>Message a User</h3><input id="mt" inputmode="numeric" placeholder="User ID"><input id="mm" placeholder="Message"><button class="btn" onclick="admMsg()"><svg class="ic"><use href="#i-send"/></svg>SEND</button></div>
@@ -485,7 +494,7 @@ async function refresh(manual){
 }
 /* Admin tab exists ONLY if the bot says this user is an admin */
 function adminNav(is){ const ex=$("navAdm"); if(is&&!ex){ const b=document.createElement("button"); b.id="navAdm"; b.dataset.t="admin"; b.innerHTML=ic("shield")+"Admin"; $("nav").appendChild(b); }
-  if(!is){ if(ex) ex.remove(); const v=$("v-admin"); if(v) v.remove(); } }
+  if(!is){ if(ex) ex.remove(); if(cur==="admin") doGo("home"); } }
 function renderAct(a){ const el=$("actList"); if(!a.length){ el.innerHTML='<div class="empty">No recent activity yet. Invite friends or complete offers to earn!</div>'; return; }
   el.innerHTML=a.slice(0,8).map(x=>`<div class="li"><div class="ico ${/gift/i.test(x.t)?"p":/friend/i.test(x.t)?"b":"g"}">${ic(/gift/i.test(x.t)?"ticket":/friend/i.test(x.t)?"users":"rupee")}</div><div class="t"><b>${esc(x.t)}</b><small>${esc(x.d||"")}</small></div><div class="a">${x.a>0?"+":""}₹${x.a}</div></div>`).join(""); }
 
@@ -505,13 +514,16 @@ let GATES={}, GK=null, GCB=null, GPAGE=null;
 async function guard(key,fn){ if(GATES[key]){ const d=await api({a:"gate",key}); if(d.ok&&d.gate){ showGate(d.gate,key,fn); return; } } fn(); }
 function chAvatar(c){ const L=esc((c.title||c.name||"C")[0].toUpperCase()); const u=c.av?"/api/logo?u="+encodeURIComponent(c.av):""; return `<div class="chav">${L}${u?`<img src="${u}" onerror="this.remove()">`:""}</div>`; }
 function showGate(g,key,cb){ GK=key; GCB=cb||null; renderGate(g); $("gX").classList.toggle("hide",key==="start"); if(!$("gate").classList.contains("on")){ $("gate").classList.add("on"); snd.up(); } $("splash").classList.add("off"); }
-function renderGate(g){ GPAGE=g.page; $("gSub").textContent="Join all channels below to continue.";
-  $("gList").innerHTML=g.channels.map((c,i)=>`<div class="gch">${chAvatar(c)}<div class="t"><b>${esc(c.title)}</b><small>${esc(c.name)}</small></div><button class="btn" data-l="${i}">Join</button></div>`).join("");
-  $("gList").querySelectorAll("button[data-l]").forEach((b,i)=>b.onclick=()=>openLinkSmart(g.channels[i].link)); }
+function renderGate(g){ GPAGE=g.page; const t="Step "+g.step+" of "+g.steps;
+  $("gTitle").textContent=t; $("gPill").textContent=t.toUpperCase();
+  $("gSub").textContent="Join all channels in Step "+g.step+(g.step<g.steps?" to unlock the next step.":" to continue.");
+  $("gDone").textContent=g.done+"/"+g.total;
+  $("gList").innerHTML=g.channels.map((c,i)=>`<div class="gc${c.joined?" ok":""}"><div class="gic"><span>${ic("tg")}</span></div><b>${esc(c.title)}</b><small>${c.joined?"Joined":(c.opt?"Optional":"Required")}</small>${c.joined?`<button class="btn" disabled>${ic("check")}JOINED</button>`:`<button class="btn" data-l="${i}">JOIN ${ic("chev")}</button>`}</div>`).join("");
+  $("gList").querySelectorAll("button[data-l]").forEach(b=>b.onclick=()=>openLinkSmart(g.channels[+b.dataset.l].link)); }
 function openLinkSmart(l){ if(!l) return; try{ (/t\.me/.test(l)&&tg)?tg.openTelegramLink(l):(tg?tg.openLink(l):open(l)); }catch(e){ open(l); } }
 async function gateVerify(silent){ const b=$("gVer"); b.disabled=true; const d=await apiRetry({a:"gate",key:GK}); b.disabled=false;
   if(!d.ok) return;
-  if(d.gate){ const nextPage=d.gate.page!==GPAGE; renderGate(d.gate); if(!silent){ if(nextPage){ snd.win(); burst(); toast("Great! Join the next channels","ok"); } else toast("Join all channels first","err"); } return; }
+  if(d.gate){ const nextPage=d.gate.page!==GPAGE; renderGate(d.gate); if(!silent){ if(nextPage){ snd.win(); burst(); toast("Step complete! Next step unlocked","ok"); } else toast("Join all channels first","err"); } return; }
   const cb=GCB, k=GK; $("gate").classList.remove("on"); GK=null; GCB=null; snd.win(); burst(); toast("All channels joined","ok");
   if(k==="start") refresh(); if(cb) setTimeout(cb,350); }
 function gateClose(){ if(GK==="start") return; $("gate").classList.remove("on"); GK=null; GCB=null; snd.down(); }
@@ -526,11 +538,15 @@ function chRender(){
   $("addTxt").textContent="ADD TO PAGE "+CH.cur;
   const rows=CH.list.filter(c=>c.page===CH.cur);
   $("chList").innerHTML=rows.length?rows.map(c=>`<div class="chrow" data-id="${esc(c.id)}">${chAvatar(c)}<div class="t"><b>${esc(c.title)}</b><small>${esc(c.name)}</small></div><svg class="ic go"><use href="#i-chev"/></svg></div>`).join(""):'<div class="empty">No channels on this page yet.</div>';
-  $("gateList").innerHTML=Object.keys(GLABEL).map(k=>`<div class="gl"><b>${GLABEL[k]}</b><div class="ptabs">${Array.from({length:CH.pages},(_,i)=>`<div class="chip${(CH.gates[k]||[]).includes(i+1)?" on":""}" data-g="${k}" data-gp="${i+1}">Page ${i+1}</div>`).join("")}</div></div>`).join(""); }
+  $("gateList").innerHTML=Object.keys(GLABEL).map(k=>{ const g=CH.gates[k]||{on:false,sel:[]};
+    return `<div class="gl"><div class="grow"><b>${GLABEL[k]}</b><div class="sw${g.on?" on":""}" data-gsw="${k}"></div></div>`+
+      (g.on?`<div class="ptabs" style="margin-top:10px">${Array.from({length:CH.pages},(_,i)=>`<div class="chip${g.sel.includes(i+1)?" on":""}" data-g="${k}" data-gp="${i+1}">Page ${i+1}</div>`).join("")}</div><div class="muted" style="font-size:12.5px;margin-top:4px">${g.sel.length?"Only the selected pages are required.":"All pages are required (tap pages to choose only some)."}</div>`:"")+`</div>`; }).join(""); }
 document.addEventListener("click",async e=>{
   const t=e.target.closest(".chip[data-p]"); if(t){ if(t.dataset.p==="new"){ const d=await api({a:"adm_page_add"}); if(d.ok){ CH.pages=d.pages; CH.cur=d.pages; snd.coin(); chRender(); toast("Page "+d.pages+" added","ok"); } } else { CH.cur=+t.dataset.p; snd.pop(); chRender(); } return; }
-  const g=e.target.closest(".chip[data-g]"); if(g){ const k=g.dataset.g,p=+g.dataset.gp; let a=(CH.gates[k]||[]).slice(); a=a.includes(p)?a.filter(x=>x!==p):a.concat(p); a.sort((x,y)=>x-y);
-    const d=await api({a:"adm_gate_set",key:k,pages:a}); if(d.ok){ CH.gates[k]=a; snd.pop(); chRender(); if(k!=="start"){ if(a.length) GATES[k]=a; else delete GATES[k]; } toast(GLABEL[k]+": "+(a.length?"pages "+a.join(", "):"no gate"),"ok"); } else toast(d.error||"Failed","err"); return; }
+  const sw=e.target.closest(".sw[data-gsw]"); if(sw){ const k=sw.dataset.gsw; const cur=CH.gates[k]||{on:false,sel:[]}; const on=!cur.on;
+    const d=await api({a:"adm_gate_set",key:k,on}); if(d.ok){ CH.gates[k]={on,sel:cur.sel}; snd.pop(); chRender(); refresh(); toast(GLABEL[k]+": channel join "+(on?"ON":"OFF"),"ok"); } else toast(d.error||"Failed","err"); return; }
+  const g=e.target.closest(".chip[data-g]"); if(g){ const k=g.dataset.g,pn=+g.dataset.gp; const cur=CH.gates[k]||{on:true,sel:[]}; let a=cur.sel.slice(); a=a.includes(pn)?a.filter(x=>x!==pn):a.concat(pn); a.sort((x,y)=>x-y);
+    const d=await api({a:"adm_gate_set",key:k,pages:a}); if(d.ok){ CH.gates[k]={on:cur.on,sel:a}; snd.pop(); chRender(); refresh(); toast(GLABEL[k]+": "+(a.length?"pages "+a.join(", "):"all pages"),"ok"); } else toast(d.error||"Failed","err"); return; }
   const r=e.target.closest(".chrow"); if(r) chEdit(r.dataset.id); });
 async function chAdd(){ const d=await api({a:"adm_ch_add",ref:$("chRef").value,link:$("chLink").value,page:CH.cur});
   if(!d.ok) return toast(d.error||"Failed","err"); snd.win(); toast(d.warn?"Added. Set an invite link (private channel)":"Channel added","ok"); $("chRef").value=""; $("chLink").value=""; chLoad(); }
