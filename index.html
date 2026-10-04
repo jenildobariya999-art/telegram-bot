@@ -1,688 +1,277 @@
 <!DOCTYPE html>
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
-<title>Refer & Earn</title>
+<title>Play &amp; Earn</title>
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
-<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
 <style>
-:root{--g1:#0d6b45;--g2:#052f1f;--bg1:#0b5a3b;--bg2:#042a1b;--y1:#ffe14d;--y2:#ff9a00;--ink:#0b4b33;--card:#f8fcf9;--mut:#5f7a6c;--ok:#12b886;--line:rgba(0,0,0,.08)}
-*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;font-family:"Segoe UI",system-ui,-apple-system,Roboto,sans-serif}
-body{background:linear-gradient(180deg,var(--bg1),var(--bg2)) fixed;color:#fff;overflow-x:hidden;user-select:none;min-height:100vh}
-#app{max-width:520px;margin:0 auto;padding-bottom:calc(108px + env(safe-area-inset-bottom,0px))}
-.ic{width:1em;height:1em;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex:none;vertical-align:-.14em}
-.top{position:sticky;top:0;z-index:20;background:var(--card);color:var(--ink);border-radius:0 0 34px 34px;padding:calc(14px + env(safe-area-inset-top,0px)) 18px 16px;display:flex;align-items:center;gap:12px;box-shadow:0 10px 30px rgba(0,0,0,.28)}
-.logo{width:52px;height:52px;border-radius:50%;flex:none;background:radial-gradient(circle at 30% 25%,var(--g1),var(--g2));display:grid;place-items:center;font-size:24px;font-weight:900;color:var(--y1);border:3px solid var(--y1);box-shadow:0 0 0 2px #fff,0 6px 14px rgba(0,0,0,.25);overflow:hidden}
-.logo img,.coin img{width:100%;height:100%;object-fit:cover;border-radius:50%}
-.tt{flex:1;min-width:0}.tt h1{font-size:21px;line-height:1.1;font-weight:900;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.tt small{display:block;margin-top:3px;font-size:11.5px;font-weight:900;letter-spacing:1px}
-.pill{display:flex;align-items:center;gap:9px;background:linear-gradient(var(--y1),var(--y2));color:#1a1000;font-weight:900;font-size:18px;border-radius:999px;padding:7px 18px 7px 7px;box-shadow:0 5px 14px rgba(255,154,0,.45)}
-.pill i{width:30px;height:30px;border-radius:50%;background:#fff;color:var(--y2);display:grid;place-items:center;font-size:17px}
-.view{display:none;padding:16px;gap:16px;flex-direction:column}
-.view.on{display:flex;animation:in .45s cubic-bezier(.2,.9,.3,1)}
-@keyframes in{from{opacity:0;transform:translateY(18px) scale(.985)}to{opacity:1;transform:none}}
-.card{background:var(--card);color:var(--ink);border-radius:30px;padding:20px;box-shadow:0 12px 30px rgba(0,0,0,.28);position:relative;overflow:hidden}
-.card h3{font-size:13px;font-weight:900;letter-spacing:1.1px;text-transform:uppercase;display:flex;align-items:center;gap:10px}
-.card h3:before{content:"";width:7px;height:24px;border-radius:5px;background:linear-gradient(var(--y1),var(--y2));box-shadow:0 0 10px rgba(255,170,0,.7);flex:none}
-.muted{color:var(--mut);font-size:14px;line-height:1.5}
-.sec{font-size:23px;font-weight:900;display:flex;align-items:center;gap:10px;padding:2px 4px}
-.sec:before{content:"";width:7px;height:28px;border-radius:5px;background:linear-gradient(var(--y1),var(--y2));box-shadow:0 0 12px rgba(255,170,0,.7)}
-.sec .sp{flex:1}
-.btn{position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;gap:10px;width:100%;border:0;border-radius:999px;padding:17px;font-size:16px;font-weight:900;letter-spacing:1px;color:#1a1000;background:linear-gradient(var(--y1),var(--y2));box-shadow:0 8px 20px rgba(255,150,0,.45),inset 0 -3px 0 rgba(0,0,0,.12);cursor:pointer;transition:transform .15s,filter .15s}
-.btn:active{transform:scale(.96);filter:brightness(.95)}
-.btn .ic{font-size:19px;stroke-width:2.6}
-.btn.sm{width:auto;padding:11px 18px;font-size:14px;letter-spacing:.3px}
-.btn[disabled]{opacity:.6;pointer-events:none}
-.rip{position:absolute;border-radius:50%;background:rgba(255,255,255,.55);transform:scale(0);animation:rip .6s ease-out;pointer-events:none}
-@keyframes rip{to{transform:scale(4);opacity:0}}
-.hello{display:flex;align-items:center;gap:12px;padding:0 6px}
-.av{width:46px;height:46px;border-radius:50%;background:linear-gradient(135deg,var(--y1),var(--y2));color:#1a1000;font-weight:900;display:grid;place-items:center;border:2px solid #fff;overflow:hidden;flex:none;font-size:19px}
-.av img{width:100%;height:100%;object-fit:cover}
-.hello b{font-size:18px}.hello small{display:block;opacity:.75;font-size:12px}
-/* ---- fixed slider: native scroll-snap, swipe + autoplay ---- */
-.banner{padding:12px;background:var(--card);border-radius:36px;box-shadow:0 12px 30px rgba(0,0,0,.28)}
-.slides{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;-webkit-overflow-scrolling:touch;border-radius:28px;gap:0}
-.slides::-webkit-scrollbar{display:none}
-.slide{flex:0 0 100%;scroll-snap-align:center;scroll-snap-stop:always;padding:18px;border-radius:28px;background:radial-gradient(circle at 90% 0,rgba(255,225,77,.22),transparent 45%),linear-gradient(135deg,var(--g1),var(--g2));display:flex;flex-direction:column;gap:10px;min-height:210px;position:relative;overflow:hidden}
-.srow{display:flex;justify-content:space-between;align-items:center;gap:8px}
-.tag{display:inline-flex;gap:7px;align-items:center;background:linear-gradient(var(--y1),var(--y2));color:#1a1000;font-weight:900;font-size:13px;padding:7px 14px;border-radius:999px;border:2px solid #fff;white-space:nowrap}
-.tag.o{background:rgba(0,0,0,.35);color:var(--y1);border:1px solid rgba(255,255,255,.12)}
-.slide h2{font-size:27px;line-height:1.12;font-weight:900;max-width:82%;margin-top:4px}
-.slide p{font-size:14.5px;opacity:.9;max-width:72%;line-height:1.4}
-.sfoot{margin-top:auto;display:flex;justify-content:flex-end}
-.slide .btn{width:auto;padding:12px 20px;font-size:15px}
-.slide .deco{position:absolute;right:14px;top:62px;font-size:64px;color:var(--y1);opacity:.9;animation:fl 3s ease-in-out infinite;filter:drop-shadow(0 6px 10px rgba(0,0,0,.4))}
-@keyframes fl{50%{transform:translateY(-8px) rotate(6deg)}}
-.dots{display:flex;gap:7px;justify-content:center;margin-top:11px}.dots i{width:10px;height:10px;border-radius:10px;background:rgba(0,0,0,.2);transition:all .4s}.dots i.on{width:32px;background:linear-gradient(var(--y1),var(--y2))}
-.bal{text-align:center}
-.bal .r0{display:flex;justify-content:space-between;align-items:center}
-.ref{width:44px;height:44px;border-radius:50%;border:1px solid #d9e8df;background:#fff;color:var(--ink);font-size:21px;display:grid;place-items:center;box-shadow:0 3px 8px rgba(0,0,0,.08)}
-.ref.spin .ic{animation:sp .8s linear infinite}@keyframes sp{to{transform:rotate(360deg)}}
-.amt{font-size:60px;font-weight:900;margin:14px 0 18px;letter-spacing:-1px;display:flex;justify-content:center;align-items:baseline;gap:4px}
-.amt span{color:var(--y2);font-size:42px}
-.two{display:grid;grid-template-columns:1fr 1fr;gap:14px}
-.stat b{display:block;font-size:36px;font-weight:900;margin-top:12px}.stat b.g{color:var(--ok)}
-.li{display:flex;align-items:center;gap:13px;padding:13px 4px;border-bottom:1px solid var(--line);color:var(--ink)}
-.li:last-child{border:0}
-.ico{width:44px;height:44px;border-radius:15px;display:grid;place-items:center;font-size:22px;background:#fff1c7;color:#b86e00;flex:none}
-.ico.b{background:#dff1ff;color:#1c8ee0}.ico.g{background:#dff7ea;color:#0f9d63}.ico.p{background:#f3e5ff;color:#8a3fd1}.ico.r{background:#ffe5e5;color:#d6404a}
-.li .t{flex:1;min-width:0}.li .t b{display:block;font-size:15px}.li .t small{color:var(--mut);font-size:12px}
-.li .a{font-weight:900;color:var(--ok)}
-.empty{text-align:center;padding:14px 6px;font-weight:700;opacity:.85}
-.hero{text-align:center}.hero h2{font-size:31px;font-weight:900;margin:14px 0 8px}.hero h2 span{color:var(--y2)}
-.coin{width:132px;height:132px;margin:18px auto 6px;border-radius:50%;background:radial-gradient(circle at 30% 25%,#fff3a1,var(--y1) 35%,var(--y2));display:grid;place-items:center;font-size:62px;color:#7a4300;border:6px solid #fff;box-shadow:0 0 0 3px var(--y2),0 14px 30px rgba(255,150,0,.5);animation:fl 3s ease-in-out infinite;overflow:hidden}
-.coin .ic{stroke-width:2.4}
-.lnk{border:2px dashed #b9d3c5;border-radius:20px;padding:13px 14px;display:flex;align-items:center;gap:10px;margin:14px 0;font-size:14px}
-.lnk>.ic{font-size:21px;opacity:.8}.lnk span{flex:1;word-break:break-all}.lnk button{border:1px solid #d3e3da;background:#fff;color:var(--ink);border-radius:15px;width:46px;height:46px;font-size:21px;display:grid;place-items:center}
-.step{display:flex;gap:14px;margin:18px 0}.step i{flex:none;width:38px;height:38px;border-radius:50%;background:linear-gradient(var(--y1),var(--y2));color:#1a1000;font-style:normal;font-weight:900;display:grid;place-items:center;box-shadow:0 4px 10px rgba(255,150,0,.4),0 0 0 4px #fff4cf}
-.step b{display:block;margin-bottom:2px;font-size:17px}
-.cnt{margin-left:auto;background:linear-gradient(var(--y1),var(--y2));color:#1a1000;font-weight:900;padding:8px 16px;border-radius:999px;font-size:14px;border:2px solid #fff;box-shadow:0 4px 10px rgba(255,150,0,.35);text-transform:none;letter-spacing:0}
-input{width:100%;padding:17px 18px;border-radius:22px;border:2px solid #d7e6dd;font-size:16px;margin:8px 0;color:#222;background:#fff;outline:0;transition:border .2s,box-shadow .2s;user-select:text;font-weight:600}
-input:focus{border-color:var(--y2);box-shadow:0 0 0 4px rgba(255,170,0,.2)}
-.pf{text-align:center}.pf .big{width:116px;height:116px;margin:4px auto 12px;position:relative}
-.pf .big .av{width:116px;height:116px;font-size:46px;border:5px solid #fff;box-shadow:0 0 0 3px var(--y2),0 10px 24px rgba(0,0,0,.3)}
-.pf .ck{position:absolute;right:-2px;bottom:4px;width:36px;height:36px;border-radius:50%;background:var(--ok);color:#fff;display:grid;place-items:center;border:3px solid #fff;font-size:18px}
-.pf .ck .ic{stroke-width:3.2}
-.pf h2{font-size:26px;font-weight:900}.pf .meta{color:var(--mut);font-size:14px;margin-top:7px;display:flex;gap:7px;align-items:center;justify-content:center;font-weight:600}
-.mini{border:1.5px solid #cfe7da;border-radius:22px;padding:14px;text-align:center;font-size:12px;font-weight:900;letter-spacing:.8px}
-.mini b{display:block;font-size:27px;margin-top:6px;color:var(--ok)}.mini.o b{color:var(--y2)}
-.cap{font-size:13px;font-weight:900;letter-spacing:1.4px;padding:4px 8px 0}
-.row{display:flex;align-items:center;gap:14px;padding:16px 4px;border-bottom:1px solid var(--line);color:var(--ink);font-weight:800;font-size:16.5px;cursor:pointer}
-.row:last-child{border:0}.row .go{margin-left:auto;opacity:.5;font-size:20px}
-.sw{margin-left:auto;width:54px;height:31px;border-radius:30px;background:#c9d6cf;position:relative;transition:.3s;flex:none}.sw:after{content:"";position:absolute;top:3px;left:3px;width:25px;height:25px;border-radius:50%;background:#fff;transition:.3s cubic-bezier(.3,1.4,.4,1);box-shadow:0 2px 5px rgba(0,0,0,.3)}
-.sw.on{background:var(--ok)}.sw.on:after{left:26px}
-/* colour picker + preview */
-.swatches{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin:16px 0 10px}
-.swc{aspect-ratio:1;border-radius:50%;border:3px solid #fff;box-shadow:0 0 0 2px rgba(0,0,0,.12),0 6px 12px rgba(0,0,0,.2);position:relative;transition:transform .25s cubic-bezier(.3,1.5,.4,1);cursor:pointer}
-.swc.on{transform:scale(1.16);box-shadow:0 0 0 3px var(--y2),0 8px 16px rgba(0,0,0,.3)}
-.swc.on:after{content:"";position:absolute;inset:0;margin:auto;width:40%;height:22%;border-left:3px solid #fff;border-bottom:3px solid #fff;transform:translateY(-12%) rotate(-45deg)}
-.custom{display:flex;align-items:center;gap:12px;margin:10px 0 14px}
-.custom input[type=color]{width:56px;height:56px;padding:3px;border-radius:50%;border:3px solid #fff;box-shadow:0 0 0 2px rgba(0,0,0,.12);margin:0;background:none}
-.custom input[type=text]{margin:0;text-transform:lowercase}
-.pv{border-radius:30px;padding:12px;background:linear-gradient(180deg,var(--bg1),var(--bg2));margin-top:10px;box-shadow:inset 0 0 0 1px rgba(255,255,255,.08)}
-.pv .ph{background:var(--card);color:var(--ink);border-radius:20px;padding:10px 12px;display:flex;align-items:center;gap:9px;font-weight:900;font-size:14px}
-.pv .ph .lg{width:30px;height:30px;border-radius:50%;background:radial-gradient(circle at 30% 25%,var(--g1),var(--g2));border:2px solid var(--y1)}
-.pv .ph .pl{margin-left:auto;background:linear-gradient(var(--y1),var(--y2));color:#1a1000;border-radius:99px;padding:4px 10px;font-size:12px}
-.pv .sl{margin-top:10px;border-radius:20px;padding:12px;background:linear-gradient(135deg,var(--g1),var(--g2));color:#fff;font-weight:900;font-size:15px}
-.pv .sl small{display:block;font-weight:600;opacity:.85;margin:3px 0 8px}
-.pv .sl span{display:inline-block;background:linear-gradient(var(--y1),var(--y2));color:#1a1000;border-radius:99px;padding:6px 12px;font-size:12px}
-.pv .bn{margin-top:10px;background:var(--card);border-radius:18px;display:flex;justify-content:space-around;padding:8px}
-.pv .bn i{width:34px;height:34px;border-radius:50%;background:#dde;opacity:.5}.pv .bn i.on{background:var(--g1);opacity:1}
-nav{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(12px + env(safe-area-inset-bottom,0px));width:calc(100% - 22px);max-width:498px;background:var(--card);border-radius:36px;display:flex;padding:9px;box-shadow:0 14px 34px rgba(0,0,0,.4);z-index:30}
-nav button{flex:1;border:0;background:none;color:#6d7b95;font-weight:800;font-size:12.5px;padding:10px 0 8px;border-radius:28px;transition:all .35s cubic-bezier(.3,.9,.3,1);display:flex;flex-direction:column;align-items:center;gap:4px}
-nav button .ic{font-size:24px;transition:transform .35s}
-nav button.on{background:var(--g1);color:#fff;transform:translateY(-9px) scale(1.07);box-shadow:0 10px 20px rgba(0,0,0,.35),inset 0 0 0 2px rgba(255,255,255,.14)}
-nav button.on .ic{transform:scale(1.12)}
-/* half-page bottom sheet */
-#ov{position:fixed;inset:0;background:rgba(0,0,0,.55);backdrop-filter:blur(3px);opacity:0;visibility:hidden;transition:.35s;z-index:80}
-#ov.on{opacity:1;visibility:visible}
-#sheet{position:fixed;left:50%;bottom:0;transform:translate(-50%,105%);width:100%;max-width:520px;height:58vh;background:var(--card);color:var(--ink);border-radius:34px 34px 0 0;z-index:90;transition:transform .45s cubic-bezier(.2,.9,.25,1);display:flex;flex-direction:column;box-shadow:0 -14px 40px rgba(0,0,0,.45);padding-bottom:env(safe-area-inset-bottom,0px)}
-#sheet.on{transform:translate(-50%,0)}
-.grab{width:50px;height:5px;border-radius:5px;background:rgba(0,0,0,.2);margin:10px auto 4px;flex:none}
-.sh{display:flex;align-items:center;gap:12px;padding:8px 20px 12px;flex:none}
-.sh h2{font-size:21px;font-weight:900;flex:1}
-.sh button{width:40px;height:40px;border-radius:50%;border:0;background:rgba(0,0,0,.07);color:var(--ink);font-size:20px;display:grid;place-items:center}
-#sbody{padding:4px 22px 24px;overflow-y:auto;font-size:15px;line-height:1.6;user-select:text;flex:1}
-#sbody h4{margin:14px 0 4px;font-size:15.5px}#sbody p{color:var(--mut)}
-#toast{position:fixed;left:50%;top:calc(92px + env(safe-area-inset-top,0px));transform:translate(-50%,-30px);background:#101820;color:#fff;padding:13px 22px;border-radius:999px;font-weight:700;font-size:14px;opacity:0;pointer-events:none;transition:.35s cubic-bezier(.3,1.4,.4,1);z-index:100;max-width:92%;display:flex;gap:9px;align-items:center;box-shadow:0 10px 30px rgba(0,0,0,.5);border:1px solid rgba(255,255,255,.12)}
-#toast .ic{font-size:19px;stroke-width:3}
-#toast.on{opacity:1;transform:translate(-50%,0)}#toast.err{background:#7a1520}#toast.ok{background:#0b6b46}
-#splash{position:fixed;inset:0;background:linear-gradient(180deg,var(--bg1),var(--bg2));z-index:200;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;transition:opacity .5s,visibility .5s}
-#splash.off{opacity:0;visibility:hidden}
-#splash .coin{width:104px;height:104px;font-size:48px;margin:0}
-.bar{width:140px;height:5px;border-radius:5px;background:rgba(255,255,255,.18);overflow:hidden}.bar i{display:block;width:40%;height:100%;background:linear-gradient(90deg,var(--y1),var(--y2));animation:bar 1s infinite ease-in-out}
-@keyframes bar{0%{transform:translateX(-100%)}100%{transform:translateX(350%)}}
-canvas#fx{position:fixed;inset:0;pointer-events:none;z-index:150}
-.sk{background:linear-gradient(90deg,rgba(0,0,0,.06),rgba(0,0,0,.14),rgba(0,0,0,.06));background-size:200%;animation:sh 1.2s infinite;color:transparent!important;border-radius:12px}
-@keyframes sh{to{background-position:-200%}}
+:root{--bg:#040a14;--c1:#0c1a2b;--c2:#0a2a2a;--g:#19e68c;--g2:#0fa968;--b:#2d8cff;--y:#ffc83d;--y2:#ff9a00;--p:#a855f7;--t:#e8f4ee;--m:#8fa6a0;--ln:rgba(60,255,170,.22)}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;font-family:'Plus Jakarta Sans','Segoe UI',system-ui,sans-serif}
+body{background:radial-gradient(circle at 50% -10%,#0b3a33,var(--bg) 55%) fixed;color:var(--t);min-height:100vh;overflow-x:hidden;user-select:none}
+#app{max-width:480px;margin:0 auto;padding:0 16px calc(120px + env(safe-area-inset-bottom,0px))}
 .hide{display:none!important}
+.top{display:flex;align-items:center;gap:12px;padding:calc(14px + env(safe-area-inset-top,0px)) 0 12px}
+.logo{width:46px;height:46px;border-radius:50%;border:3px solid var(--y);background:#0b2a1f;display:grid;place-items:center;font-size:22px;overflow:hidden;flex:none;box-shadow:0 0 14px rgba(255,200,61,.5)}
+.logo img{width:100%;height:100%;object-fit:cover}
+.back{width:36px;height:36px;border:0;background:none;color:var(--t);font-size:24px}
+.tt{flex:1;min-width:0}.tt h1{font-size:20px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.tt small{color:var(--m);font-size:12px;font-weight:600}
+.pill{display:flex;align-items:center;gap:6px;border:1.5px solid var(--y);border-radius:99px;padding:5px 12px 5px 6px;font-weight:800;font-size:14px;background:rgba(255,200,61,.1)}
+.pill i{width:22px;height:22px;border-radius:50%;background:linear-gradient(var(--y),var(--y2));color:#3a2200;display:grid;place-items:center;font-style:normal;font-size:13px}
+.view{display:none;flex-direction:column;gap:14px}.view.on{display:flex;animation:in .35s ease}
+@keyframes in{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+.card{background:linear-gradient(160deg,var(--c1),var(--c2));border:1.5px solid var(--ln);border-radius:20px;padding:14px;box-shadow:0 0 18px rgba(25,230,140,.08)}
+.card.hot{border-color:var(--g);box-shadow:0 0 22px rgba(25,230,140,.28)}
+.row{display:flex;align-items:center;gap:12px}.row .f{flex:1;min-width:0}
+.mut{color:var(--m);font-size:12.5px;font-weight:600}
+h2{font-size:15px;font-weight:800}
+.amt{font-size:38px;font-weight:800;margin:4px 0 10px}.amt s{text-decoration:none;color:var(--y)}
+.btn{border:0;border-radius:99px;padding:12px 18px;font-weight:800;font-size:14px;color:#03150d;background:linear-gradient(var(--g),var(--g2));box-shadow:0 0 16px rgba(25,230,140,.4);display:inline-flex;align-items:center;justify-content:center;gap:8px;cursor:pointer;width:100%}
+.btn:active{transform:scale(.97)}.btn.y{background:linear-gradient(var(--y),var(--y2));color:#2b1800;box-shadow:0 0 16px rgba(255,170,0,.4)}.btn.sm{width:auto;padding:9px 16px}.btn[disabled]{opacity:.55;pointer-events:none}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.tile{background:var(--c1);border:1.5px solid var(--ln);border-radius:16px;padding:12px 4px;text-align:center;font-size:11.5px;font-weight:700;cursor:pointer}
+.tile b{display:block;font-size:24px;margin-bottom:4px}
+.hero{background:linear-gradient(120deg,#3b1d7a,#0e3a8a 60%,#0b5a4a);border:1.5px solid var(--b);border-radius:20px;padding:18px;position:relative;overflow:hidden}
+.hero h3{font-size:19px;font-weight:800;line-height:1.2;max-width:70%}.hero p{font-size:12.5px;color:#cfe0ff;margin-top:6px;max-width:68%}.hero .e{position:absolute;right:14px;top:50%;transform:translateY(-50%);font-size:64px;opacity:.95}
+.gm{display:flex;align-items:center;gap:12px;border-radius:18px;padding:12px 14px;border:1.5px solid;cursor:pointer}
+.gm .ic{width:48px;height:48px;border-radius:14px;display:grid;place-items:center;font-size:28px;background:rgba(255,255,255,.1)}
+.gm b{display:block;font-size:16px}.gm small{font-size:11.5px;color:var(--m)}.gm .go{margin-left:auto;font-size:20px;color:var(--m)}
+.gm.a{background:linear-gradient(120deg,#3a2606,#1c1405);border-color:var(--y)}.gm.b{background:linear-gradient(120deg,#2b1250,#14102b);border-color:var(--p)}.gm.c{background:linear-gradient(120deg,#0b2d52,#0a1a33);border-color:var(--b)}.gm.d{background:linear-gradient(120deg,#0b3b2a,#08201a);border-color:var(--g)}
+.soon{font-size:10px;font-weight:800;color:#2b1800;background:var(--y);border-radius:99px;padding:3px 8px;margin-left:8px;vertical-align:middle}
+.li{display:flex;align-items:center;gap:12px;padding:11px 2px;border-bottom:1px solid rgba(255,255,255,.07)}.li:last-child{border:0}
+.li .ic{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;font-size:20px;background:rgba(25,230,140,.15)}.li .ic.n{background:rgba(255,80,110,.18)}
+.li .a{font-weight:800;color:var(--g);font-size:14px}.li .a.n{color:#ff5d73}
+.empty{text-align:center;color:var(--m);font-size:13px;font-weight:600;padding:14px 6px}
+input,select{width:100%;padding:13px 14px;border-radius:14px;border:1.5px solid var(--ln);background:#06121f;color:var(--t);font-size:15px;font-weight:600;margin:6px 0;outline:0;user-select:text}
+input:focus,select:focus{border-color:var(--g)}
+.code{display:flex;align-items:center;gap:8px;border:1.5px dashed var(--g);border-radius:14px;padding:10px 12px;background:#06121f;font-weight:800;word-break:break-all;font-size:13px}
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.steps div{text-align:center;font-size:11px;color:var(--m);font-weight:600;border:1.5px solid var(--ln);border-radius:14px;padding:10px 4px}.steps b{display:block;color:var(--t);font-size:12.5px;margin-top:4px}
+.mrow{display:flex;align-items:center;gap:12px;padding:14px 4px;border-bottom:1px solid rgba(255,255,255,.07);font-weight:700;font-size:14.5px;cursor:pointer}.mrow:last-child{border:0}.mrow .go{margin-left:auto;color:var(--m)}.mrow span:first-child{font-size:20px;width:26px;text-align:center}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:10px}.stat{text-align:center}.stat b{display:block;font-size:22px;color:var(--g);margin-top:4px}
+.tabs{display:flex;gap:8px;margin:4px 0}.tabs .btn{background:#06121f;color:var(--m);box-shadow:none;border:1.5px solid var(--ln)}.tabs .btn.on{background:linear-gradient(var(--g),var(--g2));color:#03150d}
+nav{position:fixed;left:50%;transform:translateX(-50%);bottom:0;width:100%;max-width:480px;display:flex;align-items:center;background:rgba(6,16,28,.96);backdrop-filter:blur(10px);border-top:1.5px solid var(--ln);border-radius:24px 24px 0 0;padding:10px 6px calc(10px + env(safe-area-inset-bottom,0px));z-index:30}
+nav button{flex:1;border:0;background:none;color:var(--m);font-size:11px;font-weight:700;display:flex;flex-direction:column;align-items:center;gap:3px}nav button span{font-size:22px}nav button.on{color:var(--g)}
+nav .mid{flex:none;width:62px;height:62px;margin:-34px 6px 0;border-radius:50%;border:3px solid var(--g);background:radial-gradient(circle,#0f3d2a,#06121f);box-shadow:0 0 22px rgba(25,230,140,.7);font-size:28px;color:var(--y);justify-content:center}
+#toast{position:fixed;left:50%;top:calc(70px + env(safe-area-inset-top,0px));transform:translate(-50%,-30px);background:#10202e;color:#fff;padding:12px 20px;border-radius:99px;font-weight:700;font-size:13.5px;opacity:0;pointer-events:none;transition:.3s;z-index:300;max-width:92%;border:1.5px solid var(--ln);text-align:center}
+#toast.on{opacity:1;transform:translate(-50%,0)}#toast.err{border-color:#ff5d73}#toast.ok{border-color:var(--g)}
+#splash{position:fixed;inset:0;background:var(--bg);z-index:400;display:grid;place-items:center;font-size:64px;transition:opacity .4s,visibility .4s}#splash.off{opacity:0;visibility:hidden}
+#ov{position:fixed;inset:0;background:rgba(0,0,0,.65);backdrop-filter:blur(4px);z-index:100;display:none;align-items:flex-end;justify-content:center}#ov.on{display:flex}
+.sheet{width:100%;max-width:480px;max-height:88vh;overflow-y:auto;background:#07131f;border:1.5px solid var(--ln);border-bottom:0;border-radius:26px 26px 0 0;padding:18px 18px calc(22px + env(safe-area-inset-bottom,0px));animation:up .3s ease}
+@keyframes up{from{transform:translateY(60%)}to{transform:none}}
+.sheet h2{font-size:18px;margin-bottom:8px;display:flex;align-items:center}.sheet h2 button{margin-left:auto;border:0;background:rgba(255,255,255,.08);color:var(--t);width:32px;height:32px;border-radius:50%;font-size:16px}
+.sheet p,.sheet h4{font-size:13px;color:var(--m);line-height:1.55;margin-top:6px}.sheet h4{color:var(--t);font-size:14px;margin-top:12px}
+.gc{display:flex;align-items:center;gap:12px;border:1.5px solid var(--ln);border-radius:16px;padding:10px 12px;margin-top:10px}.gc.ok{border-color:var(--g)}.gc .ic{font-size:26px}.gc b{display:block;font-size:14px}.gc small{color:var(--m);font-size:12px}
+#diag{position:fixed;left:50%;transform:translateX(-50%);top:calc(70px + env(safe-area-inset-top,0px));width:calc(100% - 28px);max-width:450px;background:#4a1019;border:1.5px solid #ff5d73;border-radius:16px;padding:12px;z-index:60;font-size:13px;display:flex;gap:10px;align-items:center}#diag button{border:0;border-radius:99px;padding:8px 14px;font-weight:800;background:var(--y)}
 
-#gate{position:fixed;inset:0;z-index:120;background:rgba(2,28,17,.58);backdrop-filter:blur(7px);-webkit-backdrop-filter:blur(7px);display:none;align-items:center;justify-content:center;padding:calc(16px + env(safe-area-inset-top,0px)) 16px calc(16px + env(safe-area-inset-bottom,0px))}
-#gate.on{display:flex;animation:in .4s cubic-bezier(.2,.9,.3,1)}
-.gcard{width:100%;max-width:500px;max-height:100%;display:flex;flex-direction:column;background:var(--card);color:var(--ink);border-radius:40px;padding:22px 20px 20px;box-shadow:0 24px 60px rgba(0,0,0,.5)}
-.ghead{display:flex;align-items:center;gap:12px;margin-bottom:14px}
-.ghead:before{content:"";width:8px;height:34px;border-radius:6px;background:linear-gradient(var(--y1),var(--y2));box-shadow:0 0 12px rgba(255,170,0,.7);flex:none}
-.ghead h2{flex:1;font-size:27px;font-weight:900}
-.ghead button{width:54px;height:54px;border-radius:50%;border:0;background:#eceff6;color:#5b6783;font-size:24px;display:grid;place-items:center}
-.gintro{border:2px solid var(--line);border-radius:32px;padding:18px 16px;text-align:center;flex:none}
-.gpill{display:inline-block;background:linear-gradient(var(--y1),var(--y2));color:#1a1000;font-weight:900;font-size:15px;letter-spacing:.8px;padding:9px 20px;border-radius:999px;border:3px solid #fff;box-shadow:0 4px 10px rgba(255,150,0,.35)}
-.gintro h3{font-size:25px;font-weight:900;margin:12px 0 6px}
-.gintro p{font-size:15.5px;line-height:1.35;font-weight:600}
-.gmeta{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:14px 2px 10px;font-size:13.5px;font-weight:700;flex:none;white-space:nowrap}
-.gmeta b{font-weight:900}
-.ggrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;overflow-y:auto;min-height:0;flex:1;padding:4px 2px 8px;-webkit-overflow-scrolling:touch}
-.gc{min-width:0;border:2px solid var(--line);border-radius:32px;padding:16px 12px 14px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:6px;background:var(--card)}
-.gc.ok{border-color:var(--ok)}
-.gic{width:62px;height:62px;border-radius:21px;background:linear-gradient(var(--y1),var(--y2));display:grid;place-items:center;box-shadow:0 6px 14px rgba(255,150,0,.35)}
-.gic span{width:36px;height:36px;border-radius:50%;background:#10161d;color:#fff;display:grid;place-items:center;font-size:20px}
-.gc b{max-width:100%;font-size:17px;font-weight:900;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:4px}
-.gc small{font-size:15px;font-weight:700}
-.gc .btn{padding:13px 10px;font-size:16px;margin-top:8px}
-.gc.ok .btn{background:linear-gradient(#34d399,var(--ok));color:#04281c;box-shadow:0 6px 14px rgba(18,184,134,.4);opacity:1}
-#gVer{margin-top:14px;flex:none;font-size:19px;padding:20px}
-.ptabs{display:flex;gap:8px;overflow-x:auto;padding:12px 0 6px;scrollbar-width:none}.ptabs::-webkit-scrollbar{display:none}
-.chip{flex:none;padding:9px 16px;border-radius:999px;border:2px solid var(--line);background:#fff;color:#0b4b33;font-weight:800;font-size:14px;cursor:pointer;transition:all .25s}
-.chip.on{background:linear-gradient(var(--y1),var(--y2));color:#1a1000;border-color:#fff;box-shadow:0 4px 10px rgba(255,150,0,.4)}
-.chrow{display:flex;align-items:center;gap:12px;padding:12px 4px;border-bottom:1px solid var(--line);cursor:pointer}.chrow:last-child{border:0}
-.chrow .t{flex:1;min-width:0}.chrow .t b{display:block;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.chrow .t small{color:var(--mut);font-size:12px}
-.chrow .go{opacity:.45;font-size:20px}
-.grow{display:flex;align-items:center;gap:10px}.grow b{margin:0!important}.gl{padding:12px 0;border-bottom:1px solid var(--line)}.gl:last-child{border:0}.gl b{display:block;font-size:15px;margin-bottom:8px}.gl .ptabs{padding:0}
-.dang{background:linear-gradient(#ff7a7a,#e0343f);color:#fff;box-shadow:0 8px 18px rgba(224,52,63,.4)}
-.sbtns{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0}
-.sbtns .btn{width:100%}
-#diag{position:fixed;left:50%;transform:translateX(-50%);top:calc(86px + env(safe-area-inset-top,0px));width:calc(100% - 28px);max-width:490px;background:#7a1520;color:#fff;border-radius:20px;padding:12px 14px;z-index:60;display:flex;gap:10px;align-items:center;font-size:13px;line-height:1.35;box-shadow:0 10px 26px rgba(0,0,0,.5)}
-#diag button{flex:none;border:0;border-radius:999px;padding:9px 14px;font-weight:900;background:linear-gradient(var(--y1),var(--y2));color:#1a1000}
-
-/* ===== v7: matched to the reference screenshots (css px = screenshot px / 2.75) ===== */
-*{font-family:'Plus Jakarta Sans',Poppins,'Segoe UI',system-ui,sans-serif}
-body{letter-spacing:-.1px}
-#app{max-width:480px;padding-bottom:calc(118px + env(safe-area-inset-bottom,0px))}
-.top{min-height:103px;padding:calc(14px + env(safe-area-inset-top,0px)) 22px 16px 25px;gap:14px;border-radius:0 0 36px 36px}
-.logo{width:44px;height:44px;border:3px solid #f2b705;box-shadow:0 0 0 3px #fff,0 5px 12px rgba(0,0,0,.25)}
-.tt h1{font-size:19px;line-height:1.14;font-weight:800;letter-spacing:-.4px;white-space:normal;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-.tt small{font-size:10.5px;letter-spacing:1.8px;margin-top:5px;font-weight:800;color:#0e1a15}
-.pill{height:36px;padding:0 15px 0 5px;gap:8px;font-size:15px;font-weight:800}
-.pill i{width:27px;height:27px;font-size:15px;color:#ff8a00}
-.view{padding:18px 22px;gap:16px}
-.card{border-radius:30px;padding:20px}
-.card h3{font-size:12.5px;letter-spacing:1.6px;gap:11px;font-weight:800}
-.card h3:before{width:8px;height:23px}
-.sec{font-size:20px;letter-spacing:-.3px;font-weight:800;gap:11px;padding:2px 0}
-.sec:before{width:8px;height:25px}
-/* banner */
-.banner{padding:13px;border-radius:36px;margin-top:0}
-.slides{border-radius:27px}
-.slide{padding:18px 19px;border-radius:27px;min-height:170px;gap:0;position:relative;overflow:hidden;
- background:radial-gradient(circle at 10% -10%,rgba(0,220,150,.30),transparent 55%),linear-gradient(135deg,var(--sl1) 0%,var(--sl2) 42%,var(--sl3) 100%)}
-.srow{display:flex;justify-content:space-between;align-items:center}
-.tag{height:24px;padding:0 11px;font-size:11px;font-weight:800;border:2.5px solid #fff;gap:5px;letter-spacing:-.1px;box-shadow:none}
-.tag.o{height:23px;padding:0 16px;font-size:13.5px;color:var(--y1);background:rgba(0,0,0,.34);border:1px solid rgba(255,255,255,.08)}
-.tag .ic{color:#f59e00;font-size:14px}
-.slide h2{font-size:22px;line-height:27px;font-weight:800;margin:10px 0 6px;max-width:100%;letter-spacing:-.4px}
-.slide p{font-size:13px;line-height:18px;font-weight:500;max-width:100%;opacity:.95}
-.slide .sfoot{position:absolute;right:19px;bottom:1px;margin:0}
-.slide .btn{width:auto;height:33px;padding:0 15px;font-size:14px;letter-spacing:0;border:2.5px solid #fff;gap:6px;box-shadow:0 4px 10px rgba(0,0,0,.25)}
-.slide .btn .ic{font-size:16px}
-.slide .deco{display:none}
-.dots{margin:-2px 0 -2px;gap:6px;justify-content:center}
-.dots i{width:7px;height:7px;background:rgba(150,178,196,.9)}.dots i.on{width:24px;background:linear-gradient(var(--y1),var(--y2))}
-/* balance */
-.bal{padding:24px 25px 25px}
-.bal .r0{min-height:34px}
-.ref{width:34px;height:34px;font-size:17px}
-.amt{font-size:44px;line-height:1;margin:15px 0 20px;letter-spacing:-.6px;gap:3px;font-weight:800}
-.amt span{font-size:31px}
-.bal .btn{height:62px;padding:0 14px;font-size:16px;letter-spacing:2.2px;font-weight:800;border:3px solid rgba(255,255,255,.9);box-shadow:0 8px 20px rgba(255,150,0,.4),0 0 0 1px rgba(0,0,0,.04)}
-.bal .btn .ic{font-size:20px}
-.two{gap:13px}
-.stat{padding:20px 20px 17px;min-height:88px}
-.stat h3{font-size:11.5px;letter-spacing:1.4px}.stat h3:before{display:none}
-.stat b{font-size:30px;margin-top:9px;letter-spacing:-.5px;font-weight:800}
-.sec .btn.sm{height:37px;padding:0 14px 0 17px;font-size:15px;border:3px solid rgba(255,255,255,.92);letter-spacing:-.1px;gap:4px}
-.empty{font-size:15px;font-weight:700;line-height:1.35;padding:10px 6px}
-/* floating home button + nav */
-#fab{position:fixed;right:22px;bottom:calc(97px + env(safe-area-inset-bottom,0px));width:59px;height:59px;border-radius:50%;border:3px solid #fff;background:linear-gradient(#ffd84a,#ff9d00);color:#10161d;font-size:26px;display:grid;place-items:center;box-shadow:0 8px 20px rgba(0,0,0,.35);z-index:35;cursor:pointer}
-#fab:active{transform:scale(.94)}
-nav{bottom:calc(17px + env(safe-area-inset-bottom,0px));width:calc(100% - 34px);max-width:446px;height:75px;padding:7px 8px;border-radius:999px;align-items:stretch;box-shadow:0 12px 30px rgba(0,0,0,.4)}
-nav button{padding:0;border-radius:999px;gap:3px;justify-content:center;font-size:12.5px;font-weight:700;color:#66779b;transform:none!important;box-shadow:none;margin:0 2px}
-nav button .ic{font-size:24px}
-nav button.on{background:var(--g1);color:#fff;box-shadow:inset 0 0 0 3px rgba(0,0,0,.30),0 6px 14px rgba(0,0,0,.28)!important;transform:none!important}
-nav button.on .ic{transform:none}
-/* invite / gift hero */
-.coinw{position:relative;width:104px;margin:16px auto 14px}
-.coinw .coin{width:104px;height:104px;margin:0;font-size:48px;border-width:4px}
-.cbadge{position:absolute;left:50%;bottom:-11px;transform:translateX(-50%);background:linear-gradient(var(--y1),var(--y2));color:#1a1000;font-weight:800;font-size:12px;padding:6px 14px;border-radius:999px;border:2.5px solid #fff;white-space:nowrap}
-.hero .tag{height:30px;font-size:13px;padding:0 17px;margin:0 auto}
-.hero h2{font-size:27px;letter-spacing:-.5px}
-.hero .muted{font-weight:500;font-size:14px}
-/* ===== channel join popup: exact like the reference ===== */
-#gate{background:rgba(0,0,0,.42);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);padding:calc(33px + env(safe-area-inset-top,0px)) 22px calc(33px + env(safe-area-inset-bottom,0px))}
-.gcard{max-width:446px;max-height:100%;border-radius:40px;padding:28px 29px 29px}
-.ghead{gap:11px;margin-bottom:14px}
-.ghead:before{width:8px;height:25px}
-.ghead h2{font-size:19px;font-weight:800;letter-spacing:-.3px}
-.ghead button{width:35px;height:35px;font-size:17px}
-.gintro{border:1.5px solid #e4e8ef;border-radius:29px;padding:17px 14px 16px}
-.gpill{font-size:10px;letter-spacing:1px;padding:0 16px;height:21px;line-height:16px;border:2.5px solid #fff}
-.gintro h3{font-size:16px;margin:9px 0 3px;font-weight:800;letter-spacing:-.2px}
-.gintro p{font-size:12.5px;line-height:1.35;font-weight:600}
-.gmeta{font-size:13px;padding:14px 4px 12px;gap:6px;white-space:nowrap}
-.gmeta span{font-weight:600}
-.ggrid{gap:12px;padding:2px 3px 6px 0}
-.gc{min-width:0;border:1.5px solid #e4e8ef;border-radius:27px;padding:14px 12px 14px;gap:0;background:transparent}
-.gc.ok{border-color:var(--ok)}
-.gic{width:44px;height:44px;border-radius:13px;box-shadow:0 5px 12px rgba(255,150,0,.32)}
-.gic span{width:23px;height:23px;font-size:12px}
-.gic.sm{width:40px;height:40px;border-radius:12px}.gic.sm span{width:21px;height:21px;font-size:11px}
-.gc b{font-size:15px;margin-top:11px;font-weight:800;letter-spacing:-.2px}
-.gc small{font-size:13px;margin-top:3px;font-weight:600}
-.gc .btn{height:31px;padding:0 8px;font-size:13.5px;letter-spacing:1.2px;margin-top:11px;width:100%;gap:4px;box-shadow:0 4px 10px rgba(255,150,0,.3);font-weight:800}
-.gc .btn .ic{font-size:14px}
-#gVer{height:58px;padding:0 14px;font-size:18px;letter-spacing:1.6px;margin-top:14px;font-weight:800}
-.chrow .gic{flex:none}
+.i{width:1em;height:1em;display:inline-block;vertical-align:-.15em;flex:none}
+.i.sm{width:18px;height:18px}.i.md{width:34px;height:34px}.i.tl{width:42px;height:42px;display:block;margin:0 auto 6px;filter:drop-shadow(0 4px 8px rgba(0,0,0,.45))}.i.xl{width:90px;height:90px;filter:drop-shadow(0 0 18px rgba(255,200,61,.7))}.i.xl2{width:42px;height:42px;filter:drop-shadow(0 0 8px rgba(255,200,61,.8))}
+.tile b{font-size:0}.hero .e{font-size:0}.hero .e .i{width:92px;height:92px;filter:drop-shadow(0 6px 14px rgba(0,0,0,.55))}
+.gm .ic{font-size:0;background:rgba(255,255,255,.07)}.gm .ic .i{width:36px;height:36px}
+.mrow span:first-child .i{width:26px;height:26px;display:block}.li .ic .i{width:24px;height:24px}
+.logo .i{width:70%;height:70%}.pill i .i{width:100%;height:100%}.pill i{background:none}
+.steps div .i{display:block;margin:0 auto 4px}.row>span .i{display:block}
+nav button span{display:block;height:24px}nav button span .i{width:24px;height:24px}nav .mid .i{display:block}
 </style></head><body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
-<symbol id="i-home" viewBox="0 0 24 24"><path d="M12 2.6 2.8 10.3a.9.9 0 0 0-.3.7V20a1.5 1.5 0 0 0 1.5 1.5h4.2a.8.8 0 0 0 .8-.8v-5h5v5a.8.8 0 0 0 .8.8H20a1.5 1.5 0 0 0 1.5-1.5v-9a.9.9 0 0 0-.3-.7z" fill="currentColor" stroke="none"/></symbol>
-<symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="7.5" r="4.5" fill="currentColor" stroke="none"/><path d="M3.5 21c0-4.6 3.8-7.5 8.5-7.5s8.5 2.9 8.5 7.5z" fill="currentColor" stroke="none"/></symbol>
-<symbol id="i-share" viewBox="0 0 24 24"><circle cx="18" cy="5" r="3" fill="currentColor"/><circle cx="6" cy="12" r="3" fill="currentColor"/><circle cx="18" cy="19" r="3" fill="currentColor"/><path d="m8.6 10.5 6.8-4M8.6 13.5l6.8 4"/></symbol>
-<symbol id="i-gift" viewBox="0 0 24 24"><rect x="3" y="8" width="18" height="4.5" rx="1.2"/><path d="M5 12.5V20a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-7.5M12 8v13"/><path d="M12 8c-1-3.4-5.2-4.2-5.2-1.8S10.3 8 12 8zm0 0c1-3.4 5.2-4.2 5.2-1.8S13.7 8 12 8z"/></symbol>
-<symbol id="i-rupee" viewBox="0 0 24 24"><path d="M6.5 4.5h11M6.5 9h11M6.5 4.5h2.5c4.2 0 5.800 1.800 5.800 4.500s-1.600 4.500-5.800 4.500H6.500l8 7"/></symbol>
-<symbol id="i-crown" viewBox="0 0 24 24"><path d="m2.5 7.5 4.700 4.500L12 4l4.800 8 4.700-4.500-2 12h-15z" fill="currentColor" stroke="none"/></symbol>
-<symbol id="i-refresh" viewBox="0 0 24 24"><path d="M20.500 12a8.500 8.500 0 1 1-2.700-6.200"/><path d="M20.500 3.500v5h-5"/></symbol>
-<symbol id="i-upright" viewBox="0 0 24 24"><path d="M7 17 17 7M8.500 7H17v8.500"/></symbol>
-<symbol id="i-right" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></symbol>
-<symbol id="i-chev" viewBox="0 0 24 24"><path d="m9 5 7 7-7 7"/></symbol>
-<symbol id="i-link" viewBox="0 0 24 24"><path d="M10 14a4 4 0 0 0 5.700 0l3-3a4 4 0 0 0-5.700-5.700l-1 1M14 10a4 4 0 0 0-5.700 0l-3 3a4 4 0 0 0 5.700 5.700l1-1"/></symbol>
-<symbol id="i-copy" viewBox="0 0 24 24"><rect x="8.500" y="8.500" width="12" height="12" rx="2.500"/><path d="M5.500 15.500H5A2 2 0 0 1 3 13.500V5a2 2 0 0 1 2-2h8.500a2 2 0 0 1 2 2v.5"/></symbol>
-<symbol id="i-check" viewBox="0 0 24 24"><path d="m4.500 12.500 5 5 10-11"/></symbol>
-<symbol id="i-x" viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18"/></symbol>
-<symbol id="i-cal" viewBox="0 0 24 24"><rect x="3" y="4.500" width="18" height="16.500" rx="3.500"/><path d="M3 10h18M8 2.500v4M16 2.500v4"/></symbol>
-<symbol id="i-pulse" viewBox="0 0 24 24"><path d="M2.500 12h4.500l3-8 4 16 3-8h4.500"/></symbol>
-<symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 2.800 4.500 5.800v5.700c0 4.800 3.200 8.300 7.500 9.700 4.300-1.400 7.500-4.900 7.500-9.700V5.800z"/><path d="m8.800 12 2.400 2.400 4.200-4.600"/></symbol>
-<symbol id="i-doc" viewBox="0 0 24 24"><path d="M6 2.500h8l5 5V21a.5.5 0 0 1-.5.500h-12A.5.5 0 0 1 6 21z"/><path d="M14 2.500V8h5"/></symbol>
-<symbol id="i-ticket" viewBox="0 0 24 24"><path d="M3.500 7.500h17v3a1.800 1.800 0 0 0 0 3.500v3h-17v-3a1.800 1.800 0 0 0 0-3.500z"/><path d="M9.500 7.500v10" stroke-dasharray="2 2.200"/></symbol>
-<symbol id="i-tg" viewBox="0 0 24 24"><path d="M21.500 3.500 2.700 10.800l5.900 2.300 2.300 6.700 3.100-4.200 5.300 3.900z" fill="currentColor" stroke="none"/><path d="m8.600 13.100 12-8.600-9.700 10.200" stroke="#fff" stroke-width="1.300" opacity=".7"/></symbol>
-<symbol id="i-vol" viewBox="0 0 24 24"><path d="M4 9.500v5h3.800l5.200 4.200V5.300L7.800 9.500z" fill="currentColor"/><path d="M16.500 8.800a4.800 4.800 0 0 1 0 6.400M19 6.200a8.600 8.600 0 0 1 0 11.600"/></symbol>
-<symbol id="i-vib" viewBox="0 0 24 24"><rect x="8" y="3" width="8" height="18" rx="2.500"/><path d="M4 8v8M20 8v8M1.500 10.500v3M22.500 10.500v3"/></symbol>
-<symbol id="i-bot" viewBox="0 0 24 24"><rect x="4" y="8" width="16" height="12" rx="4"/><path d="M12 4v4"/><circle cx="12" cy="3.500" r="1" fill="currentColor"/><circle cx="9" cy="14" r="1.500" fill="currentColor" stroke="none"/><circle cx="15" cy="14" r="1.500" fill="currentColor" stroke="none"/></symbol>
-<symbol id="i-gear" viewBox="0 0 24 24"><path d="M4 6.500h9M17 6.500h3M4 12h3M11 12h9M4 17.500h11M19 17.500h1"/><circle cx="15" cy="6.500" r="2" fill="currentColor"/><circle cx="9" cy="12" r="2" fill="currentColor"/><circle cx="17" cy="17.500" r="2" fill="currentColor"/></symbol>
-<symbol id="i-users" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.600"/><path d="M2.500 20c0-3.700 2.900-6 6.500-6s6.500 2.300 6.500 6"/><circle cx="17.500" cy="9" r="2.600"/><path d="M17.500 14c2.800 0 4.500 1.900 4.500 5"/></symbol>
-<symbol id="i-wallet" viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="14" rx="3.500"/><path d="M3 10.500h18M6 6V5a2 2 0 0 1 2-2h8"/><circle cx="16.500" cy="15" r="1.200" fill="currentColor"/></symbol>
-<symbol id="i-fire" viewBox="0 0 24 24"><path d="M12.500 2.500c.6 4.200 5.500 5.500 5.500 11a6 6 0 0 1-12 0c0-2.200 1-3.800 2.300-4.800.1 1.800.9 2.800 2 3.100-.4-3.400.1-6 2.200-9.300z" fill="currentColor" stroke="none"/></symbol>
-<symbol id="i-spark" viewBox="0 0 24 24"><path d="m12 2.500 2.200 6.300 6.300 2.200-6.300 2.200L12 19.500l-2.200-6.300L3.500 11l6.300-2.200z" fill="currentColor" stroke="none"/></symbol>
-<symbol id="i-send" viewBox="0 0 24 24"><path d="M21.500 2.500 10.500 13.500M21.500 2.500l-7 19-4-8.500-8.500-4z"/></symbol>
-<symbol id="i-lock" viewBox="0 0 24 24"><rect x="4.500" y="10.500" width="15" height="10.500" rx="2.800"/><path d="M8 10.500V8a4 4 0 0 1 8 0v2.500"/></symbol>
-<symbol id="i-bolt" viewBox="0 0 24 24"><path d="M13.500 2.500 4.500 13.500h6.500l-1 8 9-11h-6.500z" fill="currentColor" stroke="none"/></symbol>
-<symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 4.500v15M4.500 12h15"/></symbol>
-<symbol id="i-msg" viewBox="0 0 24 24"><path d="M4 5.500h16a1.500 1.500 0 0 1 1.500 1.500v9a1.500 1.500 0 0 1-1.500 1.500H9.500L5 21v-3.500H4A1.500 1.500 0 0 1 2.500 16V7A1.500 1.500 0 0 1 4 5.500z"/></symbol>
-<symbol id="i-palette" viewBox="0 0 24 24"><path d="M12 3a9 9 0 1 0 0 18c1.400 0 2-.900 2-1.800 0-1.300-1-1.500-1-2.700 0-1 .800-1.500 1.800-1.500H17a4 4 0 0 0 4-4c0-4-4-8-9-8z"/><circle cx="7.500" cy="11" r="1.200" fill="currentColor"/><circle cx="10.500" cy="7" r="1.200" fill="currentColor"/><circle cx="15.500" cy="7.500" r="1.200" fill="currentColor"/></symbol>
-<symbol id="i-help" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9.500"/><path d="M9.200 9.300a2.900 2.900 0 1 1 4.200 2.600c-.900.500-1.400 1.100-1.400 2.100M12 17.500h.010"/></symbol>
-<symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9.500"/><path d="M12 11v6M12 7.500h.010"/></symbol>
+<linearGradient id="gGold" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff3a1"/><stop offset=".5" stop-color="#ffc83d"/><stop offset="1" stop-color="#e07b00"/></linearGradient>
+<linearGradient id="gGreen" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#5dffb0"/><stop offset="1" stop-color="#079a5c"/></linearGradient>
+<linearGradient id="gRed" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ff7a9c"/><stop offset="1" stop-color="#d4164d"/></linearGradient>
+<linearGradient id="gBlue" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#6fc3ff"/><stop offset="1" stop-color="#1550d6"/></linearGradient>
+<linearGradient id="gPurple" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#c58bff"/><stop offset="1" stop-color="#5b1fd1"/></linearGradient>
+<linearGradient id="gSilver" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f4f8ff"/><stop offset="1" stop-color="#8fa2c0"/></linearGradient>
+<symbol id="g-crown" viewBox="0 0 64 64"><path d="M6 20l14 14 12-22 12 22 14-14-5 30H11z" fill="url(#gGold)" stroke="#a85b00" stroke-width="2" stroke-linejoin="round"/><rect x="11" y="48" width="42" height="6" rx="2" fill="#e07b00"/><circle cx="32" cy="38" r="3.5" fill="#ff3d6e"/><circle cx="20" cy="42" r="2.5" fill="#2d8cff"/><circle cx="44" cy="42" r="2.5" fill="#19e68c"/></symbol>
+<symbol id="g-coin" viewBox="0 0 64 64"><circle cx="32" cy="32" r="28" fill="url(#gGold)" stroke="#a85b00" stroke-width="2.5"/><circle cx="32" cy="32" r="21" fill="none" stroke="#b86500" stroke-width="2" stroke-dasharray="3 3"/><text x="32" y="43" text-anchor="middle" font-size="30" font-weight="800" fill="#8a4a00" font-family="Arial,sans-serif">&#8377;</text></symbol>
+<symbol id="g-gift" viewBox="0 0 64 64"><rect x="8" y="26" width="48" height="30" rx="4" fill="url(#gRed)"/><rect x="5" y="19" width="54" height="11" rx="4" fill="#ff5a85"/><rect x="28" y="19" width="8" height="37" fill="url(#gGold)"/><path d="M32 19c-3-12-18-12-15-4 2 5 11 4 15 4zm0 0c3-12 18-12 15-4-2 5-11 4-15 4z" fill="url(#gGold)" stroke="#b86500" stroke-width="1.5"/><rect x="8" y="26" width="48" height="5" fill="rgba(0,0,0,.18)"/></symbol>
+<symbol id="g-wallet" viewBox="0 0 64 64"><rect x="6" y="14" width="46" height="12" rx="5" fill="#0a7a4a" transform="rotate(-8 6 14)"/><rect x="5" y="20" width="54" height="38" rx="8" fill="url(#gGreen)" stroke="#05643a" stroke-width="2"/><rect x="38" y="31" width="21" height="14" rx="6" fill="#0a7a4a" stroke="#05643a" stroke-width="2"/><circle cx="46" cy="38" r="3.5" fill="url(#gGold)"/></symbol>
+<symbol id="g-pad" viewBox="0 0 64 64"><path d="M14 22h36c8 0 12 8 12 18 0 6-3 10-8 10-5 0-6-5-12-5H22c-6 0-7 5-12 5-5 0-8-4-8-10 0-10 4-18 12-18z" fill="url(#gPurple)" stroke="#3a0f9a" stroke-width="2"/><rect x="14" y="30" width="4" height="12" rx="1.5" fill="#fff"/><rect x="10" y="34" width="12" height="4" rx="1.5" fill="#fff"/><circle cx="45" cy="31" r="3" fill="#ffc83d"/><circle cx="51" cy="37" r="3" fill="#19e68c"/><circle cx="39" cy="37" r="3" fill="#ff5d73"/><circle cx="45" cy="43" r="3" fill="#6fc3ff"/></symbol>
+<symbol id="g-cards" viewBox="0 0 64 64"><rect x="8" y="12" width="30" height="42" rx="5" fill="#f2f5fb" stroke="#8fa2c0" stroke-width="2" transform="rotate(-12 23 33)"/><rect x="26" y="10" width="30" height="42" rx="5" fill="#fff" stroke="#8fa2c0" stroke-width="2" transform="rotate(10 41 31)"/><text x="41" y="38" text-anchor="middle" font-size="24" fill="#d4164d" font-family="Arial,sans-serif" transform="rotate(10 41 31)">&#9829;</text><text x="21" y="36" text-anchor="middle" font-size="20" fill="#222" font-family="Arial,sans-serif" transform="rotate(-12 23 33)">&#9824;</text></symbol>
+<symbol id="g-wheel" viewBox="0 0 64 64"><circle cx="32" cy="34" r="27" fill="#2a1260" stroke="url(#gGold)" stroke-width="4"/><path d="M32 34L32 9A25 25 0 0 1 53.7 21.5Z" fill="#ff5d73"/><path d="M32 34L53.7 21.5A25 25 0 0 1 53.7 46.5Z" fill="#ffc83d"/><path d="M32 34L53.7 46.5A25 25 0 0 1 32 59Z" fill="#19e68c"/><path d="M32 34L32 59A25 25 0 0 1 10.3 46.5Z" fill="#2d8cff"/><path d="M32 34L10.3 46.5A25 25 0 0 1 10.3 21.5Z" fill="#a855f7"/><path d="M32 34L10.3 21.5A25 25 0 0 1 32 9Z" fill="#ff9a00"/><circle cx="32" cy="34" r="6" fill="url(#gGold)" stroke="#a85b00" stroke-width="1.5"/><path d="M26 2h12l-6 12z" fill="#fff" stroke="#8fa2c0" stroke-width="1.5"/></symbol>
+<symbol id="g-scratch" viewBox="0 0 64 64"><rect x="5" y="12" width="54" height="40" rx="7" fill="url(#gBlue)" stroke="#0b2f8f" stroke-width="2"/><rect x="11" y="20" width="42" height="24" rx="4" fill="url(#gSilver)"/><path d="M20 38l6-10 5 7 4-5 6 8z" fill="rgba(255,255,255,.65)"/><path d="M42 24l1.6 3.4 3.7.5-2.7 2.600.7 3.700-3.300-1.800-3.300 1.800.7-3.700-2.700-2.600 3.700-.5z" fill="url(#gGold)"/></symbol>
+<symbol id="g-users" viewBox="0 0 64 64"><circle cx="32" cy="20" r="10" fill="url(#gGreen)"/><path d="M14 54c0-11 8-18 18-18s18 7 18 18z" fill="url(#gGreen)"/><circle cx="12" cy="26" r="7" fill="url(#gBlue)"/><path d="M0 52c0-9 5-14 12-14 3 0 5 .7 7 2-4 4-6 8-6 12z" fill="url(#gBlue)"/><circle cx="52" cy="26" r="7" fill="url(#gPurple)"/><path d="M64 52c0-9-5-14-12-14-3 0-5 .7-7 2 4 4 6 8 6 12z" fill="url(#gPurple)"/></symbol>
+<symbol id="g-trophy" viewBox="0 0 64 64"><path d="M18 8h28v18c0 9-6 15-14 15s-14-6-14-15z" fill="url(#gGold)" stroke="#a85b00" stroke-width="2"/><path d="M18 14H8c0 10 4 16 12 17M46 14h10c0 10-4 16-12 17" fill="none" stroke="#e07b00" stroke-width="3"/><rect x="28" y="40" width="8" height="9" fill="#e07b00"/><rect x="18" y="49" width="28" height="8" rx="3" fill="url(#gGold)" stroke="#a85b00" stroke-width="2"/></symbol>
+<symbol id="g-shield" viewBox="0 0 64 64"><path d="M32 4l24 8v18c0 16-10 26-24 30C18 56 8 46 8 30V12z" fill="url(#gGreen)" stroke="#05643a" stroke-width="2"/><path d="M20 32l9 9 16-18" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+<symbol id="g-head" viewBox="0 0 64 64"><circle cx="32" cy="32" r="28" fill="url(#gBlue)"/><path d="M16 36v-4a16 16 0 0 1 32 0v4" fill="none" stroke="#fff" stroke-width="4"/><rect x="12" y="34" width="9" height="14" rx="4" fill="#fff"/><rect x="43" y="34" width="9" height="14" rx="4" fill="#fff"/><path d="M47 48c0 6-6 8-13 8" fill="none" stroke="#fff" stroke-width="3"/></symbol>
+<symbol id="g-plane" viewBox="0 0 64 64"><circle cx="32" cy="32" r="28" fill="#2aa7e8"/><path d="M14 31l33-13-6 28-10-8-5 6-1-9 17-15-22 13z" fill="#fff"/></symbol>
+<symbol id="g-doc" viewBox="0 0 64 64"><path d="M14 4h26l12 12v44H14z" fill="url(#gSilver)" stroke="#6b7d9a" stroke-width="2"/><path d="M40 4v12h12" fill="#c9d4e8"/><path d="M22 28h24M22 36h24M22 44h16" stroke="#5a6b88" stroke-width="3" stroke-linecap="round"/></symbol>
+<symbol id="g-up" viewBox="0 0 64 64"><circle cx="32" cy="32" r="28" fill="url(#gRed)"/><path d="M32 46V20M20 31l12-12 12 12" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+<symbol id="g-user" viewBox="0 0 64 64"><circle cx="32" cy="22" r="12" fill="url(#gBlue)"/><path d="M8 58c0-14 10-22 24-22s24 8 24 22z" fill="url(#gBlue)"/></symbol>
+<symbol id="g-send" viewBox="0 0 64 64"><path d="M58 6L6 28l16 7 6 18 8-11 14 10z" fill="#fff"/></symbol>
+<symbol id="g-gear" viewBox="0 0 64 64"><circle cx="32" cy="32" r="10" fill="none" stroke="url(#gSilver)" stroke-width="8"/><path d="M32 4v10M32 50v10M4 32h10M50 32h10M12 12l7 7M45 45l7 7M52 12l-7 7M19 45l-7 7" stroke="url(#gSilver)" stroke-width="7" stroke-linecap="round"/></symbol>
+<symbol id="n-home" viewBox="0 0 24 24"><path d="M12 2.600L2.800 10.300a.9.900 0 0 0-.3.700V20a1.500 1.500 0 0 0 1.500 1.500h4.200a.8.800 0 0 0 .8-.8v-5h5v5a.8.800 0 0 0 .8.8H20a1.500 1.500 0 0 0 1.500-1.500v-9a.9.900 0 0 0-.3-.7z" fill="currentColor"/></symbol>
+<symbol id="n-game" viewBox="0 0 24 24"><path d="M6 8h12c3 0 4.500 3 4.500 6.500 0 2.500-1 4-3 4s-2.500-2-4.500-2h-6c-2 0-2.500 2-4.500 2s-3-1.500-3-4C1.500 11 3 8 6 8z" fill="currentColor"/></symbol>
+<symbol id="n-gift" viewBox="0 0 24 24"><path d="M3 8h18v4H3zM4.500 13h15v8h-15zM12 8v13" fill="currentColor"/><path d="M12 8c-1-3.500-5-3.500-5-1.500S10 8 12 8zm0 0c1-3.500 5-3.500 5-1.500S14 8 12 8z" fill="none" stroke="currentColor" stroke-width="2"/></symbol>
+<symbol id="n-user" viewBox="0 0 24 24"><circle cx="12" cy="7.500" r="4.500" fill="currentColor"/><path d="M3.500 21c0-4.600 3.800-7.500 8.500-7.500s8.500 2.900 8.500 7.500z" fill="currentColor"/></symbol>
 </defs></svg>
-<div id="splash"><div class="coin" id="spCoin"><svg class="ic"><use href="#i-rupee"/></svg></div><div class="bar"><i></i></div></div>
-<div id="diag" class="hide"><span id="diagT"></span><button onclick="refresh(true)">Retry</button></div>
-<canvas id="fx"></canvas><div id="toast"></div>
-<div id="gate"><div class="gcard">
- <div class="ghead"><h2 id="gTitle">Step 1 of 1</h2><button id="gX" class="hide" onclick="gateClose()"><svg class="ic"><use href="#i-x"/></svg></button></div>
- <div class="gintro"><span class="gpill" id="gPill">STEP 1 OF 1</span><h3>Join Required Channels</h3><p id="gSub">Join all channels to continue.</p></div>
- <div class="gmeta"><span>Completed Channels: <b id="gDone">0/0</b></span><b>100% Free Task</b></div>
- <div class="ggrid" id="gList"></div>
- <button class="btn" id="gVer" onclick="gateVerify()">CONTINUE <svg class="ic"><use href="#i-right"/></svg></button></div></div>
-<div id="ov" onclick="closeSheet()"></div>
-<div id="sheet"><div class="grab"></div><div class="sh"><h2 id="shT">Title</h2><button onclick="closeSheet()"><svg class="ic"><use href="#i-x"/></svg></button></div><div id="sbody"></div></div>
-
+<div id="splash"><svg class="i xl"><use href="#g-crown"/></svg></div><div id="toast"></div>
+<div id="diag" class="hide"><span id="diagT" style="flex:1"></span><button onclick="refresh()">Retry</button></div>
+<div id="ov"><div class="sheet" id="sheet"></div></div>
 <div id="app">
- <div class="top"><div class="logo" id="logo"><svg class="ic"><use href="#i-crown"/></svg></div>
-  <div class="tt"><h1 id="brand">Loading</h1><small id="sub">PLAY &amp; EARN</small></div>
-  <div class="pill"><i><svg class="ic"><use href="#i-rupee"/></svg></i><b id="topBal">0.00</b></div></div>
+ <div class="top"><button class="back hide" id="back" onclick="go('home')">&#8592;</button><div class="logo" id="logo"><svg class="i"><use href="#g-crown"/></svg></div>
+  <div class="tt"><h1 id="brand">Loading</h1><small id="sub">Play &bull; Earn &bull; Win</small></div>
+  <div class="pill"><i><svg class="i"><use href="#g-coin"/></svg></i><b id="topBal">0.00</b></div></div>
 
  <section class="view on" id="v-home">
-  <div class="banner"><div class="slides" id="slides">
-   <div class="slide"><div class="srow"><span class="tag"><svg class="ic"><use href="#i-crown"/></svg>EXCLUSIVE OFFER</span><span class="tag o">100% Free</span></div>
-    <h2>Claim Your Full Cash Voucher</h2><p>Simple tasks complete karo aur direct withdraw pao!</p><div class="sfoot"><button class="btn" onclick="go('invite')">Claim Now <svg class="ic"><use href="#i-right"/></svg></button></div></div>
-   <div class="slide"><div class="srow"><span class="tag"><svg class="ic"><use href="#i-gift"/></svg>GIFT CODES</span><span class="tag o">Instant</span></div>
-    <h2>Redeem Gift Codes</h2><p>Official Telegram channel se code enter karein aur instant cash reward claim karein!</p><div class="sfoot"><button class="btn" onclick="go('gift')">Redeem <svg class="ic"><use href="#i-right"/></svg></button></div></div>
-  </div></div>
-  <div class="dots" id="dots"><i class="on"></i><i></i></div>
-
-  <div class="card bal"><div class="r0"><h3>Available Balance</h3><button class="ref" id="refBtn" onclick="refresh(true)"><svg class="ic"><use href="#i-refresh"/></svg></button></div>
-   <div class="amt"><span>₹</span><b id="bal" class="sk">0.00</b></div>
-   <button class="btn" onclick="act('withdraw')">WITHDRAW VOUCHER <svg class="ic"><use href="#i-upright"/></svg></button></div>
-  <div class="two"><div class="card stat"><h3>Total Invites</h3><b id="inv">0</b></div><div class="card stat"><h3>Total Income</h3><b class="g" id="earn">₹0.00</b></div></div>
-  <div class="sec">Recent Activity<span class="sp"></span><button class="btn sm" onclick="go('invite')">View All <svg class="ic"><use href="#i-chev"/></svg></button></div>
-  <div class="card" id="actList"><div class="empty">No recent activity yet. Invite friends or complete offers to earn!</div></div>
+  <div class="card row" onclick="go('profile')"><div class="logo" id="hAv" style="width:42px;height:42px;border-color:var(--g)"><svg class="i"><use href="#g-user"/></svg></div><div class="f"><div class="mut">Welcome back</div><h2 id="hName">Player</h2></div><span class="mut" style="color:var(--g)">Verified</span></div>
+  <div class="card hot"><div class="mut">Total balance</div><div class="amt"><s>&#8377;</s><span id="bal">0.00</span></div><div class="row"><button class="btn y sm" onclick="openWd()"><svg class="i sm"><use href="#g-up"/></svg> Withdraw</button><button class="btn sm" style="background:#06121f;color:var(--t);box-shadow:none;border:1.5px solid var(--ln)" onclick="refresh(true)">&#8635; Refresh</button></div></div>
+  <div class="grid4"><div class="tile" onclick="go('games')"><b><svg class="i tl"><use href="#g-pad"/></svg></b>Play &amp; Earn</div><div class="tile" onclick="go('rewards')"><b><svg class="i tl"><use href="#g-gift"/></svg></b>Rewards</div><div class="tile" onclick="go('refer')"><b><svg class="i tl"><use href="#g-users"/></svg></b>Refer &amp; Earn</div><div class="tile" onclick="go('wallet')"><b><svg class="i tl"><use href="#g-wallet"/></svg></b>Wallet</div></div>
+  <div class="hero" onclick="go('refer')"><h3>Bigger rewards for you</h3><p>Invite friends and earn <span class="pr">&#8377;0</span> for each one.</p><div class="e"><svg class="i"><use href="#g-gift"/></svg></div></div>
+  <h2>Quick access</h2>
+  <div class="card" style="padding:4px 14px"><div class="mrow" onclick="openCh()"><span><svg class="i"><use href="#g-head"/></svg></span>Support &amp; updates channel<span class="go">&#8250;</span></div><div class="mrow" onclick="go('rewards')"><span><svg class="i"><use href="#g-gift"/></svg></span>Redeem a gift code<span class="go">&#8250;</span></div></div>
  </section>
 
- <section class="view" id="v-invite">
-  <div class="card hero"><span class="tag"><svg class="ic"><use href="#i-fire"/></svg>BIG REWARD OFFER</span><h2>Invite Friends &amp; Get <span id="prx">₹0</span></h2>
-   <p class="muted">Jab aapka friend task complete karega, turant <span id="prx2">₹0</span> direct aapke wallet me add ho jayenge!</p><div class="coinw"><div class="coin" id="iCoin"><svg class="ic"><use href="#i-rupee"/></svg></div><span class="cbadge" id="cbadge">+₹0 Cash</span></div></div>
-  <div class="card"><h3>Your Referral Link <span class="cnt">UNLIMITED EARNINGS</span></h3>
-   <div class="lnk"><svg class="ic"><use href="#i-link"/></svg><span id="lnk">…</span><button onclick="copy()"><svg class="ic"><use href="#i-copy"/></svg></button></div>
-   <button class="btn" onclick="share()"><svg class="ic"><use href="#i-send"/></svg>SHARE LINK WITH FRIENDS</button></div>
-  <div class="sec">How It Works</div>
-  <div class="card"><div class="step"><i>1</i><div><b>Share Your Link</b><span class="muted">Apna referral link Telegram ya WhatsApp par dosto ke sath share karein.</span></div></div>
-   <div class="step"><i>2</i><div><b>Friend Starts Bot</b><span class="muted">Aapka dost link se <b style="display:inline" id="botU">@bot</b> ko start karega aur app open karega.</span></div></div>
-   <div class="step"><i>3</i><div><b>Task Done &rarr; Get <span class="px3">₹0</span> Instant!</b><span class="muted">Jaise hi naya user koi 1 task/offer complete karega, aapko turant <span class="px3">₹0</span> mil jayenge!</span></div></div></div>
-  <div class="sec">Invited Friends<span class="sp"></span><span class="cnt" style="margin:0" id="invc">0 Total</span></div>
-  <div class="card"><div class="empty" id="invTxt">No friends invited yet. Share your link to start earning!</div></div>
+ <section class="view" id="v-games">
+  <div class="hero"><h3>Play games, earn real rewards</h3><p>Choose your game and start winning.</p><div class="e"><svg class="i"><use href="#g-pad"/></svg></div></div>
+  <div class="gm a" onclick="soon()"><div class="ic"><svg class="i"><use href="#g-cards"/></svg></div><div><b>Rummy<span class="soon">SOON</span></b><small>Skill, fun, real rewards</small></div><span class="go">&#8250;</span></div>
+  <div class="gm b" onclick="soon()"><div class="ic"><svg class="i"><use href="#g-wheel"/></svg></div><div><b>Lucky Spin<span class="soon">SOON</span></b><small>Spin and win rewards</small></div><span class="go">&#8250;</span></div>
+  <div class="gm c" onclick="soon()"><div class="ic"><svg class="i"><use href="#g-scratch"/></svg></div><div><b>Scratch Card<span class="soon">SOON</span></b><small>Scratch and get instant rewards</small></div><span class="go">&#8250;</span></div>
+  <div class="gm d" onclick="go('refer')"><div class="ic"><svg class="i"><use href="#g-users"/></svg></div><div><b>Refer &amp; Earn</b><small>Live now: earn per friend</small></div><span class="go">&#8250;</span></div>
  </section>
 
- <section class="view" id="v-gift">
-  <div class="card hero"><span class="tag"><svg class="ic"><use href="#i-gift"/></svg>EXCLUSIVE GIFT PROMO</span><h2>Redeem Gift Codes</h2>
-   <p class="muted">Official Telegram channel se code enter karein aur instant cash reward claim karein!</p><div class="coinw"><div class="coin" id="gCoin"><svg class="ic"><use href="#i-gift"/></svg></div><span class="cbadge">Instant Cash</span></div></div>
-  <div class="card"><h3>Enter Promo / Gift Code <span class="cnt" style="font-size:12px">FAST CLAIM</span></h3>
-   <input id="code" placeholder="Enter gift code (e.g. BONUS50)" autocapitalize="characters" autocomplete="off">
-   <button class="btn" id="claimBtn" onclick="redeem()"><svg class="ic"><use href="#i-gift"/></svg>CLAIM GIFT REWARD</button></div>
-  <div class="card" style="padding:6px 18px"><div class="row" onclick="openCh()"><div class="ico b"><svg class="ic"><use href="#i-tg"/></svg></div>Join Telegram Channel for codes<svg class="ic go"><use href="#i-chev"/></svg></div></div>
+ <section class="view" id="v-wallet">
+  <div class="card hot"><div class="mut">Your balance</div><div class="amt"><s>&#8377;</s><span id="wBal">0.00</span></div><button class="btn y" onclick="openWd()"><svg class="i sm"><use href="#g-up"/></svg> Withdraw money</button></div>
+  <div class="two"><div class="card stat"><span class="mut">Total earned</span><b id="wEarn">&#8377;0.00</b></div><div class="card stat"><span class="mut">Withdrawn</span><b id="wWd">&#8377;0.00</b></div></div>
+  <h2>Recent transactions</h2><div class="card" id="txList"></div>
+  <div class="card row"><span><svg class="i md"><use href="#g-shield"/></svg></span><div class="f"><b>Secure &amp; safe</b><div class="mut">Your transactions are protected</div></div></div>
+ </section>
+
+ <section class="view" id="v-refer">
+  <div class="hero"><h3>Invite your friends</h3><p>Get <span class="pr">&#8377;0</span> for each user who joins and plays.</p><div class="e"><svg class="i"><use href="#g-users"/></svg></div></div>
+  <div class="card"><div class="mut" style="margin-bottom:6px">Your referral link</div><div class="code"><span class="f" id="lnk">...</span><button class="btn sm" style="padding:8px 12px" onclick="copy()">Copy</button></div><button class="btn" style="margin-top:12px" onclick="share()"><svg class="i sm"><use href="#g-send"/></svg> Share with friends</button></div>
+  <h2>How it works</h2>
+  <div class="steps"><div><svg class="i md"><use href="#g-plane"/></svg><b>Share link</b>Send to friends</div><div><svg class="i md"><use href="#g-user"/></svg><b>They join</b>Sign up and play</div><div><svg class="i md"><use href="#g-coin"/></svg><b>You get paid</b>Rewards instantly</div></div>
+  <div class="card row"><span><svg class="i md"><use href="#g-users"/></svg></span><div class="f"><b>Friends invited</b><div class="mut">No limit. Keep referring.</div></div><b style="font-size:24px;color:var(--g)" id="inv">0</b></div>
+ </section>
+
+ <section class="view" id="v-rewards">
+  <div class="hero"><h3>Rewards centre</h3><p>Redeem gift codes and track what you earned.</p><div class="e"><svg class="i"><use href="#g-gift"/></svg></div></div>
+  <div class="card"><h2>Redeem gift code</h2><input id="code" placeholder="Enter gift code" autocapitalize="characters" autocomplete="off"><button class="btn y" id="claimBtn" onclick="redeem()"><svg class="i sm"><use href="#g-gift"/></svg> Claim reward</button></div>
+  <div class="two"><div class="card stat"><span class="mut">Referral reward</span><b>&#8377;<span class="prn">0</span></b></div><div class="card stat" id="wbCard"><span class="mut">Sign-up bonus</span><b id="wb">-</b></div></div>
+  <div class="card row" onclick="go('wallet')"><span><svg class="i md"><use href="#g-trophy"/></svg></span><div class="f"><div class="mut">Total rewards earned</div><b style="font-size:22px" id="rEarn">&#8377;0.00</b></div><span class="mut">&#8250;</span></div>
+  <div class="card row" onclick="openCh()"><span><svg class="i md"><use href="#g-plane"/></svg></span><div class="f"><b>Telegram channel</b><div class="mut">Get new gift codes first</div></div><span class="mut">&#8250;</span></div>
  </section>
 
  <section class="view" id="v-profile">
-  <div class="card pf"><div class="big"><div class="av" id="pAv"></div><div class="ck"><svg class="ic"><use href="#i-check"/></svg></div></div>
-   <h2 id="pName">User</h2><div class="meta" id="pUser"></div><div class="meta"><svg class="ic"><use href="#i-cal"/></svg><span id="pSince">Member since</span></div>
-   <div class="two" style="margin-top:18px"><div class="mini">TOTAL EARNED<b id="pEarn">₹0.00</b></div><div class="mini o">BALANCE<b id="pBal">₹0.00</b></div></div></div>
-  <div class="cap">ACCOUNT SETTINGS</div>
-  <div class="card" style="padding:6px 18px">
-   <div class="row" onclick="go('home')"><div class="ico"><svg class="ic"><use href="#i-pulse"/></svg></div>Wallet &amp; Activity<svg class="ic go"><use href="#i-chev"/></svg></div>
-   <div class="row" onclick="act('withdraw')"><div class="ico g"><svg class="ic"><use href="#i-upright"/></svg></div>Withdraw Voucher<svg class="ic go"><use href="#i-chev"/></svg></div>
-   <div class="row" onclick="go('gift')"><div class="ico"><svg class="ic"><use href="#i-gift"/></svg></div>Redeem Gift / Promo Code<svg class="ic go"><use href="#i-chev"/></svg></div>
-   <div class="row" onclick="openCh()"><div class="ico b"><svg class="ic"><use href="#i-tg"/></svg></div>Join Telegram Channel<svg class="ic go"><use href="#i-chev"/></svg></div></div>
-  <div class="cap">APP &amp; LEGAL</div>
-  <div class="card" style="padding:6px 18px">
-   <div class="row" onclick="tgl('snd')"><div class="ico p"><svg class="ic"><use href="#i-vol"/></svg></div>Sounds<div class="sw" id="sw-snd"></div></div>
-   <div class="row" onclick="tgl('hap')"><div class="ico b"><svg class="ic"><use href="#i-vib"/></svg></div>Vibration<div class="sw" id="sw-hap"></div></div>
-   <div class="row" onclick="sheet('faq')"><div class="ico b"><svg class="ic"><use href="#i-help"/></svg></div>Help &amp; FAQs<svg class="ic go"><use href="#i-chev"/></svg></div>
-   <div class="row" onclick="sheet('privacy')"><div class="ico"><svg class="ic"><use href="#i-shield"/></svg></div>Privacy Policy<svg class="ic go"><use href="#i-chev"/></svg></div>
-   <div class="row" onclick="sheet('terms')"><div class="ico g"><svg class="ic"><use href="#i-doc"/></svg></div>Terms &amp; Conditions<svg class="ic go"><use href="#i-chev"/></svg></div></div>
+  <div class="card row"><div class="logo" id="pAv" style="width:60px;height:60px;border-color:var(--g)"><svg class="i"><use href="#g-user"/></svg></div><div class="f"><h2 id="pName">Player</h2><div class="mut" id="pId"></div><div class="mut" id="pSince"></div></div></div>
+  <div class="card" style="padding:4px 14px">
+   <div class="mrow" onclick="go('wallet')"><span><svg class="i"><use href="#g-wallet"/></svg></span>My Wallet<span class="go">&#8250;</span></div>
+   <div class="mrow" onclick="go('refer')"><span><svg class="i"><use href="#g-users"/></svg></span>Refer &amp; Earn<span class="go">&#8250;</span></div>
+   <div class="mrow" onclick="openCh()"><span><svg class="i"><use href="#g-head"/></svg></span>Support<span class="go">&#8250;</span></div>
+   <div class="mrow" onclick="doc('terms')"><span><svg class="i"><use href="#g-doc"/></svg></span>Terms &amp; Conditions<span class="go">&#8250;</span></div>
+   <div class="mrow" onclick="doc('privacy')"><span><svg class="i"><use href="#g-shield"/></svg></span>Privacy Policy<span class="go">&#8250;</span></div>
+   <div class="mrow hide" id="admRow" onclick="go('admin')"><span><svg class="i"><use href="#g-gear"/></svg></span>Admin Panel<span class="go">&#8250;</span></div></div>
+  <div class="card" style="text-align:center;color:var(--y);font-weight:800">Play smart &bull; Earn more</div>
  </section>
 
- <!-- ADMIN: only built for users the bot reports as admin. No pin. -->
  <section class="view" id="v-admin">
-  <div class="sec">Admin Panel</div>
-  <div class="two"><div class="card stat"><h3>Users</h3><b id="a_u">0</b></div><div class="card stat"><h3>Per Refer</h3><b id="a_pr">0</b></div></div>
-      </div>
-  <div class="card"><h3>App Colour</h3>
-   <p class="muted" style="margin-top:8px">Pick a colour. The preview updates live, then press Save.</p>
-   <div class="swatches" id="swatches"></div>
-   <div class="custom"><input type="color" id="cpick" value="#0b5a3b"><input type="text" id="chex" value="#0b5a3b" maxlength="7" placeholder="#0b5a3b"></div>
-   <div class="pv" id="pv"><div class="ph"><div class="lg"></div>Preview<span class="pl">₹ 125.00</span></div>
-    <div class="sl">Claim Your Cash Reward<small>Invite friends and withdraw</small><span>Claim Now</span></div>
-    <div class="bn"><i class="on"></i><i></i><i></i><i></i></div></div>
-   <button class="btn" style="margin-top:16px" onclick="saveColor()"><svg class="ic"><use href="#i-check"/></svg>SAVE COLOUR</button></div>
-  <div class="card"><h3>Channels</h3><p class="muted" style="margin-top:8px">Users see one page at a time. When page 1 is joined, page 2 opens, and so on. Tap a channel to edit.</p>
-   <div class="ptabs" id="ptabs"></div><div id="chList"></div>
-   <button class="btn" style="margin-top:12px" onclick="chAddSheet()"><svg class="ic"><use href="#i-plus"/></svg><span id="addTxt">ADD CHANNEL TO PAGE 1</span></button></div>
-  <div class="card"><h3>Button Gates</h3><p class="muted" style="margin:8px 0 4px">Switch channel join ON or OFF for each button or tab. When ON, users must join the channels (page by page) before it works.</p><div id="gateList"></div></div>
-  <div class="card"><h3>Add / Remove Balance</h3><input id="bt" inputmode="numeric" placeholder="User ID"><input id="ba" inputmode="decimal" placeholder="Amount (negative to deduct)"><button class="btn" onclick="admBal()"><svg class="ic"><use href="#i-plus"/></svg>APPLY</button></div>
-  <div class="card"><h3>Create Gift Code</h3><input id="gc" placeholder="Code (no spaces)"><input id="ga" inputmode="numeric" placeholder="Amount"><input id="gm" inputmode="numeric" placeholder="Max users"><input id="gr" inputmode="numeric" placeholder="Min refers needed (0 = none)"><button class="btn" onclick="admGift()"><svg class="ic"><use href="#i-ticket"/></svg>CREATE CODE</button></div>
-  <div class="card"><h3>Message a User</h3><input id="mt" inputmode="numeric" placeholder="User ID"><input id="mm" placeholder="Message"><button class="btn" onclick="admMsg()"><svg class="ic"><use href="#i-send"/></svg>SEND</button></div>
+  <div class="two"><div class="card stat"><span class="mut">Users</span><b id="a_u">0</b></div><div class="card stat"><span class="mut">Verified</span><b id="a_v">0</b></div><div class="card stat"><span class="mut">Bonus given</span><b id="a_bc">0</b></div><div class="card stat"><span class="mut">Total withdrawn</span><b id="a_w">0</b></div></div>
+  <div class="card"><h2>Sign-up bonus</h2><p class="mut" style="margin:4px 0">Every new user gets this amount one time only, when they first start the bot. Enter 0 to turn it off.</p><input id="sb" inputmode="decimal" placeholder="Bonus amount in rupees"><button class="btn" onclick="saveBonus()">Save sign-up bonus</button><div class="mut" id="sbNow" style="margin-top:8px"></div></div>
+  <div class="card"><p class="mut">Channels, gift codes, balance and broadcasts are managed from the bot admin panel.</p></div>
  </section>
 </div>
-
-<button id="fab" onclick="fabGo()" aria-label="Home"><svg class="ic"><use href="#i-home"/></svg></button>
-<nav id="nav">
- <button data-t="home" class="on"><svg class="ic"><use href="#i-home"/></svg>Home</button>
- <button data-t="invite"><svg class="ic"><use href="#i-share"/></svg>Invite</button>
- <button data-t="gift"><svg class="ic"><use href="#i-gift"/></svg>Gift</button>
- <button data-t="profile"><svg class="ic"><use href="#i-user"/></svg>Profile</button>
-</nav>
+<nav id="nav"><button data-t="home" class="on"><span><svg class="i"><use href="#n-home"/></svg></span>Home</button><button data-t="games"><span><svg class="i"><use href="#n-game"/></svg></span>Games</button><button class="mid" data-t="home"><svg class="i xl2"><use href="#g-crown"/></svg></button><button data-t="rewards"><span><svg class="i"><use href="#n-gift"/></svg></span>Rewards</button><button data-t="profile"><span><svg class="i"><use href="#n-user"/></svg></span>Profile</button></nav>
 
 <script>
-/* One page serves MANY bots: each bot's Open App button adds ?api=<that bot's API url> */
-const DEFAULT_API = "";
-const $ = id => document.getElementById(id);
-const ic = n => `<svg class="ic"><use href="#i-${n}"/></svg>`;
-const tg = window.Telegram && Telegram.WebApp;
-if (tg) { try { tg.ready(); tg.expand(); } catch(e){} }
-const U = (tg && tg.initDataUnsafe && tg.initDataUnsafe.user) || null;
-const qs = new URLSearchParams(location.search);
-let API = qs.get("api") || DEFAULT_API;
-try { if (API) sessionStorage.setItem("api", API); else API = sessionStorage.getItem("api") || ""; } catch(e){}
-const UID = U ? String(U.id) : (qs.get("u") || qs.get("uid") || "");
-let me = {}, cur = "home";
-const store = { get:(k,d)=>{ try{ const v=localStorage.getItem(k); return v===null?d:v }catch(e){ return d } }, set:(k,v)=>{ try{ localStorage.setItem(k,v) }catch(e){} } };
-let pref = { snd: store.get("snd","1")==="1", hap: store.get("hap","1")==="1" };
+const $=id=>document.getElementById(id),tg=window.Telegram&&Telegram.WebApp;
+if(tg){try{tg.ready();tg.expand()}catch(e){}}
+const U=(tg&&tg.initDataUnsafe&&tg.initDataUnsafe.user)||null,qs=new URLSearchParams(location.search);
+let API=qs.get("api")||"";try{if(API)sessionStorage.setItem("api",API);else API=sessionStorage.getItem("api")||""}catch(e){}
+const UID=U?String(U.id):(qs.get("u")||qs.get("uid")||"");
+let me={},cur="home",GK=null,GCB=null,LASTERR="";
+const rs=n=>Number(n||0).toFixed(2),esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+let tt;function toast(m,k){const t=$("toast");t.textContent=m;t.className="on "+(k||"");clearTimeout(tt);tt=setTimeout(()=>t.className="",2800);try{if(tg&&tg.HapticFeedback)tg.HapticFeedback.notificationOccurred(k==="err"?"error":"success")}catch(e){}}
+function soon(){toast("Coming soon. Stay tuned!")}
 
-/* ================= SOUND ENGINE (generated, no files) ================= */
-let ac, master, echo;
-function unlock(){ try{
-  if(!ac){ ac=new (window.AudioContext||window.webkitAudioContext)(); master=ac.createGain(); master.gain.value=.9;
-    echo=ac.createDelay(); echo.delayTime.value=.13; const fb=ac.createGain(); fb.gain.value=.28; const wet=ac.createGain(); wet.gain.value=.35;
-    master.connect(ac.destination); master.connect(echo); echo.connect(fb); fb.connect(echo); echo.connect(wet); wet.connect(ac.destination); }
-  if(ac.state==="suspended") ac.resume(); }catch(e){} }
-function tone(f,t,d,type,v,when){ if(!pref.snd) return; try{ unlock(); const o=ac.createOscillator(),g=ac.createGain(),s=ac.currentTime+(when||0);
-  o.type=type||"sine"; o.frequency.setValueAtTime(f,s); if(t) o.frequency.exponentialRampToValueAtTime(t,s+d);
-  g.gain.setValueAtTime(.0001,s); g.gain.exponentialRampToValueAtTime(v||.15,s+.012); g.gain.exponentialRampToValueAtTime(.0001,s+d);
-  o.connect(g); g.connect(master); o.start(s); o.stop(s+d+.03); }catch(e){} }
-const N={C5:523,D5:587,E5:659,G5:784,A5:880,C6:1047,E6:1319,G6:1568};
-const snd={
-  tap:()=>{},
-  nav:()=>{tone(520,780,.08,"sine",.07)},
-  open:()=>{tone(N.C5,0,.22,"triangle",.07);tone(N.G5,0,.4,"sine",.06,.1)},
-  close:()=>{},
-  coin:()=>{tone(1319,0,.25,"sine",.06)},
-  win:()=>{[N.C5,N.E5,N.G5,N.C6].forEach((f,i)=>tone(f,0,.2,"triangle",.08,i*.08))},
-  err:()=>{tone(240,170,.2,"sawtooth",.06)},
-  pop:()=>tone(420,760,.09,"sine",.07),
-  swipe:()=>{},
-  up:()=>{tone(420,720,.12,"sine",.06)},
-  down:()=>{tone(720,420,.1,"sine",.05)},
-  tick:()=>{},
-  key:()=>{}
-};
-function hap(t){ if(!pref.hap) return; try{ if(tg&&tg.HapticFeedback){ t==="err"?tg.HapticFeedback.notificationOccurred("error"):t==="ok"?tg.HapticFeedback.notificationOccurred("success"):tg.HapticFeedback.impactOccurred("light"); } else if(navigator.vibrate) navigator.vibrate(t==="err"?[40,30,40]:10); }catch(e){} }
-/* sounds only for real actions (tab change, success, error, popups). Plain taps stay silent. */
-let opened=false;
-document.addEventListener("pointerdown",e=>{ unlock();
-  if(!opened){ opened=true; snd.open(); }
-  const b=e.target.closest(".btn,.ref"); if(b){ hap(); const r=b.getBoundingClientRect(),d=Math.max(r.width,r.height),s=document.createElement("span"); s.className="rip"; s.style.cssText=`width:${d}px;height:${d}px;left:${e.clientX-r.left-d/2}px;top:${e.clientY-r.top-d/2}px`; b.appendChild(s); setTimeout(()=>s.remove(),600); }
-},true);
+/* ---- API (direct, proxy fallback) ---- */
+async function post(url,body){const r=await fetch(url,{method:"POST",headers:{"Content-Type":"application/json"},body});const t=await r.text();let j;try{j=JSON.parse(t)}catch(e){return{ok:false,error:"Bad reply from bot (HTTP "+r.status+")"}}return(j&&j.result&&typeof j.result==="object")?j.result:j}
+async function api(b){LASTERR="";if(!API)return{ok:false,error:LASTERR="Open the app from the bot's Open App button."};if(!UID)return{ok:false,error:LASTERR="Open this app inside Telegram."};
+ const body=JSON.stringify(Object.assign({uid:UID},b));
+ try{return await post(API,body)}catch(e){try{return await post("/api/proxy?u="+encodeURIComponent(API),body)}catch(e2){return{ok:false,net:true,error:LASTERR="Cannot reach the bot server. Check your connection."}}}}
+async function apiRetry(b){let r=await api(b);if(!r.ok&&(r.net||/did not answer|timed out/i.test(r.error||""))){await new Promise(s=>setTimeout(s,1500));r=await api(b)}return r}
 
-/* ================= UI helpers ================= */
-let tt;
-function toast(m,k){ const t=$("toast"); t.innerHTML=(k==="err"?ic("x"):k==="ok"?ic("check"):ic("spark"))+"<span></span>"; t.lastChild.textContent=m; t.className="on "+(k||""); clearTimeout(tt); tt=setTimeout(()=>t.className="",2800); if(k==="err"){snd.err();hap("err")} if(k==="ok"){hap("ok")} }
-const rs=n=>Number(n||0).toFixed(2);
-function countUp(el,to,pre){ const from=parseFloat(el.dataset.v||0); el.dataset.v=to; const t0=performance.now(),dur=900; el.classList.remove("sk"); let lt=0;
-  (function s(n){ const p=Math.min(1,(n-t0)/dur),e=1-Math.pow(1-p,3); el.textContent=(pre||"")+(from+(to-from)*e).toFixed(2); if(n-lt>110&&p<1&&from!==to){snd.tick();lt=n} if(p<1) requestAnimationFrame(s); })(t0); }
-const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+/* ---- navigation ---- */
+const HEAD={home:()=>[me.brand||me.bot||"Play & Earn","Play • Earn • Win"],games:()=>["Play & Earn","Choose your game"],wallet:()=>["Wallet","Balance & transactions"],refer:()=>["Refer & Earn","Invite friends"],rewards:()=>["Rewards","Gifts & bonuses"],profile:()=>["Profile","Your account"],admin:()=>["Admin Panel","Manage your bot"]};
+const MAIN=["home","games","rewards","profile"];
+async function guard(key,fn){if((me.gates||{})[key]){const d=await api({a:"gate",key});if(d.ok&&d.gate){showGate(d.gate,key,fn);return}}fn()}
+function go(t){if(t===cur)return;guard("tab_"+t,()=>doGo(t))}
+function doGo(t){document.querySelectorAll(".view").forEach(v=>v.classList.remove("on"));$("v-"+t).classList.add("on");cur=t;
+ document.querySelectorAll("nav button:not(.mid)").forEach(b=>b.classList.toggle("on",b.dataset.t===t));
+ $("back").classList.toggle("hide",MAIN.includes(t));$("logo").classList.toggle("hide",!MAIN.includes(t));
+ const h=HEAD[t]();$("brand").textContent=h[0];$("sub").textContent=h[1];scrollTo({top:0});if(t==="admin")admLoad()}
+$("nav").addEventListener("click",e=>{const b=e.target.closest("button");if(b)go(b.dataset.t)});
 
-/* confetti drawn, no emoji */
-const cv=$("fx"),cx=cv.getContext("2d"); let parts=[],raf; const COL=["#ffe14d","#ff9a00","#12b886","#ffffff","#ff5d73"];
-function burst(){ cv.width=innerWidth; cv.height=innerHeight;
-  for(let i=0;i<70;i++) parts.push({x:innerWidth/2,y:innerHeight*.55,vx:(Math.random()-.5)*15,vy:-Math.random()*17-4,g:.5,a:Math.random()*6,va:(Math.random()-.5)*.4,s:6+Math.random()*9,c:COL[i%5],coin:i%3===0,l:1});
-  cancelAnimationFrame(raf); (function f(){ cx.clearRect(0,0,cv.width,cv.height);
-    parts.forEach(p=>{p.vy+=p.g;p.x+=p.vx;p.y+=p.vy;p.a+=p.va;p.l-=.011;cx.save();cx.globalAlpha=Math.max(p.l,0);cx.translate(p.x,p.y);cx.rotate(p.a);cx.fillStyle=p.c;
-      if(p.coin){cx.beginPath();cx.arc(0,0,p.s,0,7);cx.fill();cx.fillStyle="#b86e00";cx.fillRect(-p.s/3,-p.s/2,p.s*.66,p.s*.2);cx.fillRect(-p.s/3,-p.s/6,p.s*.66,p.s*.2)}else cx.fillRect(-p.s/2,-p.s/4,p.s,p.s/2);cx.restore()});
-    parts=parts.filter(p=>p.l>0&&p.y<innerHeight+40); if(parts.length) raf=requestAnimationFrame(f); else cx.clearRect(0,0,cv.width,cv.height); })(); }
+/* ---- logo + names ---- */
+function setImg(el,urls,fb){urls=[].concat(urls).filter(Boolean);let k=0;(function n(){if(k>=urls.length){if(fb)el.textContent=fb;return}const i=new Image();i.onload=()=>{if(i.naturalWidth>1){el.innerHTML="";el.appendChild(i)}else n()};i.onerror=n;i.src=urls[k++]})()}
+const fullName=U?(((U.first_name||"")+" "+(U.last_name||"")).trim()||"Player"):"Player";
+$("hName").textContent=fullName;$("pName").textContent=fullName;$("pId").textContent=(U&&U.username?"@"+U.username+"  |  ":"")+"ID: "+(UID||"-");
+if(U&&U.photo_url){setImg($("hAv"),U.photo_url);setImg($("pAv"),U.photo_url)}
 
-/* ================= colour engine ================= */
-function hex2rgb(h){ h=h.replace("#",""); return [0,2,4].map(i=>parseInt(h.substr(i,2),16)); }
-function rgb2hex(a){ return "#"+a.map(v=>Math.max(0,Math.min(255,Math.round(v))).toString(16).padStart(2,"0")).join(""); }
-function mix(h,t,p){ const a=hex2rgb(h),b=hex2rgb(t); return rgb2hex(a.map((v,i)=>v+(b[i]-v)*p)); }
-function lum(h){ const [r,g,b]=hex2rgb(h); return (.299*r+.587*g+.114*b)/255; }
-function palette(c){ let base=c; if(lum(c)>.62) base=mix(c,"#000000",.45);
-  return {"--bg1":base,"--bg2":mix(base,"#000000",.68),"--g1":mix(base,"#ffffff",.06),"--g2":mix(base,"#000000",.72),"--ink":mix(base,"#000000",.4),"--card":mix(base,"#ffffff",.965),"--mut":mix(mix(base,"#000000",.2),"#7c8a85",.55),"--sl1":mix(base,"#00d68f",.22),"--sl2":mix(base,"#000000",.12),"--sl3":mix(base,"#000000",.68)}; }
-function applyColor(c,el){ const p=palette(c),t=el||document.documentElement; for(const k in p) t.style.setProperty(k,p[k]); }
-
-/* ================= bot logo (auto) ================= */
-function setImg(el,urls,fallbackHtml){ urls=[].concat(urls).filter(Boolean); let k=0;
-  (function next(){ if(k>=urls.length){ if(fallbackHtml) el.innerHTML=fallbackHtml; return; }
-    const i=new Image(); i.onload=()=>{ if(i.naturalWidth>1){ el.innerHTML=""; el.appendChild(i); } else next(); }; i.onerror=next; i.src=urls[k++]; })(); }
-function logoUrls(name){ name=String(name||"").replace(/^@/,""); if(!name) return []; return ["/api/logo?u="+encodeURIComponent(name),"https://t.me/i/userpic/320/"+encodeURIComponent(name)+".jpg"]; }
-function botLogoUrls(){ return [me.logo].concat(me.bot?logoUrls(me.bot):[]); }
-function applyLogo(){ const u=botLogoUrls().filter(Boolean); if(!u.length) return; const L=(me.brand||"B")[0].toUpperCase();
-  setImg($("logo"),u,L); setImg($("gCoin"),u,ic("gift")); setImg($("iCoin"),u,ic("rupee")); setImg($("spCoin"),u,ic("rupee")); }
-
-/* ================= api ================= */
-let MODE="direct", LASTERR=""; try{ MODE=sessionStorage.getItem("mode")||"direct"; }catch(e){}
-async function rawPost(url,payload){ const r=await fetch(url,{method:"POST",headers:{"Content-Type":"application/json"},body:payload}); const t=await r.text(); return {status:r.status,text:t}; }
-function parseRes(res){ let j; try{ j=JSON.parse(res.text); }catch(e){ return {ok:false,error:"Bad reply from bot (HTTP "+res.status+"): "+String(res.text).replace(/\s+/g," ").slice(0,80)}; }
-  if(j&&j.result&&typeof j.result==="object") return j.result; return j; }
-async function api(body){
-  LASTERR="";
-  if(!API){ LASTERR="Bot link missing. Open the app with the bot's Open App button."; return {ok:false,error:LASTERR}; }
-  if(!UID){ LASTERR="Open this app inside Telegram."; return {ok:false,error:LASTERR}; }
-  const payload=JSON.stringify(Object.assign({uid:UID},body));
-  const proxy="/api/proxy?u="+encodeURIComponent(API);
-  const order=MODE==="proxy"?["proxy","direct"]:["direct","proxy"]; let why="";
-  for(const m of order){
-    try{
-      const res=await rawPost(m==="direct"?API:proxy,payload);
-      if(m==="proxy"&&res.status===404){ let isJ=true; try{ JSON.parse(res.text); }catch(e){ isJ=false; } if(!isJ){ why="proxy not deployed"; continue; } }
-      const out=parseRes(res); MODE=m; try{ sessionStorage.setItem("mode",m); }catch(e){}
-      if(res.status>=400&&out&&!out.ok&&!out.error) out.error="Bot server replied HTTP "+res.status;
-      return out;
-    }catch(e){ why=(m==="direct"?"direct call blocked (CORS)":"proxy unreachable"); }
-  }
-  LASTERR="Cannot reach bot server ("+why+"). Upload api/proxy.js with index.html on Vercel.";
-  return {ok:false,error:LASTERR,net:true};
+/* ---- paint ---- */
+function paint(d){document.title=d.brand||d.bot||"Play & Earn";const h=HEAD[cur]();$("brand").textContent=h[0];
+ const b=rs(d.balance);$("bal").textContent=b;$("wBal").textContent=b;$("topBal").textContent=b;
+ const pr=d.perRef||0;document.querySelectorAll(".pr").forEach(e=>e.textContent="₹"+pr);document.querySelectorAll(".prn").forEach(e=>e.textContent=pr);
+ $("inv").textContent=d.invites||0;$("lnk").textContent=d.link||"";
+ $("wEarn").textContent="₹"+rs(d.earned);$("rEarn").textContent="₹"+rs(d.earned);$("wWd").textContent="₹"+rs(d.withdrawn);
+ $("pSince").textContent="Member since "+(d.since||"today");
+ if(d.admin)$("admRow").classList.remove("hide");
+ const wbA=(d.activity||[]).find(x=>/sign-?up bonus|welcome bonus/i.test(x.t));$("wb").textContent=wbA?"₹"+wbA.a:"-";
+ const u=[d.logo].concat(d.bot?["https://t.me/i/userpic/320/"+encodeURIComponent(d.bot)+".jpg"]:[]);setImg($("logo"),u,null);
+ renderTx(d.activity||[]);
 }
-async function apiRetry(body){ let r=await api(body); if(!r.ok&&(r.net||/did not answer|timed out/i.test(r.error||""))){ await new Promise(s=>setTimeout(s,1500)); r=await api(body); } return r; }
-function showDiag(t){ $("diagT").textContent=t; $("diag").classList.remove("hide"); }
-function hideDiag(){ $("diag").classList.add("hide"); }
+function renderTx(a){$("txList").innerHTML=a.length?a.slice(0,10).map(x=>{const n=x.a<0,ic=/withdraw/i.test(x.t)?"up":/gift/i.test(x.t)?"gift":/friend|refer/i.test(x.t)?"users":/bonus/i.test(x.t)?"gift":"coin";return `<div class="li"><div class="ic${n?" n":""}"><svg class="i"><use href="#g-${ic}"/></svg></div><div class="f" style="flex:1;min-width:0"><b style="font-size:14px">${esc(x.t)}</b><div class="mut">${esc(x.d||"")}</div></div><div class="a${n?" n":""}">${x.a>0?"+":""}₹${x.a}</div></div>`}).join(""):'<div class="empty">No transactions yet. Invite friends or redeem a gift code to start earning.</div>'}
+async function refresh(manual){const d=await apiRetry({a:"me"});
+ if(!d.ok){$("splash").classList.add("off");if(manual||!me.ok){$("diagT").textContent=d.error||LASTERR||"Could not load data";$("diag").classList.remove("hide")}return}
+ $("diag").classList.add("hide");me=Object.assign({},me,d);paint(me);
+ if(d.gate)showGate(d.gate,"start",null);else if(GK==="start"){$("ov").classList.remove("on");GK=null}
+ if(manual)toast("Balance updated","ok");setTimeout(()=>$("splash").classList.add("off"),250)}
 
-/* auto name + photo from Telegram */
-const fullName=U?(((U.first_name||"")+" "+(U.last_name||"")).trim()||"Friend"):"Friend";
-function setAv(el){ el.textContent=(fullName[0]||"U").toUpperCase(); if(U&&U.photo_url) setImg(el,U.photo_url,null); }
-setAv($("pAv"));
-$("pName").textContent=fullName;
-$("pUser").textContent=(U&&U.username?"@"+U.username+"   |   ":"")+"ID: "+(UID||"-");
+/* ---- sheets ---- */
+function sheet(t,h){$("sheet").innerHTML=`<h2>${t}<button onclick="closeSheet()">&#10005;</button></h2>${h}`;$("ov").classList.add("on")}
+function closeSheet(){if(GK==="start")return;$("ov").classList.remove("on")}
+$("ov").addEventListener("click",e=>{if(e.target.id==="ov")closeSheet()});
+function welcome(a){sheet("Sign-up bonus",`<div style="text-align:center;padding:10px 0"><svg class="i xl" style="width:96px;height:96px"><use href="#g-gift"/></svg><div class="amt"><s>₹</s>${rs(a)}</div><p>Your one-time sign-up bonus is added to your wallet. Invite friends to earn more.</p><button class="btn" style="margin-top:14px" onclick="closeSheet()">Start earning</button></div>`)}
+const DOCS={terms:["Terms & Conditions",`<h4>Using the app</h4><p>You agree to follow the bot rules and Telegram's terms.</p><h4>Rewards</h4><p>Rewards are paid only for genuine referrals and valid gift codes. Fake or self referrals are not paid.</p><h4>Withdrawals</h4><p>Withdrawals follow the minimum, maximum and referral limits set by the admin.</p><h4>Misuse</h4><p>Accounts that cheat or use multiple accounts can be blocked.</p>`],privacy:["Privacy Policy",`<h4>What we use</h4><p>Your Telegram ID, name and username run your wallet and referrals.</p><h4>What we never ask</h4><p>We never ask for OTP, password or PIN. Never share them.</p><h4>Sharing</h4><p>Your data is not sold.</p>`]};
+function doc(k){sheet(DOCS[k][0],DOCS[k][1])}
 
-/* ================= navigation ================= */
-const HEAD={home:()=>[me.brand||me.bot||"App","PLAY & WIN 777"],invite:()=>["Refer & Earn","INSTANT ₹"+(me.perRef||0)+" PER FRIEND"],gift:()=>["Gift Promo","REDEEM CODES & BONUSES"],profile:()=>["Profile","ACCOUNT & SETTINGS"],admin:()=>["Admin Panel","MANAGE YOUR BOT"]};
-function setHead(t){ const h=HEAD[t](); $("brand").textContent=h[0]; $("sub").textContent=h[1]; }
-function fabGo(){ if(cur==="home") scrollTo({top:0,behavior:"smooth"}); else go("home"); }
-async function act(a){ const d=await api({a}); if(!d.ok) return toast(d.error||"Failed","err"); snd.pop(); toast("Opening bot chat","ok"); setTimeout(()=>tg&&tg.close(),900); }
-function go(t){ if(t===cur) return; guard("tab_"+t,()=>doGo(t)); }
-function doGo(t){ if(t===cur) return; snd.nav();
-  document.querySelectorAll(".view").forEach(v=>v.classList.remove("on")); $("v-"+t).classList.add("on");
-  document.querySelectorAll("nav button").forEach(b=>b.classList.toggle("on",b.dataset.t===t));
-  cur=t; setHead(t); scrollTo({top:0,behavior:"smooth"});
-  if(t==="admin"){ admLoad(); chLoad(); } if(t==="gift") applyLogo(); }
-document.getElementById("nav").addEventListener("click",e=>{ const b=e.target.closest("button"); if(b) go(b.dataset.t); });
-let sx=0; document.addEventListener("touchstart",e=>sx=e.touches[0].clientX,{passive:true});
-document.addEventListener("touchend",e=>{ if(e.target.closest(".slides,#sheet")) return; const order=[...document.querySelectorAll("nav button")].map(b=>b.dataset.t); const dx=e.changedTouches[0].clientX-sx,i=order.indexOf(cur); if(i<0||Math.abs(dx)<90||/INPUT/.test(e.target.tagName)) return; const n=dx<0?i+1:i-1; if(order[n]) go(order[n]); },{passive:true});
+/* ---- channel gate ---- */
+function showGate(g,key,cb){GK=key;GCB=cb||null;renderGate(g);$("ov").classList.add("on");$("splash").classList.add("off")}
+function renderGate(g){sheet("Step "+g.step+" of "+g.steps+(GK==="start"?"":'<span></span>'),`<p>Join all channels below to continue. Joined: ${g.done}/${g.total}</p>`+g.channels.map((c,i)=>`<div class="gc${c.joined?" ok":""}"><div class="ic"><svg class="i md"><use href="#g-plane"/></svg></div><div style="flex:1;min-width:0"><b>${esc(c.title)}</b><small>${c.joined?"Joined":(c.opt?"Optional":"Required")}</small></div>${c.joined?'<svg class="i sm"><use href="#g-shield"/></svg>':`<button class="btn sm" data-l="${i}">Join</button>`}</div>`).join("")+'<button class="btn y" style="margin-top:14px" onclick="gateVerify()">I have joined, continue</button>');
+ $("sheet").querySelectorAll("button[data-l]").forEach(b=>b.onclick=()=>openLink(g.channels[+b.dataset.l].link));
+ if(GK==="start")$("sheet").querySelector("h2 button").remove()}
+function openLink(l){if(!l)return;try{(/t\.me/.test(l)&&tg)?tg.openTelegramLink(l):(tg?tg.openLink(l):open(l))}catch(e){open(l)}}
+async function gateVerify(){const d=await apiRetry({a:"gate",key:GK});if(!d.ok)return toast(d.error||"Failed","err");
+ if(d.gate){renderGate(d.gate);toast("Join all channels first","err");return}
+ const cb=GCB,k=GK;GK=null;GCB=null;$("ov").classList.remove("on");toast("All channels joined","ok");if(k==="start")refresh();if(cb)setTimeout(cb,300)}
+document.addEventListener("visibilitychange",()=>{if(!document.hidden&&GK&&$("ov").classList.contains("on"))setTimeout(async()=>{const d=await api({a:"gate",key:GK});if(d.ok&&!d.gate)gateVerify()},1500)});
 
-/* ---- slider ---- */
-const SL=$("slides"); let si=0, userTouch=0;
-function slideTo(i){ SL.scrollTo({left:SL.clientWidth*i,behavior:"smooth"}); }
-SL.addEventListener("scroll",()=>{ const n=Math.round(SL.scrollLeft/SL.clientWidth); if(n!==si){ si=n; document.querySelectorAll("#dots i").forEach((d,k)=>d.classList.toggle("on",k===si)); snd.swipe(); } },{passive:true});
-SL.addEventListener("touchstart",()=>userTouch=Date.now(),{passive:true});
-document.querySelectorAll("#dots i").forEach((d,k)=>d.onclick=()=>slideTo(k));
-setInterval(()=>{ if(cur!=="home"||Date.now()-userTouch<6000||document.hidden) return; slideTo((si+1)%2); },4500);
+/* ---- actions ---- */
+async function redeem(){const c=$("code").value.trim();if(!c)return toast("Enter a gift code","err");const b=$("claimBtn");b.disabled=true;const d=await api({a:"redeem",code:c});b.disabled=false;
+ if(d.gate){showGate(d.gate,"btn_claim",redeem);return}if(!d.ok)return toast(d.error||"Failed","err");toast("You received ₹"+d.amount,"ok");$("code").value="";refresh()}
+function copy(){const t=me.link||"";(navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).catch(()=>{const i=document.createElement("input");i.value=t;document.body.appendChild(i);i.select();document.execCommand("copy");i.remove()});toast("Link copied","ok")}
+function share(){guard("btn_share",()=>{const u="https://t.me/share/url?url="+encodeURIComponent(me.link||"")+"&text="+encodeURIComponent("Join and earn real rewards! Use my link:");tg?tg.openTelegramLink(u):open(u)})}
+function openCh(){const l=me.channel;l?openLink(l):toast("Channel not set yet","err")}
 
-/* ---- half-page bottom sheet ---- */
-const DOCS={
- terms:["Terms & Conditions",()=>`<h4>1. Using the app</h4><p>By using ${esc(me.brand||"this app")} you agree to these terms. You must follow all bot rules and Telegram's terms.</p><h4>2. Rewards</h4><p>Rewards are credited only for genuine referrals and valid tasks. Fake, duplicate or self referrals are not paid.</p><h4>3. Withdrawals</h4><p>Withdrawals follow the minimum, maximum and referral requirements set by the admin and may be reviewed before payout.</p><h4>4. Misuse</h4><p>Accounts that cheat, use multiple accounts or abuse bugs can be blocked and their balance removed.</p><h4>5. Changes</h4><p>Rules, rewards and features can change at any time without notice.</p>`],
- privacy:["Privacy Policy",()=>`<h4>What we use</h4><p>We use your Telegram ID, name and username to run your wallet, referrals and rewards.</p><h4>What we never ask</h4><p>We never ask for your OTP, password or card PIN. Never share them with anyone.</p><h4>Sharing</h4><p>Your data is not sold. It is used only to operate this bot and prevent misuse.</p><h4>Contact</h4><p>For any request, use Raise a Ticket / Support in Profile.</p>`],
- faq:["Help & FAQs",()=>`<h4>How do I earn?</h4><p>Share your referral link from the Invite tab. You earn when a friend joins the bot.</p><h4>How do I withdraw?</h4><p>Tap Withdraw on Home and follow the steps. Your balance must reach the minimum amount.</p><h4>How do gift codes work?</h4><p>Get codes from the official channel, enter them on the Gift tab and claim instantly.</p><h4>My balance did not update</h4><p>Tap the refresh button on Home. If it is still wrong, raise a ticket.</p>`]
-};
-function sheetHtml(t,h){ $("shT").textContent=t; $("sbody").innerHTML=h; $("sbody").scrollTop=0; $("ov").classList.add("on"); $("sheet").classList.add("on"); snd.up(); hap(); }
-function sheet(k){ const d=DOCS[k]; sheetHtml(d[0],d[1]()); }
-function closeSheet(){ if(!$("sheet").classList.contains("on")) return; $("ov").classList.remove("on"); $("sheet").classList.remove("on"); snd.down(); }
-(function(){ let y0=0,dy=0,drag=false; const s=$("sheet");
-  s.addEventListener("touchstart",e=>{ if(e.target.closest("#sbody")&&$("sbody").scrollTop>0) return; y0=e.touches[0].clientY; drag=true; dy=0; s.style.transition="none"; },{passive:true});
-  s.addEventListener("touchmove",e=>{ if(!drag) return; dy=Math.max(0,e.touches[0].clientY-y0); s.style.transform=`translate(-50%,${dy}px)`; },{passive:true});
-  s.addEventListener("touchend",()=>{ if(!drag) return; drag=false; s.style.transition=""; s.style.transform=""; if(dy>90) closeSheet(); },{passive:true}); })();
+/* ---- withdraw (all inside the app) ---- */
+let WD=null,WK="wallet";
+async function openWd(){const d=await apiRetry({a:"wd_info"});if(!d.ok)return toast(d.error||"Failed","err");WD=d;WK=d.wallet.on?"wallet":(d.upi.on?"upi":"");wdRender()}
+function wdRender(){const d=WD;if(!WK)return sheet("Withdraw","<p>Withdrawals are switched off right now. Please try again later.</p>");
+ const o=d[WK],lab=WK==="upi"?"UPI ID":"wallet number";
+ const tabs=(d.wallet.on&&d.upi.on)?`<div class="tabs"><button class="btn sm ${WK==="wallet"?"on":""}" onclick="WK='wallet';wdRender()">Wallet</button><button class="btn sm ${WK==="upi"?"on":""}" onclick="WK='upi';wdRender()">UPI</button></div>`:"";
+ const gw=WK==="wallet"?`<select id="wGw">${(o.gws||[]).map(g=>`<option value="${esc(g.key)}">${esc(g.name)}</option>`).join("")}</select>`:"";
+ sheet("Withdraw",`<p>Balance: <b style="color:var(--g)">₹${rs(d.balance)}</b> | Min ₹${o.min} | Max ₹${o.max}${o.refNeed?` | Needs ${o.refNeed} refers`:""}</p>${tabs}
+ <input id="wAddr" value="${esc(o.linked||"")}" placeholder="Your ${lab}" ${WK==="wallet"?'inputmode="numeric" maxlength="10"':""}><button class="btn sm" style="margin:2px 0 6px" onclick="wdLink()">${o.linked?"Update":"Link"} ${lab}</button>
+ ${gw}<input id="wAmt" inputmode="decimal" placeholder="Amount"><button class="btn y" id="wGo" onclick="wdDo()">Withdraw now</button>`)}
+async function wdLink(){const d=await api({a:"wd_link",type:WK,value:$("wAddr").value});if(!d.ok)return toast(d.error||"Failed","err");WD[WK].linked=d.linked;toast("Saved","ok")}
+async function wdDo(){const b=$("wGo");b.disabled=true;const d=await api({a:"wd_do",type:WK,amount:$("wAmt").value,gw:$("wGw")?$("wGw").value:""});b.disabled=false;
+ if(d.gate){showGate(d.gate,"btn_withdraw",openWd);return}if(!d.ok)return toast(d.error||"Failed","err");
+ toast(d.status==="success"?"Withdrawal sent":(d.message||"Withdrawal failed"),d.status==="success"?"ok":"err");closeSheet();refresh()}
 
-/* ================= data ================= */
-let loaded=false, busy=false, lastOk=Date.now();
-function paint(d,manual){
-  if(d.color) applyColor(d.color);
-  document.title=d.brand||d.bot||"App"; setHead(cur); applyLogo();
-  $("prx2").textContent="₹"+(d.perRef||0); $("cbadge").textContent="+₹"+(d.perRef||0)+" Cash"; document.querySelectorAll(".px3").forEach(e=>e.textContent="₹"+(d.perRef||0)); $("botU").textContent="@"+(d.bot||"bot");
-  countUp($("bal"),d.balance||0); $("topBal").textContent=rs(d.balance);
-  $("inv").textContent=d.invites||0; countUp($("earn"),d.earned||0,"₹"); $("prx").textContent="₹"+(d.perRef||0);
-  $("lnk").textContent=d.link||""; $("invc").textContent=(d.invites||0)+" Total";
-  $("invTxt").textContent=d.invites>0?(d.invites+" friend(s) joined with your link!"):"No friends invited yet. Share your link to start earning!";
-  $("pEarn").textContent="₹"+rs(d.earned); $("pBal").textContent="₹"+rs(d.balance); $("pSince").textContent="Member since "+(d.since||"today");
-  adminNav(!!d.admin); renderAct(d.activity||[]);
-}
-async function refresh(manual){
-  if(manual) $("refBtn").classList.add("spin");
-  if(busy) return; busy=true; const d=await apiRetry({a:"me"}); busy=false; $("refBtn").classList.remove("spin");
-  if(!d.ok){ $("bal").classList.remove("sk"); $("splash").classList.add("off"); if(manual||!loaded) showDiag(d.error||LASTERR||"Could not load data"); return; }
-  hideDiag(); lastOk=Date.now(); const first=!loaded; loaded=true; me=Object.assign({},me,d); paint(me,manual); GATES=d.gates||{};
-  if(d.gate){ showGate(d.gate,"start",null); } else if(GK==="start"){ $("gate").classList.remove("on"); GK=null; }
-  if(manual){ snd.coin(); toast("Balance updated","ok"); }
-  if(first) setTimeout(()=>$("splash").classList.add("off"),250);
-}
-/* Admin tab exists ONLY if the bot says this user is an admin */
-function adminNav(is){ const ex=$("navAdm"); if(is&&!ex){ const b=document.createElement("button"); b.id="navAdm"; b.dataset.t="admin"; b.innerHTML=ic("shield")+"Admin"; $("nav").appendChild(b); }
-  if(!is){ if(ex) ex.remove(); if(cur==="admin") doGo("home"); } }
-function renderAct(a){ const el=$("actList"); if(!a.length){ el.innerHTML='<div class="empty">No recent activity yet. Invite friends or complete offers to earn!</div>'; return; }
-  el.innerHTML=a.slice(0,8).map(x=>`<div class="li"><div class="ico ${/gift/i.test(x.t)?"p":/friend/i.test(x.t)?"b":"g"}">${ic(/gift/i.test(x.t)?"ticket":/friend/i.test(x.t)?"users":"rupee")}</div><div class="t"><b>${esc(x.t)}</b><small>${esc(x.d||"")}</small></div><div class="a">${x.a>0?"+":""}₹${x.a}</div></div>`).join(""); }
+/* ---- admin: welcome bonus only (no gift codes / send money / messages) ---- */
+async function admLoad(){const d=await api({a:"adm_stats"});if(!d.ok)return toast(d.error||"Failed","err");
+ $("a_u").textContent=d.users;$("a_v").textContent=d.verified;$("a_bc").textContent=d.bonusCount;$("a_w").textContent="₹"+rs(d.withdrawn);$("sb").value=d.bonus||"";
+ $("sbNow").textContent=d.bonus>0?`Now: ₹${d.bonus} per new user. Total given ₹${rs(d.bonusTotal)} to ${d.bonusCount} users.`:"Sign-up bonus is off."}
+async function saveBonus(){const d=await api({a:"adm_set",f:"StartBonus",v:$("sb").value});d.ok?(toast("Sign-up bonus saved","ok"),admLoad()):toast(d.error||"Failed","err")}
 
-async function redeem(){ const c=$("code").value.trim(); if(!c) return toast("Enter a gift code","err");
-  const b=$("claimBtn"); b.disabled=true; const d=await api({a:"redeem",code:c}); b.disabled=false;
-  if(d.gate){ showGate(d.gate,"btn_claim",redeem); return; } if(!d.ok) return toast(d.error||"Failed","err"); snd.win(); burst(); toast("You received ₹"+d.amount,"ok"); $("code").value=""; refresh(); }
-function copy(){ const t=me.link||""; (navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).catch(()=>{const i=document.createElement("input");i.value=t;document.body.appendChild(i);i.select();document.execCommand("copy");i.remove()}); snd.coin(); toast("Link copied","ok"); }
-function share(){ guard("btn_share",doShare); }
-function doShare(){ const u="https://t.me/share/url?url="+encodeURIComponent(me.link||"")+"&text="+encodeURIComponent("Join and earn real rewards! Use my link:"); tg?tg.openTelegramLink(u):open(u); }
-function openCh(){ const l=me.channel; if(l){ tg&&/t\.me/.test(l)?tg.openTelegramLink(l):(tg?tg.openLink(l):open(l)); } else toast("Channel not set yet","err"); }
-function openBot(){ const u="https://t.me/"+(me.bot||""); tg?tg.openTelegramLink(u):open(u); }
-function tgl(k){ pref[k]=!pref[k]; store.set(k,pref[k]?"1":"0"); sw(); if(pref[k]) snd.pop(); }
-function sw(){ $("sw-snd").classList.toggle("on",pref.snd); $("sw-hap").classList.toggle("on",pref.hap); } sw();
-
-/* ================= CHANNEL GATE ================= */
-let GATES={}, GK=null, GCB=null, GPAGE=null;
-async function guard(key,fn){ if(GATES[key]){ const d=await api({a:"gate",key}); if(d.ok&&d.gate){ showGate(d.gate,key,fn); return; } } fn(); }
-function chAvatar(c){ return `<div class="gic sm"><span>${ic("tg")}</span></div>`; }
-function showGate(g,key,cb){ GK=key; GCB=cb||null; renderGate(g); $("gX").classList.remove("hide"); if(!$("gate").classList.contains("on")){ $("gate").classList.add("on"); snd.up(); } $("splash").classList.add("off"); }
-function renderGate(g){ GPAGE=g.page; const t="Step "+g.step+" of "+g.steps;
-  $("gTitle").textContent=t; $("gPill").textContent=t.toUpperCase();
-  $("gSub").textContent="Join all channels in Step "+g.step+(g.step<g.steps?" to unlock the next step.":" to continue.");
-  $("gDone").textContent=g.done+"/"+g.total;
-  $("gList").innerHTML=g.channels.map((c,i)=>`<div class="gc${c.joined?" ok":""}"><div class="gic"><span>${ic("tg")}</span></div><b>${esc(c.title)}</b><small>${c.joined?"Joined":(c.opt?"Optional":"Required")}</small>${c.joined?`<button class="btn" disabled>${ic("check")}JOINED</button>`:`<button class="btn" data-l="${i}">JOIN ${ic("chev")}</button>`}</div>`).join("");
-  $("gList").querySelectorAll("button[data-l]").forEach(b=>b.onclick=()=>openLinkSmart(g.channels[+b.dataset.l].link)); }
-function openLinkSmart(l){ if(!l) return; try{ (/t\.me/.test(l)&&tg)?tg.openTelegramLink(l):(tg?tg.openLink(l):open(l)); }catch(e){ open(l); } }
-async function gateVerify(silent){ const b=$("gVer"); b.disabled=true; const d=await apiRetry({a:"gate",key:GK}); b.disabled=false;
-  if(!d.ok) return;
-  if(d.gate){ const nextPage=d.gate.page!==GPAGE; renderGate(d.gate); if(!silent){ if(nextPage){ snd.win(); burst(); toast("Step complete! Next step unlocked","ok"); } else toast("Join all channels first","err"); } return; }
-  const cb=GCB, k=GK; $("gate").classList.remove("on"); GK=null; GCB=null; snd.win(); burst(); toast("All channels joined","ok");
-  if(k==="start") refresh(); if(cb) setTimeout(cb,350); }
-function gateClose(){ if(GK==="start"){ if(tg) tg.close(); else toast("Join the channels to continue","err"); return; } $("gate").classList.remove("on"); GK=null; GCB=null; snd.down(); }
-document.addEventListener("visibilitychange",()=>{ if(!document.hidden&&$("gate").classList.contains("on")&&GK) setTimeout(()=>gateVerify(true),1500); });
-
-/* ================= ADMIN: channel manager ================= */
-const GLABEL={start:"App start (first open)",tab_invite:"Invite tab",tab_gift:"Gift tab",tab_profile:"Profile tab",btn_share:"Share link button",btn_claim:"Claim gift button"};
-let CH={list:[],pages:1,gates:{},cur:1};
-async function chLoad(){ const d=await apiRetry({a:"adm_ch_list"}); if(!d.ok) toast(d.error||"Could not load channels","err"); if(!d.ok) return; CH.list=d.channels; CH.pages=d.pages; CH.gates=d.gates; if(CH.cur>CH.pages) CH.cur=1; chRender(); }
-function chRender(){
-  $("ptabs").innerHTML=Array.from({length:CH.pages},(_,i)=>`<div class="chip${i+1===CH.cur?" on":""}" data-p="${i+1}">Page ${i+1}</div>`).join("")+`<div class="chip" data-p="new">+ New</div>`;
-  $("addTxt").textContent="ADD CHANNEL TO PAGE "+CH.cur;
-  const rows=CH.list.filter(c=>c.page===CH.cur);
-  $("chList").innerHTML=rows.length?rows.map(c=>`<div class="chrow" data-id="${esc(c.id)}">${chAvatar(c)}<div class="t"><b>${esc(c.title)}</b><small>${esc(c.name)} &middot; Page ${c.page}</small></div><svg class="ic go"><use href="#i-chev"/></svg></div>`).join(""):'<div class="empty">No channels on this page yet.</div>';
-  $("gateList").innerHTML=Object.keys(GLABEL).map(k=>{ const g=CH.gates[k]||{on:false,sel:[]};
-    return `<div class="gl"><div class="grow"><b>${GLABEL[k]}</b><div class="sw${g.on?" on":""}" data-gsw="${k}"></div></div>`+
-      (g.on?`<div class="ptabs" style="margin-top:10px">${Array.from({length:CH.pages},(_,i)=>`<div class="chip${g.sel.includes(i+1)?" on":""}" data-g="${k}" data-gp="${i+1}">Page ${i+1}</div>`).join("")}</div><div class="muted" style="font-size:12.5px;margin-top:4px">${g.sel.length?"Only the selected pages are required.":"All pages are required (tap pages to choose only some)."}</div>`:"")+`</div>`; }).join(""); }
-document.addEventListener("click",async e=>{
-  const t=e.target.closest(".chip[data-p]"); if(t){ if(t.dataset.p==="new"){ const d=await api({a:"adm_page_add"}); if(d.ok){ CH.pages=d.pages; CH.cur=d.pages; snd.coin(); chRender(); toast("Page "+d.pages+" added","ok"); } } else { CH.cur=+t.dataset.p; snd.pop(); chRender(); } return; }
-  const sw=e.target.closest(".sw[data-gsw]"); if(sw){ const k=sw.dataset.gsw; const cur=CH.gates[k]||{on:false,sel:[]}; const on=!cur.on;
-    const d=await api({a:"adm_gate_set",key:k,on}); if(d.ok){ CH.gates[k]={on,sel:cur.sel}; snd.pop(); chRender(); refresh(); toast(GLABEL[k]+": channel join "+(on?"ON":"OFF"),"ok"); } else toast(d.error||"Failed","err"); return; }
-  const g=e.target.closest(".chip[data-g]"); if(g){ const k=g.dataset.g,pn=+g.dataset.gp; const cur=CH.gates[k]||{on:true,sel:[]}; let a=cur.sel.slice(); a=a.includes(pn)?a.filter(x=>x!==pn):a.concat(pn); a.sort((x,y)=>x-y);
-    const d=await api({a:"adm_gate_set",key:k,pages:a}); if(d.ok){ CH.gates[k]={on:cur.on,sel:a}; snd.pop(); chRender(); refresh(); toast(GLABEL[k]+": "+(a.length?"pages "+a.join(", "):"all pages"),"ok"); } else toast(d.error||"Failed","err"); return; }
-  const r=e.target.closest(".chrow"); if(r) chEdit(r.dataset.id); });
-let ADDP=1;
-function chAddSheet(){ ADDP=CH.cur; sheetHtml("Add Channel",`<p class="muted" style="margin-bottom:4px">Add the bot as admin in the channel first.</p>
-  <input id="chRef" placeholder="@channel or chat id (-100...)" autocapitalize="off"><input id="chLink" placeholder="Invite link (optional)">
-  <h4>Add to page</h4><div class="ptabs" id="addPages">${Array.from({length:CH.pages},(_,i)=>`<div class="chip${i+1===ADDP?" on":""}" data-ap="${i+1}">Page ${i+1}</div>`).join("")}</div>
-  <button class="btn" style="margin-top:8px" onclick="chAdd()"><svg class="ic"><use href="#i-plus"/></svg>ADD CHANNEL</button>`); }
-document.addEventListener("click",e=>{ const c=e.target.closest(".chip[data-ap]"); if(c){ ADDP=+c.dataset.ap; document.querySelectorAll("#addPages .chip").forEach(x=>x.classList.toggle("on",+x.dataset.ap===ADDP)); snd.pop(); } });
-async function chAdd(){ const d=await api({a:"adm_ch_add",ref:$("chRef").value,link:$("chLink").value,page:ADDP});
-  if(!d.ok) return toast(d.error||"Failed","err"); snd.win(); toast(d.warn?"Added. Set an invite link (private channel)":"Channel added","ok"); closeSheet(); CH.cur=ADDP; chLoad(); }
-function chEdit(id){ const c=CH.list.find(x=>x.id===id); if(!c) return;
-  sheetHtml(c.title,`<p class="muted" style="margin-bottom:6px">${esc(c.name)} - Page ${c.page}</p>
-   <input id="eLink" value="${esc(c.link)}" placeholder="Invite link"><button class="btn" onclick="chSetLink('${esc(id)}')"><svg class="ic"><use href="#i-link"/></svg>SAVE LINK</button>
-   <h4>Move to page</h4><div class="ptabs" style="flex-wrap:wrap">${Array.from({length:CH.pages},(_,i)=>`<div class="chip${i+1===c.page?" on":""}" onclick="chSetPage('${esc(id)}',${i+1})">Page ${i+1}</div>`).join("")}</div>
-   <div class="sbtns"><button class="btn sm" onclick="chMove('${esc(id)}','up')"><svg class="ic" style="transform:rotate(-90deg)"><use href="#i-right"/></svg>Up</button><button class="btn sm" onclick="chMove('${esc(id)}','down')"><svg class="ic" style="transform:rotate(90deg)"><use href="#i-right"/></svg>Down</button></div>
-   <button class="btn dang" onclick="chDel('${esc(id)}')"><svg class="ic"><use href="#i-x"/></svg>REMOVE CHANNEL</button>`); }
-async function chSetLink(id){ const d=await api({a:"adm_ch_link",id,link:$("eLink").value}); if(d.ok){ snd.coin(); toast("Link saved","ok"); closeSheet(); chLoad(); } else toast(d.error||"Failed","err"); }
-async function chSetPage(id,p){ const d=await api({a:"adm_ch_page",id,page:p}); if(d.ok){ toast("Moved to page "+p,"ok"); closeSheet(); await chLoad(); CH.cur=p; chRender(); } else toast(d.error||"Failed","err"); }
-async function chMove(id,dir){ const d=await api({a:"adm_ch_move",id,dir}); if(d.ok){ snd.pop(); await chLoad(); } }
-async function chDel(id){ const d=await api({a:"adm_ch_del",id}); if(d.ok){ snd.down(); toast("Channel removed","ok"); closeSheet(); chLoad(); } else toast(d.error||"Failed","err"); }
-
-/* ================= admin ================= */
-const PRESETS=["#0b5a3b","#12489c","#5b21b6","#a51d24","#c2570c","#0f766e","#be185d","#1b1f27","#92650a","#3730a3"];
-let pickColor="#0b5a3b";
-function buildSwatches(){ const w=$("swatches"); if(!w) return; w.innerHTML=PRESETS.map(c=>`<div class="swc${c===pickColor?" on":""}" data-c="${c}" style="background:${c}"></div>`).join(""); }
-function setPick(c,fromInput){ if(!/^#[0-9a-f]{6}$/i.test(c)) return; pickColor=c.toLowerCase(); applyColor(pickColor,$("pv")); $("cpick").value=pickColor; if(!fromInput) $("chex").value=pickColor; buildSwatches(); }
-document.addEventListener("click",e=>{ const s=e.target.closest(".swc"); if(s){ setPick(s.dataset.c); snd.pop(); } });
-document.addEventListener("input",e=>{ if(e.target.id==="cpick") setPick(e.target.value); if(e.target.id==="chex"){ let v=e.target.value.trim(); if(v[0]!=="#") v="#"+v; setPick(v,true); } });
-async function admLoad(){ const d=await api({a:"adm_stats"}); if(!d.ok) return toast(d.error||"Failed","err");
-  $("a_u").textContent=d.users; $("a_pr").textContent="₹"+d.perRef;
-
-  pickColor=d.color||"#0b5a3b"; setPick(pickColor); }
-async function saveColor(){ const d=await api({a:"adm_set",f:"WebColor",v:pickColor}); if(d.ok){ applyColor(pickColor); me.color=pickColor; snd.win(); toast("Colour saved","ok"); } else toast(d.error||"Failed","err"); }
-async function admBal(){ const d=await api({a:"adm_addbal",t:$("bt").value,amt:$("ba").value}); d.ok?(snd.coin(),toast("Done. New balance ₹"+rs(d.balance),"ok")):toast(d.error||"Failed","err"); }
-async function admGift(){ const d=await api({a:"adm_gift",code:$("gc").value,amt:$("ga").value,max:$("gm").value,minref:$("gr").value}); d.ok?(snd.win(),toast("Gift code created","ok")):toast(d.error||"Failed","err"); }
-async function admMsg(){ const d=await api({a:"adm_msg",t:$("mt").value,m:$("mm").value}); d.ok?toast("Message sent","ok"):toast(d.error||"Failed","err"); }
-
-if(qs.get("bu")){ const g=k=>qs.get(k)||"";
-  me={ok:true,bot:g("bu"),brand:g("bn")||g("bu"),logo:g("bl"),color:g("c")||"#0b5a3b",balance:parseFloat(g("b"))||0,invites:parseInt(g("i"))||0,earned:parseFloat(g("e"))||0,
-       perRef:g("p")||"0",since:g("s"),channel:g("ch"),admin:g("ad")==="1",link:"https://t.me/"+g("bu")+"?start="+UID,activity:[]};
-  paint(me); $("bal").classList.remove("sk"); setTimeout(()=>$("splash").classList.add("off"),700); }
-refresh();
-setTimeout(()=>$("splash").classList.add("off"),4000);
-setInterval(()=>{ if(!document.hidden&&cur==="home"&&Date.now()-lastOk>60000) refresh(); },20000);
-document.addEventListener("visibilitychange",()=>{ if(!document.hidden&&Date.now()-lastOk>25000) setTimeout(()=>{ if(!document.hidden) refresh(); },1200); });
+/* ---- boot: instant data from the Open App link ---- */
+if(qs.get("bu")){const g=k=>qs.get(k)||"";me={ok:true,bot:g("bu"),brand:g("bn")||g("bu"),logo:g("bl"),balance:parseFloat(g("b"))||0,invites:parseInt(g("i"))||0,earned:parseFloat(g("e"))||0,perRef:g("p")||"0",since:g("s"),channel:g("ch"),admin:g("ad")==="1",link:"https://t.me/"+g("bu")+"?start="+UID,activity:[]};paint(me);const wbq=parseFloat(g("wb"));if(wbq>0)setTimeout(()=>welcome(wbq),700);setTimeout(()=>$("splash").classList.add("off"),600)}
+refresh();setTimeout(()=>$("splash").classList.add("off"),4000);
+setInterval(()=>{if(!document.hidden&&cur==="home")refresh()},30000);
 </script></body></html>
