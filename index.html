@@ -113,9 +113,9 @@ canvas#fx{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-in
 .gtop h1{font-size:26px;font-weight:800}.gtop p{color:var(--m);font-size:13.5px;font-weight:600;margin:6px 8px 14px}
 .gprog{height:8px;border-radius:99px;background:#ffffff14;overflow:hidden}.gprog i{display:block;height:100%;width:0;border-radius:99px;background:linear-gradient(90deg,var(--g2),var(--g));box-shadow:0 0 12px rgba(var(--gl),.8);transition:width .5s}
 .gcount{display:flex;justify-content:space-between;font-size:12.5px;font-weight:700;color:var(--m);margin:8px 2px 16px}.gcount b{color:var(--g)}
-.glist{display:flex;flex-direction:column;gap:10px;flex:1}
-.gch{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:18px;border:1.5px solid var(--ln);background:linear-gradient(160deg,var(--c1),var(--c2));animation:rise .45s both}.gch.ok{border-color:var(--g);box-shadow:0 0 16px rgba(var(--gl),.25)}
-.gch .gav{width:46px;height:46px;border-radius:50%;background:#ffffff10;display:grid;place-items:center;flex:none}.gch b{display:block;font-size:15px}.gch small{color:var(--m);font-size:12px;font-weight:600}.gch.ok small{color:var(--g)}.gch .f{flex:1;min-width:0}
+.glist{display:grid;grid-template-columns:1fr 1fr;gap:10px;align-content:start;flex:1}.gch:only-child{grid-column:1/-1}
+.gch{display:flex;flex-direction:column;align-items:center;text-align:center;gap:6px;padding:14px 10px;min-width:0;border-radius:18px;border:1.5px solid var(--ln);background:linear-gradient(160deg,var(--c1),var(--c2));animation:rise .45s both}.gch.ok{border-color:var(--g);box-shadow:0 0 16px rgba(var(--gl),.25)}
+.gch .gav{width:52px;height:52px;border-radius:50%;background:#ffffff10;display:grid;place-items:center;flex:none}.gch b{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;font-size:14px;line-height:1.25;max-width:100%;word-break:break-word}.gch .btn{width:100%;margin-top:4px}.gch small{color:var(--m);font-size:12px;font-weight:600}.gch.ok small{color:var(--g)}.gch .f{flex:1;min-width:0}
 .tick{animation:popin .45s cubic-bezier(.3,1.6,.4,1)}
 .gfoot{margin-top:16px;display:flex;flex-direction:column;gap:10px}.gclose{border:0;background:none;color:var(--m);font-weight:700;font-size:13.5px;padding:8px}
 /* voucher */
@@ -277,7 +277,7 @@ async function apiRetry(b){let r=await api(b);if(!r.ok&&(r.net||/did not answer|
 const HEAD={home:()=>[me.brand||me.bot||"Play & Earn","Play • Earn • Win"],games:()=>["Play & Earn","Choose your game"],wallet:()=>["Wallet","Balance & transactions"],refer:()=>["Refer & Earn","Invite friends"],rewards:()=>["Rewards","Gifts & bonuses"],profile:()=>["Profile","Your account"],admin:()=>["Admin Panel","Manage your bot"]};
 const MAIN=["home","games","refer","rewards","profile"];
 const GST={};let PRE=false;
-async function guard(key,fn){if(!(me.gates||{})[key]){fn();return}const c=GST[key];if(c&&!c.g&&Date.now()-c.t<300000){fn();return}const d=await api({a:"gate",key});if(d.ok){GST[key]={g:d.gate,t:Date.now()};if(d.gate){showGate(d.gate,key,fn);return}}fn()}
+async function guard(key,fn){if(!(me.gates||{})[key]){fn();return}const c=GST[key];if(c&&!c.g&&Date.now()-c.t<20000){fn();return}const d=await api({a:"gate",key});if(d.ok){GST[key]={g:d.gate,t:Date.now()};if(d.gate){showGate(d.gate,key,fn);return}}fn()}
 function prefetch(){if(PRE)return;PRE=true;Object.keys(me.gates||{}).forEach(async k=>{const d=await api({a:"gate",key:k});if(d.ok)GST[k]={g:d.gate,t:Date.now()}})}
 function go(t){if(t===cur)return;guard(({refer:"tab_invite",rewards:"tab_gift",profile:"tab_profile"})[t]||"tab_"+t,()=>doGo(t))}
 function doGo(t){snd.nav();if(cur==="admin"&&t!=="admin")applyColor(me.color||"#0b5a3b");document.querySelectorAll(".view").forEach(v=>v.classList.remove("on"));$("v-"+t).classList.add("on");cur=t;
@@ -311,10 +311,10 @@ function txH(a,n){return a.length?a.slice(0,n).map((x,ix)=>{const ng=x.a<0,ic=/w
 document.addEventListener("click",e=>{const r=e.target.closest(".li[data-vi]");if(!r)return;const x=ACT[+r.dataset.vi];if(x&&x.v)voucher({id:x.v,brand:me.brand||me.bot,bot:me.bot,amount:-x.a,date:x.d,time:x.tm},true)});
 function voucher(v,quiet){if(!quiet){snd.win();burst(120)}else snd.pop();
  sheet("Your voucher",`<div class="vch"><div class="vpaid">ISSUED</div><div class="vtop"><svg class="i"><use href="#g-crown"/></svg><b>${esc(v.brand||v.bot)}</b><small>@${esc(v.bot||"")}</small></div><div class="vamt">&#8377;${rs(v.amount)}</div><div class="vst">WITHDRAWAL VOUCHER</div><div class="vperf"></div><div class="vrow"><span>Voucher ID</span><b class="vid">${esc(v.id)}</b></div><div class="vrow"><span>Value</span><b>&#8377;${rs(v.amount)}</b></div><div class="vrow"><span>Date</span><b>${esc(v.date||"")}${v.time?" &middot; "+esc(v.time):""}</b></div><div class="vrow"><span>Status</span><b style="color:var(--g)">Issued</b></div><div class="vrow"><span>Bot</span><b>${esc(v.brand||v.bot)}</b></div></div><div class="sbtns"><button class="btn sm" onclick="copyText('${esc(v.id)}','Voucher ID copied')">Copy ID</button><button class="btn y sm" onclick="closeSheet()">Done</button></div>`)}
-async function refresh(manual){const d=await apiRetry({a:"me"});
+async function refresh(manual){LASTREF=Date.now();const d=await apiRetry({a:"me"});
  if(!d.ok){$("splash").classList.add("off");if(manual||!me.ok){$("diagT").textContent=d.error||LASTERR||"Could not load data";$("diag").classList.remove("hide")}return}
  $("diag").classList.add("hide");me=Object.assign({},me,d);paint(me);if(d.welcome>0&&!LS("wbseen"+UID)){LS("wbseen"+UID,"1");setTimeout(()=>welcome(d.welcome),500)}
- if(d.gate)showGate(d.gate,"start",null);else{if(GK==="start")hideGate();prefetch()}
+ if(d.gate){if(GK==="start"&&$("gate").classList.contains("on"))renderGate(d.gate);else showGate(d.gate,"start",null)}else{if(GK==="start")hideGate();prefetch()}
  if(manual)toast("Balance updated","ok");setTimeout(()=>$("splash").classList.add("off"),250)}
 
 /* ---- sheets ---- */
@@ -329,18 +329,20 @@ function doc(k){sheet(DOCS[k][0],DOCS[k][1])}
 let GPAGE=null,GPOLL=null,GBUSY=false;
 function showGate(g,key,cb){GK=key;GCB=cb||null;GPAGE=null;renderGate(g,true);$("gate").classList.add("on");$("gX").classList.toggle("hide",key==="start");$("splash").classList.add("off");$("ov").classList.remove("on")}
 function hideGate(){$("gate").classList.remove("on");GK=null;GCB=null;clearInterval(GPOLL)}
-function renderGate(g,first){const pageChanged=GPAGE!==null&&GPAGE!==g.page;GPAGE=g.page;
+let GDONE=0;
+function renderGate(g,first){const pageChanged=GPAGE!==null&&GPAGE!==g.page;GPAGE=g.page;GDONE=g.done;
  $("gStep").textContent="Step "+g.step+" of "+g.steps;$("gDone").textContent=g.done+"/"+g.total+" joined";$("gBar").style.width=Math.round(g.done/Math.max(g.total,1)*100)+"%";
- $("gList").innerHTML=g.channels.map((c,i)=>`<div class="gch${c.joined?" ok":""}" style="animation-delay:${i*70}ms"><div class="gav"><svg class="i md"><use href="#g-plane"/></svg></div><div class="f"><b>${esc(c.title)}</b><small>${c.joined?"Joined":(c.opt?"Optional":"Required")}</small></div>${c.joined?'<span class="tick"><svg class="i md"><use href="#g-shield"/></svg></span>':`<button class="btn sm" data-l="${i}">Join</button>`}</div>`).join("");
- $("gList").querySelectorAll("button[data-l]").forEach(b=>b.onclick=()=>{openLink(g.channels[+b.dataset.l].link);startPoll()});
+ const pend=g.channels.filter(c=>!c.joined);
+ $("gList").innerHTML=pend.map((c,i)=>`<div class="gch" style="animation-delay:${i*70}ms"><div class="gav"><svg class="i md"><use href="#g-plane"/></svg></div><b>${esc(c.title)}</b><small>${c.opt?"Optional":"Required"}</small><button class="btn sm" data-l="${i}">Join</button></div>`).join("");
+ $("gList").querySelectorAll("button[data-l]").forEach(b=>b.onclick=()=>{openLink(pend[+b.dataset.l].link);startPoll()});
  if(pageChanged){snd.win();burst(50);toast("Next step unlocked","ok")}}
 function startPoll(){clearInterval(GPOLL);let n=0;GPOLL=setInterval(()=>{if(!$("gate").classList.contains("on")||++n>50){clearInterval(GPOLL);return}gateVerify(true)},3000)}
 async function gateVerify(silent){if(GBUSY||!GK)return;GBUSY=true;const bt=$("gVer");if(!silent){bt.disabled=true;bt.textContent="Checking..."}
  const k=GK,d=await api({a:"gate",key:k});GBUSY=false;bt.disabled=false;bt.textContent="I have joined, continue";
  if(!d.ok){if(!silent)toast(d.error||"Failed","err");return}
- if(d.gate){const before=$("gList").querySelectorAll(".gch.ok").length;renderGate(d.gate);if(!silent)toast("Join all required channels first","err");else if(d.gate.done>before)snd.ok();return}
+ if(d.gate){const before=GDONE;renderGate(d.gate);if(!silent)toast("Join all required channels first","err");else if(d.gate.done>before)snd.ok();return}
  const cb=GCB;GST[k]={g:null,t:Date.now()};hideGate();snd.win();burst();toast("All channels joined","ok");if(k==="start")refresh();if(cb)setTimeout(cb,350)}
-document.addEventListener("visibilitychange",()=>{if(!document.hidden&&GK&&$("gate").classList.contains("on"))setTimeout(()=>gateVerify(true),500)});
+let LASTREF=0;document.addEventListener("visibilitychange",()=>{if(document.hidden)return;if(GK&&$("gate").classList.contains("on"))setTimeout(()=>gateVerify(true),500);else if(Date.now()-LASTREF>4000)refresh()});
 function openLink(l){if(!l)return;try{(/t\.me/.test(l)&&tg)?tg.openTelegramLink(l):(tg?tg.openLink(l):open(l))}catch(e){open(l)}}
 /* ---- actions ---- */
 async function redeem(){const c=$("code").value.trim();if(!c)return toast("Enter a gift code","err");const b=$("claimBtn");b.disabled=true;const d=await api({a:"redeem",code:c});b.disabled=false;
@@ -425,5 +427,5 @@ async function chDel(id){const d=await api({a:"adm_ch_del",id});if(d.ok){toast("
 /* ---- boot: instant data from the Open App link ---- */
 if(qs.get("bu")){const g=k=>qs.get(k)||"";me={ok:true,bot:g("bu"),brand:g("bn")||g("bu"),logo:g("bl"),color:g("c"),balance:parseFloat(g("b"))||0,invites:parseInt(g("i"))||0,earned:parseFloat(g("e"))||0,perRef:g("p")||"0",since:g("s"),channel:g("ch"),admin:g("ad")==="1",link:"https://t.me/"+g("bu")+"?start="+UID,activity:[]};paint(me);setTimeout(()=>$("splash").classList.add("off"),600)}
 refresh();setTimeout(()=>$("splash").classList.add("off"),4000);
-setInterval(()=>{if(!document.hidden&&cur==="home")refresh()},30000);
+setInterval(()=>{if(!document.hidden&&!(GK&&$("gate").classList.contains("on")))refresh()},25000);
 </script></body></html>
