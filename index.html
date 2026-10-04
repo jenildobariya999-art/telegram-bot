@@ -81,10 +81,55 @@ nav button span{display:block;height:24px}nav button span .i{width:24px;height:2
 .btn.dang{background:linear-gradient(#ff7a7a,#e0343f);color:#fff;box-shadow:0 0 14px rgba(224,52,63,.4)}
 .sbtns{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:10px 0}.sbtns .btn{width:100%}
 .chk{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--m);font-weight:600;margin:6px 0}.chk input{width:20px;height:20px;margin:0}
+
+.btn{position:relative;overflow:hidden;color:var(--onG,#03150d)}.btn.y{color:#2b1800}.chip.on,.tabs .btn.on{color:var(--onG,#03150d)}
+.hero{background:linear-gradient(120deg,var(--h1,#3b1d7a),var(--h2,#0e3a8a) 60%,var(--h3,#0b5a4a));border-color:var(--g)}
+.gm.d{border-color:var(--g)}
+/* motion */
+@keyframes rise{from{opacity:0;transform:translateY(18px) scale(.97)}to{opacity:1;transform:none}}
+@keyframes flt{50%{transform:translateY(-6px) rotate(3deg)}}
+@keyframes glow{50%{box-shadow:0 0 36px rgba(var(--gl),.55)}}
+@keyframes pulse{50%{box-shadow:0 0 34px rgba(var(--gl),.95);transform:translateY(-3px)}}
+@keyframes shine{55%,100%{transform:translateX(130%)}}
+@keyframes popin{0%{transform:scale(0)}70%{transform:scale(1.3)}100%{transform:scale(1)}}
+@keyframes flip{0%,70%{transform:rotateY(0)}85%{transform:rotateY(180deg)}100%{transform:rotateY(360deg)}}
+@keyframes rip{to{transform:scale(3.4);opacity:0}}
+@keyframes stamp{0%{transform:rotate(-14deg) scale(2.4);opacity:0}60%{transform:rotate(-14deg) scale(.9);opacity:1}100%{transform:rotate(-14deg) scale(1);opacity:1}}
+.view.on>*{animation:rise .55s cubic-bezier(.2,.9,.3,1) both}
+.view.on>*:nth-child(2){animation-delay:.06s}.view.on>*:nth-child(3){animation-delay:.12s}.view.on>*:nth-child(4){animation-delay:.18s}.view.on>*:nth-child(5){animation-delay:.24s}.view.on>*:nth-child(6){animation-delay:.3s}.view.on>*:nth-child(n+7){animation-delay:.36s}
+.view.on>.card.hot{animation:rise .55s both,glow 3s .6s ease-in-out infinite}
+.hero .e .i,.i.tl{animation:flt 3.4s ease-in-out infinite}.grid4 .tile:nth-child(2) .i{animation-delay:-.8s}.grid4 .tile:nth-child(3) .i{animation-delay:-1.6s}.grid4 .tile:nth-child(4) .i{animation-delay:-2.4s}
+nav .mid{animation:pulse 2.4s ease-in-out infinite}nav .mid.on{border-color:var(--y)}
+.btn:not(.sm)::after{content:"";position:absolute;inset:0;background:linear-gradient(110deg,transparent 30%,rgba(255,255,255,.4) 50%,transparent 70%);transform:translateX(-130%);animation:shine 3.6s infinite;pointer-events:none}
+.pill i .i{animation:flip 4.5s infinite}
+.tile:active,.gm:active,.mrow:active,.chrow:active{transform:scale(.96)}.tile,.gm,.mrow{transition:transform .15s}
+.rip{position:absolute;border-radius:50%;width:40px;height:40px;margin:-20px 0 0 -20px;background:rgba(255,255,255,.55);animation:rip .6s ease-out forwards;pointer-events:none}
+canvas#fx{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:500}
+@media(prefers-reduced-motion:reduce){*,*:after{animation:none!important;transition:none!important}}
+/* channel join page */
+#gate{position:fixed;inset:0;z-index:150;background:radial-gradient(circle at 50% -10%,var(--bgg),var(--bg) 62%);display:none;overflow-y:auto}#gate.on{display:block;animation:in .3s}
+.gwrap{max-width:480px;margin:0 auto;min-height:100%;display:flex;flex-direction:column;padding:calc(26px + env(safe-area-inset-top,0px)) 18px calc(24px + env(safe-area-inset-bottom,0px))}
+.gtop{text-align:center}.gico{width:96px;height:96px;margin:0 auto 10px;border-radius:50%;display:grid;place-items:center;background:radial-gradient(circle,rgba(var(--gl),.28),transparent 70%);animation:flt 3s ease-in-out infinite}.gico .i{width:70px;height:70px;filter:drop-shadow(0 0 16px rgba(var(--gl),.8))}
+.gtop h1{font-size:26px;font-weight:800}.gtop p{color:var(--m);font-size:13.5px;font-weight:600;margin:6px 8px 14px}
+.gprog{height:8px;border-radius:99px;background:#ffffff14;overflow:hidden}.gprog i{display:block;height:100%;width:0;border-radius:99px;background:linear-gradient(90deg,var(--g2),var(--g));box-shadow:0 0 12px rgba(var(--gl),.8);transition:width .5s}
+.gcount{display:flex;justify-content:space-between;font-size:12.5px;font-weight:700;color:var(--m);margin:8px 2px 16px}.gcount b{color:var(--g)}
+.glist{display:flex;flex-direction:column;gap:10px;flex:1}
+.gch{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:18px;border:1.5px solid var(--ln);background:linear-gradient(160deg,var(--c1),var(--c2));animation:rise .45s both}.gch.ok{border-color:var(--g);box-shadow:0 0 16px rgba(var(--gl),.25)}
+.gch .gav{width:46px;height:46px;border-radius:50%;background:#ffffff10;display:grid;place-items:center;flex:none}.gch b{display:block;font-size:15px}.gch small{color:var(--m);font-size:12px;font-weight:600}.gch.ok small{color:var(--g)}.gch .f{flex:1;min-width:0}
+.tick{animation:popin .45s cubic-bezier(.3,1.6,.4,1)}
+.gfoot{margin-top:16px;display:flex;flex-direction:column;gap:10px}.gclose{border:0;background:none;color:var(--m);font-weight:700;font-size:13.5px;padding:8px}
+/* voucher */
+.vch{position:relative;background:linear-gradient(160deg,var(--c1),var(--c2));border:1.5px solid var(--g);border-radius:22px;padding:20px 18px 16px;margin-top:6px;box-shadow:0 0 26px rgba(var(--gl),.3);overflow:hidden}
+.vtop{text-align:center}.vtop .i{width:46px;height:46px}.vtop b{display:block;font-size:19px;margin-top:2px}.vtop small{color:var(--m);font-size:12.5px;font-weight:600}
+.vamt{text-align:center;font-size:42px;font-weight:800;margin:10px 0 2px;color:var(--y)}.vst{text-align:center;color:var(--g);font-weight:800;font-size:13.5px;letter-spacing:.3px}
+.vperf{border-top:2px dashed var(--ln);margin:16px -18px;position:relative}.vperf:before,.vperf:after{content:"";position:absolute;top:-11px;width:20px;height:20px;border-radius:50%;background:#07131f;border:1.5px solid var(--g)}.vperf:before{left:-11px}.vperf:after{right:-11px}
+.vrow{display:flex;justify-content:space-between;gap:12px;font-size:13px;padding:6px 0;font-weight:600}.vrow span{color:var(--m)}.vrow b{text-align:right;word-break:break-all}.vrow .vid{font-family:ui-monospace,Menlo,monospace;font-size:12px;color:var(--g);letter-spacing:.4px}
+.vpaid{position:absolute;right:14px;top:70px;border:3px solid var(--g);color:var(--g);border-radius:10px;padding:2px 10px;font-weight:800;font-size:18px;letter-spacing:2px;transform:rotate(-14deg);opacity:.85;animation:stamp .6s .3s both}
+.li[data-vi]{cursor:pointer}
 </style></head><body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
 <linearGradient id="gGold" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff3a1"/><stop offset=".5" stop-color="#ffc83d"/><stop offset="1" stop-color="#e07b00"/></linearGradient>
-<linearGradient id="gGreen" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#5dffb0"/><stop offset="1" stop-color="#079a5c"/></linearGradient>
+<linearGradient id="gGreen" x1="0" y1="0" x2="1" y2="1"><stop offset="0" style="stop-color:var(--gt,#5dffb0)"/><stop offset="1" style="stop-color:var(--g2,#079a5c)"/></linearGradient>
 <linearGradient id="gRed" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ff7a9c"/><stop offset="1" stop-color="#d4164d"/></linearGradient>
 <linearGradient id="gBlue" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#6fc3ff"/><stop offset="1" stop-color="#1550d6"/></linearGradient>
 <linearGradient id="gPurple" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#c58bff"/><stop offset="1" stop-color="#5b1fd1"/></linearGradient>
@@ -107,6 +152,8 @@ nav button span{display:block;height:24px}nav button span .i{width:24px;height:2
 <symbol id="g-user" viewBox="0 0 64 64"><circle cx="32" cy="22" r="12" fill="url(#gBlue)"/><path d="M8 58c0-14 10-22 24-22s24 8 24 22z" fill="url(#gBlue)"/></symbol>
 <symbol id="g-send" viewBox="0 0 64 64"><path d="M58 6L6 28l16 7 6 18 8-11 14 10z" fill="#fff"/></symbol>
 <symbol id="g-gear" viewBox="0 0 64 64"><circle cx="32" cy="32" r="10" fill="none" stroke="url(#gSilver)" stroke-width="8"/><path d="M32 4v10M32 50v10M4 32h10M50 32h10M12 12l7 7M45 45l7 7M52 12l-7 7M19 45l-7 7" stroke="url(#gSilver)" stroke-width="7" stroke-linecap="round"/></symbol>
+<symbol id="g-home" viewBox="0 0 64 64"><path d="M32 6L4 30h8v26h16V40h8v16h16V30h8z" fill="url(#gGold)" stroke="#a85b00" stroke-width="2.500" stroke-linejoin="round"/><rect x="26" y="38" width="12" height="18" rx="2" fill="#a85b00"/></symbol>
+<symbol id="n-users" viewBox="0 0 24 24"><circle cx="9" cy="8" r="4" fill="currentColor"/><path d="M1.500 20c0-4 3.300-6.500 7.500-6.500s7.500 2.500 7.500 6.500z" fill="currentColor"/><circle cx="17.500" cy="9" r="3" fill="currentColor"/><path d="M17.500 14c3 0 5 2 5 5.500h-4.300c0-2-.6-3.700-1.700-5z" fill="currentColor"/></symbol>
 <symbol id="n-home" viewBox="0 0 24 24"><path d="M12 2.600L2.800 10.300a.9.900 0 0 0-.3.700V20a1.500 1.500 0 0 0 1.500 1.500h4.200a.8.800 0 0 0 .8-.8v-5h5v5a.8.800 0 0 0 .8.8H20a1.500 1.500 0 0 0 1.500-1.500v-9a.9.900 0 0 0-.3-.7z" fill="currentColor"/></symbol>
 <symbol id="n-game" viewBox="0 0 24 24"><path d="M6 8h12c3 0 4.500 3 4.500 6.500 0 2.500-1 4-3 4s-2.500-2-4.500-2h-6c-2 0-2.500 2-4.500 2s-3-1.500-3-4C1.500 11 3 8 6 8z" fill="currentColor"/></symbol>
 <symbol id="n-gift" viewBox="0 0 24 24"><path d="M3 8h18v4H3zM4.500 13h15v8h-15zM12 8v13" fill="currentColor"/><path d="M12 8c-1-3.500-5-3.500-5-1.500S10 8 12 8zm0 0c1-3.500 5-3.500 5-1.500S14 8 12 8z" fill="none" stroke="currentColor" stroke-width="2"/></symbol>
@@ -114,6 +161,8 @@ nav button span{display:block;height:24px}nav button span .i{width:24px;height:2
 </defs></svg>
 <div id="splash"><svg class="i xl"><use href="#g-crown"/></svg></div><div id="toast"></div>
 <div id="diag" class="hide"><span id="diagT" style="flex:1"></span><button onclick="refresh()">Retry</button></div>
+<canvas id="fx"></canvas>
+<div id="gate"><div class="gwrap"><div class="gtop"><div class="gico"><svg class="i"><use href="#g-shield"/></svg></div><h1>Join our channels</h1><p id="gSub">Join every channel below to unlock the app and your rewards.</p><div class="gprog"><i id="gBar"></i></div><div class="gcount"><span id="gStep">Step 1 of 1</span><b id="gDone">0/0 joined</b></div></div><div class="glist" id="gList"></div><div class="gfoot"><button class="btn y" id="gVer" onclick="gateVerify()">I have joined, continue</button><button class="gclose hide" id="gX" onclick="hideGate()">Not now</button></div></div></div>
 <div id="ov"><div class="sheet" id="sheet"></div></div>
 <div id="app">
  <div class="top"><button class="back hide" id="back" onclick="go('home')">&#8592;</button><div class="logo" id="logo"><svg class="i"><use href="#g-crown"/></svg></div>
@@ -170,7 +219,8 @@ nav button span{display:block;height:24px}nav button span .i{width:24px;height:2
    <div class="mrow" onclick="doc('terms')"><span><svg class="i"><use href="#g-doc"/></svg></span>Terms &amp; Conditions<span class="go">&#8250;</span></div>
    <div class="mrow" onclick="doc('privacy')"><span><svg class="i"><use href="#g-shield"/></svg></span>Privacy Policy<span class="go">&#8250;</span></div>
    <div class="mrow hide" id="admRow" onclick="go('admin')"><span><svg class="i"><use href="#g-gear"/></svg></span>Admin Panel<span class="go">&#8250;</span></div></div>
-  <div class="card" style="text-align:center;color:var(--y);font-weight:800">Play smart &bull; Earn more</div>
+  <div class="card"><div class="row"><b class="f">Sound effects</b><div class="sw on" id="swSnd" onclick="togPref('snd')"></div></div><div class="row" style="margin-top:12px"><b class="f">Vibration</b><div class="sw on" id="swHap" onclick="togPref('hap')"></div></div></div>
+   <div class="card" style="text-align:center;color:var(--y);font-weight:800">Play smart &bull; Earn more</div>
  </section>
 
  <section class="view" id="v-admin">
@@ -178,12 +228,13 @@ nav button span{display:block;height:24px}nav button span .i{width:24px;height:2
   <div class="card"><h2>Support channel</h2><p class="mut" style="margin:4px 0">Users open this link from every Support button. Use a t.me link or @username.</p><input id="sup" placeholder="https://t.me/yourchannel" autocapitalize="off"><button class="btn" onclick="saveSup()">Save support channel</button></div>
   <div class="card"><h2>App name</h2><input id="brandIn" maxlength="40" placeholder="App name"><button class="btn" onclick="saveBrand()">Save name</button></div>
   <div class="card"><h2>App colour</h2><p class="mut" style="margin:4px 0">Pick a colour. The whole app changes live, then press Save.</p><div class="swatches" id="swatches"></div><div class="crow"><input type="color" id="cpick" value="#0b5a3b"><input id="chex" maxlength="7" placeholder="#0b5a3b" autocapitalize="off"></div><button class="btn" onclick="saveColor()">Save colour</button></div>
+  <div class="card"><h2>Withdraw limits</h2><p class="mut" style="margin:4px 0">Smallest and largest amount a user can withdraw at one time.</p><div class="mut" style="margin-top:8px">Wallet</div><div class="two"><input id="wMin" inputmode="decimal" placeholder="Min"><input id="wMax" inputmode="decimal" placeholder="Max"></div><div class="mut">UPI</div><div class="two"><input id="uMin" inputmode="decimal" placeholder="Min"><input id="uMax" inputmode="decimal" placeholder="Max"></div><button class="btn" onclick="saveWd()">Save limits</button></div>
   <div class="card"><h2>Sign-up bonus</h2><p class="mut" style="margin:4px 0">Every new user gets this amount one time only, when they first start the bot. Enter 0 to turn it off.</p><input id="sb" inputmode="decimal" placeholder="Bonus amount in rupees"><button class="btn" onclick="saveBonus()">Save sign-up bonus</button><div class="mut" id="sbNow" style="margin-top:8px"></div></div>
   <div class="card"><h2>Channels</h2><p class="mut" style="margin:4px 0">Users join one page at a time. When page 1 is joined, page 2 opens. Tap a channel to edit.</p><div class="ptabs" id="ptabs"></div><div id="chList"></div><button class="btn" style="margin-top:12px" onclick="chAddSheet()" id="addTxt">Add channel</button></div>
   <div class="card"><h2>Button gates</h2><p class="mut" style="margin:4px 0">Switch channel join ON or OFF for each button or tab.</p><div id="gateList"></div></div>
  </section>
 </div>
-<nav id="nav"><button data-t="home" class="on"><span><svg class="i"><use href="#n-home"/></svg></span>Home</button><button data-t="games"><span><svg class="i"><use href="#n-game"/></svg></span>Games</button><button class="mid" data-t="home"><svg class="i xl2"><use href="#g-crown"/></svg></button><button data-t="rewards"><span><svg class="i"><use href="#n-gift"/></svg></span>Rewards</button><button data-t="profile"><span><svg class="i"><use href="#n-user"/></svg></span>Profile</button></nav>
+<nav id="nav"><button data-t="refer"><span><svg class="i"><use href="#n-users"/></svg></span>Refer</button><button data-t="games"><span><svg class="i"><use href="#n-game"/></svg></span>Games</button><button class="mid on" data-t="home"><svg class="i xl2"><use href="#g-home"/></svg></button><button data-t="rewards"><span><svg class="i"><use href="#n-gift"/></svg></span>Rewards</button><button data-t="profile"><span><svg class="i"><use href="#n-user"/></svg></span>Profile</button></nav>
 
 <script>
 const $=id=>document.getElementById(id),tg=window.Telegram&&Telegram.WebApp;
@@ -193,7 +244,20 @@ let API=qs.get("api")||"";try{if(API)sessionStorage.setItem("api",API);else API=
 const UID=U?String(U.id):(qs.get("u")||qs.get("uid")||"");
 let me={},cur="home",GK=null,GCB=null,LASTERR="";
 const rs=n=>Number(n||0).toFixed(2),esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
-let tt;function toast(m,k){const t=$("toast");t.textContent=m;t.className="on "+(k||"");clearTimeout(tt);tt=setTimeout(()=>t.className="",2800);try{if(tg&&tg.HapticFeedback)tg.HapticFeedback.notificationOccurred(k==="err"?"error":"success")}catch(e){}}
+const LS=(k,v)=>{try{if(v===undefined)return localStorage.getItem(k);localStorage.setItem(k,v)}catch(e){}};
+const pref={snd:LS("snd")!=="0",hap:LS("hap")!=="0"};
+let ac,mg;function unlock(){try{if(!ac){ac=new(window.AudioContext||window.webkitAudioContext)();mg=ac.createGain();mg.gain.value=.85;mg.connect(ac.destination)}if(ac.state==="suspended")ac.resume()}catch(e){}}
+function tone(f,t,d,ty,v,w){if(!pref.snd)return;try{unlock();const o=ac.createOscillator(),g=ac.createGain(),st=ac.currentTime+(w||0);o.type=ty||"sine";o.frequency.setValueAtTime(f,st);if(t)o.frequency.exponentialRampToValueAtTime(t,st+d);g.gain.setValueAtTime(.0001,st);g.gain.exponentialRampToValueAtTime(v||.1,st+.012);g.gain.exponentialRampToValueAtTime(.0001,st+d);o.connect(g);g.connect(mg);o.start(st);o.stop(st+d+.04)}catch(e){}}
+const snd={tap:()=>tone(640,900,.06,"sine",.06),nav:()=>tone(520,820,.1,"sine",.08),pop:()=>tone(420,760,.09,"sine",.08),coin:()=>{tone(1319,0,.1,"square",.035);tone(1760,0,.28,"sine",.07,.07)},ok:()=>{tone(660,0,.1,"triangle",.08);tone(990,0,.2,"triangle",.08,.09)},win:()=>[523,659,784,1047,1319].forEach((f,i)=>tone(f,0,.24,"triangle",.09,i*.08)),err:()=>tone(240,170,.24,"sawtooth",.06)};
+function hap(k){if(!pref.hap)return;try{if(tg&&tg.HapticFeedback){k?tg.HapticFeedback.notificationOccurred(k):tg.HapticFeedback.impactOccurred("light")}else if(navigator.vibrate)navigator.vibrate(k?[20,40,20]:8)}catch(e){}}
+function togPref(k){pref[k]=!pref[k];LS(k,pref[k]?"1":"0");syncPref();if(pref[k]){snd.ok();hap()}}
+function syncPref(){$("swSnd").classList.toggle("on",pref.snd);$("swHap").classList.toggle("on",pref.hap)}
+document.addEventListener("pointerdown",e=>{unlock();const b=e.target.closest(".btn,.tile,.gm,.mrow,.chip,.chrow,nav button,.swc,.li[data-vi]");if(!b)return;if(!b.closest(".sw"))snd.tap();hap();if(b.classList.contains("btn")){const r=b.getBoundingClientRect(),i=document.createElement("i");i.className="rip";i.style.left=(e.clientX-r.left)+"px";i.style.top=(e.clientY-r.top)+"px";b.appendChild(i);setTimeout(()=>i.remove(),650)}},true);
+/* confetti */
+function burst(n){if(matchMedia("(prefers-reduced-motion:reduce)").matches)return;const c=$("fx"),x=c.getContext("2d");c.width=innerWidth;c.height=innerHeight;const cols=["#ffc83d","#19e68c","#ff5d73","#6fc3ff","#c58bff","#fff"],P=Array.from({length:n||90},()=>({x:innerWidth/2,y:innerHeight*.4,vx:(Math.random()-.5)*14,vy:-Math.random()*13-3,r:Math.random()*6+3,c:cols[Math.random()*6|0],a:Math.random()*6,s:(Math.random()-.5)*.4}));let f=0;(function t(){x.clearRect(0,0,c.width,c.height);P.forEach(p=>{p.x+=p.vx;p.y+=p.vy;p.vy+=.33;p.a+=p.s;x.save();x.translate(p.x,p.y);x.rotate(p.a);x.fillStyle=p.c;x.globalAlpha=Math.max(0,1-f/90);x.fillRect(-p.r,-p.r/2,p.r*2,p.r);x.restore()});if(++f<95)requestAnimationFrame(t);else x.clearRect(0,0,c.width,c.height)})()}
+/* count-up for balance */
+function countUp(el,to){const from=parseFloat(el.textContent)||0;if(from===to||matchMedia("(prefers-reduced-motion:reduce)").matches){el.textContent=rs(to);return}let st=null;(function t(ts){if(!st)st=ts;const k=Math.min(1,(ts-st)/900),e=1-Math.pow(1-k,3);el.textContent=rs(from+(to-from)*e);if(k<1)requestAnimationFrame(t);else if(to>from)snd.coin()})(performance.now())}
+let tt;function toast(m,k){const t=$("toast");t.textContent=m;t.className="on "+(k||"");clearTimeout(tt);tt=setTimeout(()=>t.className="",2800);if(k==="err"){snd.err();hap("error")}else if(k==="ok"){snd.ok();hap("success")}}
 function soon(){toast("Coming soon. Stay tuned!")}
 
 /* ---- API (direct, proxy fallback) ---- */
@@ -205,11 +269,13 @@ async function apiRetry(b){let r=await api(b);if(!r.ok&&(r.net||/did not answer|
 
 /* ---- navigation ---- */
 const HEAD={home:()=>[me.brand||me.bot||"Play & Earn","Play • Earn • Win"],games:()=>["Play & Earn","Choose your game"],wallet:()=>["Wallet","Balance & transactions"],refer:()=>["Refer & Earn","Invite friends"],rewards:()=>["Rewards","Gifts & bonuses"],profile:()=>["Profile","Your account"],admin:()=>["Admin Panel","Manage your bot"]};
-const MAIN=["home","games","rewards","profile"];
-async function guard(key,fn){if((me.gates||{})[key]){const d=await api({a:"gate",key});if(d.ok&&d.gate){showGate(d.gate,key,fn);return}}fn()}
+const MAIN=["home","games","refer","rewards","profile"];
+const GST={};let PRE=false;
+async function guard(key,fn){if(!(me.gates||{})[key]){fn();return}const c=GST[key];if(c&&!c.g&&Date.now()-c.t<300000){fn();return}const d=await api({a:"gate",key});if(d.ok){GST[key]={g:d.gate,t:Date.now()};if(d.gate){showGate(d.gate,key,fn);return}}fn()}
+function prefetch(){if(PRE)return;PRE=true;Object.keys(me.gates||{}).forEach(async k=>{const d=await api({a:"gate",key:k});if(d.ok)GST[k]={g:d.gate,t:Date.now()}})}
 function go(t){if(t===cur)return;guard(({refer:"tab_invite",rewards:"tab_gift",profile:"tab_profile"})[t]||"tab_"+t,()=>doGo(t))}
-function doGo(t){document.querySelectorAll(".view").forEach(v=>v.classList.remove("on"));$("v-"+t).classList.add("on");cur=t;
- document.querySelectorAll("nav button:not(.mid)").forEach(b=>b.classList.toggle("on",b.dataset.t===t));
+function doGo(t){snd.nav();if(cur==="admin"&&t!=="admin")applyColor(me.color||"#0b5a3b");document.querySelectorAll(".view").forEach(v=>v.classList.remove("on"));$("v-"+t).classList.add("on");cur=t;
+ document.querySelectorAll("nav button").forEach(b=>b.classList.toggle("on",b.dataset.t===t));
  $("back").classList.toggle("hide",MAIN.includes(t));$("logo").classList.toggle("hide",!MAIN.includes(t));
  const h=HEAD[t]();$("brand").textContent=h[0];$("sub").textContent=h[1];scrollTo({top:0});if(t==="admin"){admLoad();chLoad()}}
 $("nav").addEventListener("click",e=>{const b=e.target.closest("button");if(b)go(b.dataset.t)});
@@ -222,7 +288,7 @@ if(U&&U.photo_url){setImg($("hAv"),U.photo_url);setImg($("pAv"),U.photo_url)}
 
 /* ---- paint ---- */
 function paint(d){document.title=d.brand||d.bot||"Play & Earn";const h=HEAD[cur]();$("brand").textContent=h[0];
- const b=rs(d.balance);$("bal").textContent=b;$("wBal").textContent=b;$("topBal").textContent=b;
+ const b=rs(d.balance);countUp($("bal"),d.balance||0);$("wBal").textContent=b;$("topBal").textContent=b;
  const pr=d.perRef||0;document.querySelectorAll(".pr").forEach(e=>e.textContent="₹"+pr);document.querySelectorAll(".prn").forEach(e=>e.textContent=pr);
  $("inv").textContent=d.invites||0;$("lnk").textContent=d.link||"";
  $("wEarn").textContent="₹"+rs(d.earned);$("rEarn").textContent="₹"+rs(d.earned);$("wWd").textContent="₹"+rs(d.withdrawn);
@@ -232,36 +298,47 @@ function paint(d){document.title=d.brand||d.bot||"Play & Earn";const h=HEAD[cur]
  const u=[d.logo].concat(d.bot?["https://t.me/i/userpic/320/"+encodeURIComponent(d.bot)+".jpg"]:[]);setImg($("logo"),u,null);
  renderTx(d.activity||[]);
 }
-function renderTx(a){$("txList").innerHTML=txH(a,10);$("hList").innerHTML=txH(a,5)}function txH(a,n){return a.length?a.slice(0,n).map(x=>{const n=x.a<0,ic=/withdraw/i.test(x.t)?"up":/gift/i.test(x.t)?"gift":/friend|refer/i.test(x.t)?"users":/bonus/i.test(x.t)?"gift":"coin";return `<div class="li"><div class="ic${n?" n":""}"><svg class="i"><use href="#g-${ic}"/></svg></div><div class="f" style="flex:1;min-width:0"><b style="font-size:14px">${esc(x.t)}</b><div class="mut">${esc(x.d||"")}</div></div><div class="a${n?" n":""}">${x.a>0?"+":""}₹${x.a}</div></div>`}).join(""):'<div class="empty">No transactions yet. Invite friends or redeem a gift code to start earning.</div>'}
+let ACT=[];
+function renderTx(a){ACT=a;$("txList").innerHTML=txH(a,10);$("hList").innerHTML=txH(a,5)}
+function txH(a,n){return a.length?a.slice(0,n).map((x,ix)=>{const ng=x.a<0,ic=/withdraw/i.test(x.t)?"up":/gift/i.test(x.t)?"gift":/friend|refer/i.test(x.t)?"users":/bonus/i.test(x.t)?"gift":"coin";return `<div class="li"${x.v?` data-vi="${ix}"`:""}><div class="ic${ng?" n":""}"><svg class="i"><use href="#g-${ic}"/></svg></div><div class="f" style="flex:1;min-width:0"><b style="font-size:14px">${esc(x.t)}</b><div class="mut">${esc(x.d||"")}${x.v?" &middot; tap for voucher":""}</div></div><div class="a${ng?" n":""}">${x.a>0?"+":""}&#8377;${x.a}</div></div>`}).join(""):'<div class="empty">No transactions yet. Invite friends or redeem a gift code to start earning.</div>'}
+document.addEventListener("click",e=>{const r=e.target.closest(".li[data-vi]");if(!r)return;const x=ACT[+r.dataset.vi];if(x&&x.v)voucher({id:x.v,brand:me.brand||me.bot,bot:me.bot,amount:-x.a,gateway:x.g,to:x.to,date:x.d,time:x.tm},true)});
+function voucher(v,quiet){if(!quiet){snd.win();burst(120)}else snd.pop();
+ sheet("Withdrawal voucher",`<div class="vch"><div class="vpaid">PAID</div><div class="vtop"><svg class="i"><use href="#g-crown"/></svg><b>${esc(v.brand||v.bot)}</b><small>@${esc(v.bot||"")}</small></div><div class="vamt">&#8377;${rs(v.amount)}</div><div class="vst">WITHDRAWAL SUCCESSFUL</div><div class="vperf"></div><div class="vrow"><span>Voucher ID</span><b class="vid">${esc(v.id)}</b></div><div class="vrow"><span>Date</span><b>${esc(v.date||"")}${v.time?" &middot; "+esc(v.time):""}</b></div><div class="vrow"><span>Paid to</span><b>${esc(v.to||"-")}</b></div><div class="vrow"><span>Method</span><b>${esc(v.gateway||"-")}</b></div><div class="vrow"><span>Bot</span><b>${esc(v.brand||v.bot)}</b></div></div><div class="sbtns"><button class="btn sm" onclick="copyText('${esc(v.id)}','Voucher ID copied')">Copy ID</button><button class="btn y sm" onclick="closeSheet()">Done</button></div>`)}
 async function refresh(manual){const d=await apiRetry({a:"me"});
  if(!d.ok){$("splash").classList.add("off");if(manual||!me.ok){$("diagT").textContent=d.error||LASTERR||"Could not load data";$("diag").classList.remove("hide")}return}
  $("diag").classList.add("hide");me=Object.assign({},me,d);paint(me);
- if(d.gate)showGate(d.gate,"start",null);else if(GK==="start"){$("ov").classList.remove("on");GK=null}
+ if(d.gate)showGate(d.gate,"start",null);else{if(GK==="start")hideGate();prefetch()}
  if(manual)toast("Balance updated","ok");setTimeout(()=>$("splash").classList.add("off"),250)}
 
 /* ---- sheets ---- */
 function sheet(t,h){$("sheet").innerHTML=`<h2>${t}<button onclick="closeSheet()">&#10005;</button></h2>${h}`;$("ov").classList.add("on")}
-function closeSheet(){if(GK==="start")return;$("ov").classList.remove("on")}
+function closeSheet(){$("ov").classList.remove("on")}
 $("ov").addEventListener("click",e=>{if(e.target.id==="ov")closeSheet()});
-function welcome(a){sheet("Sign-up bonus",`<div style="text-align:center;padding:10px 0"><svg class="i xl" style="width:96px;height:96px"><use href="#g-gift"/></svg><div class="amt"><s>₹</s>${rs(a)}</div><p>Your one-time sign-up bonus is added to your wallet. Invite friends to earn more.</p><button class="btn" style="margin-top:14px" onclick="closeSheet()">Start earning</button></div>`)}
+function welcome(a){snd.win();burst();sheet("Sign-up bonus",`<div style="text-align:center;padding:10px 0"><svg class="i xl" style="width:96px;height:96px"><use href="#g-gift"/></svg><div class="amt"><s>₹</s>${rs(a)}</div><p>Your one-time sign-up bonus is added to your wallet. Invite friends to earn more.</p><button class="btn" style="margin-top:14px" onclick="closeSheet()">Start earning</button></div>`)}
 const DOCS={terms:["Terms & Conditions",`<h4>Using the app</h4><p>You agree to follow the bot rules and Telegram's terms.</p><h4>Rewards</h4><p>Rewards are paid only for genuine referrals and valid gift codes. Fake or self referrals are not paid.</p><h4>Withdrawals</h4><p>Withdrawals follow the minimum, maximum and referral limits set by the admin.</p><h4>Misuse</h4><p>Accounts that cheat or use multiple accounts can be blocked.</p>`],privacy:["Privacy Policy",`<h4>What we use</h4><p>Your Telegram ID, name and username run your wallet and referrals.</p><h4>What we never ask</h4><p>We never ask for OTP, password or PIN. Never share them.</p><h4>Sharing</h4><p>Your data is not sold.</p>`]};
 function doc(k){sheet(DOCS[k][0],DOCS[k][1])}
 
-/* ---- channel gate ---- */
-function showGate(g,key,cb){GK=key;GCB=cb||null;renderGate(g);$("ov").classList.add("on");$("splash").classList.add("off")}
-function renderGate(g){sheet("Step "+g.step+" of "+g.steps+(GK==="start"?"":'<span></span>'),`<p>Join all channels below to continue. Joined: ${g.done}/${g.total}</p>`+g.channels.map((c,i)=>`<div class="gc${c.joined?" ok":""}"><div class="ic"><svg class="i md"><use href="#g-plane"/></svg></div><div style="flex:1;min-width:0"><b>${esc(c.title)}</b><small>${c.joined?"Joined":(c.opt?"Optional":"Required")}</small></div>${c.joined?'<svg class="i sm"><use href="#g-shield"/></svg>':`<button class="btn sm" data-l="${i}">Join</button>`}</div>`).join("")+'<button class="btn y" style="margin-top:14px" onclick="gateVerify()">I have joined, continue</button>');
- $("sheet").querySelectorAll("button[data-l]").forEach(b=>b.onclick=()=>openLink(g.channels[+b.dataset.l].link));
- if(GK==="start")$("sheet").querySelector("h2 button").remove()}
+/* ---- channel join page ---- */
+let GPAGE=null,GPOLL=null,GBUSY=false;
+function showGate(g,key,cb){GK=key;GCB=cb||null;GPAGE=null;renderGate(g,true);$("gate").classList.add("on");$("gX").classList.toggle("hide",key==="start");$("splash").classList.add("off");$("ov").classList.remove("on")}
+function hideGate(){$("gate").classList.remove("on");GK=null;GCB=null;clearInterval(GPOLL)}
+function renderGate(g,first){const pageChanged=GPAGE!==null&&GPAGE!==g.page;GPAGE=g.page;
+ $("gStep").textContent="Step "+g.step+" of "+g.steps;$("gDone").textContent=g.done+"/"+g.total+" joined";$("gBar").style.width=Math.round(g.done/Math.max(g.total,1)*100)+"%";
+ $("gList").innerHTML=g.channels.map((c,i)=>`<div class="gch${c.joined?" ok":""}" style="animation-delay:${i*70}ms"><div class="gav"><svg class="i md"><use href="#g-plane"/></svg></div><div class="f"><b>${esc(c.title)}</b><small>${c.joined?"Joined":(c.opt?"Optional":"Required")}</small></div>${c.joined?'<span class="tick"><svg class="i md"><use href="#g-shield"/></svg></span>':`<button class="btn sm" data-l="${i}">Join</button>`}</div>`).join("");
+ $("gList").querySelectorAll("button[data-l]").forEach(b=>b.onclick=()=>{openLink(g.channels[+b.dataset.l].link);startPoll()});
+ if(pageChanged){snd.win();burst(50);toast("Next step unlocked","ok")}}
+function startPoll(){clearInterval(GPOLL);let n=0;GPOLL=setInterval(()=>{if(!$("gate").classList.contains("on")||++n>50){clearInterval(GPOLL);return}gateVerify(true)},3000)}
+async function gateVerify(silent){if(GBUSY||!GK)return;GBUSY=true;const bt=$("gVer");if(!silent){bt.disabled=true;bt.textContent="Checking..."}
+ const k=GK,d=await api({a:"gate",key:k});GBUSY=false;bt.disabled=false;bt.textContent="I have joined, continue";
+ if(!d.ok){if(!silent)toast(d.error||"Failed","err");return}
+ if(d.gate){const before=$("gList").querySelectorAll(".gch.ok").length;renderGate(d.gate);if(!silent)toast("Join all required channels first","err");else if(d.gate.done>before)snd.ok();return}
+ const cb=GCB;GST[k]={g:null,t:Date.now()};hideGate();snd.win();burst();toast("All channels joined","ok");if(k==="start")refresh();if(cb)setTimeout(cb,350)}
+document.addEventListener("visibilitychange",()=>{if(!document.hidden&&GK&&$("gate").classList.contains("on"))setTimeout(()=>gateVerify(true),500)});
 function openLink(l){if(!l)return;try{(/t\.me/.test(l)&&tg)?tg.openTelegramLink(l):(tg?tg.openLink(l):open(l))}catch(e){open(l)}}
-async function gateVerify(){const d=await apiRetry({a:"gate",key:GK});if(!d.ok)return toast(d.error||"Failed","err");
- if(d.gate){renderGate(d.gate);toast("Join all channels first","err");return}
- const cb=GCB,k=GK;GK=null;GCB=null;$("ov").classList.remove("on");toast("All channels joined","ok");if(k==="start")refresh();if(cb)setTimeout(cb,300)}
-document.addEventListener("visibilitychange",()=>{if(!document.hidden&&GK&&$("ov").classList.contains("on"))setTimeout(async()=>{const d=await api({a:"gate",key:GK});if(d.ok&&!d.gate)gateVerify()},1500)});
-
 /* ---- actions ---- */
 async function redeem(){const c=$("code").value.trim();if(!c)return toast("Enter a gift code","err");const b=$("claimBtn");b.disabled=true;const d=await api({a:"redeem",code:c});b.disabled=false;
- if(d.gate){showGate(d.gate,"btn_claim",redeem);return}if(!d.ok)return toast(d.error||"Failed","err");toast("You received ₹"+d.amount,"ok");$("code").value="";refresh()}
-function copy(){const t=me.link||"";(navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).catch(()=>{const i=document.createElement("input");i.value=t;document.body.appendChild(i);i.select();document.execCommand("copy");i.remove()});toast("Link copied","ok")}
+ if(d.gate){showGate(d.gate,"btn_claim",redeem);return}if(!d.ok)return toast(d.error||"Failed","err");snd.win();burst();toast("You received ₹"+d.amount,"ok");$("code").value="";refresh()}
+function copy(){copyText(me.link||"","Link copied")}function copyText(t,msg){(navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).catch(()=>{const i=document.createElement("input");i.value=t;document.body.appendChild(i);i.select();document.execCommand("copy");i.remove()});toast(msg||"Copied","ok")}
 function share(){guard("btn_share",()=>{const u="https://t.me/share/url?url="+encodeURIComponent(me.link||"")+"&text="+encodeURIComponent("Join and earn real rewards! Use my link:");tg?tg.openTelegramLink(u):open(u)})}
 function openCh(){const l=me.channel;l?openLink(l):toast("Channel not set yet","err")}
 
@@ -278,16 +355,19 @@ function wdRender(){const d=WD;if(!WK)return sheet("Withdraw","<p>Withdrawals ar
 async function wdLink(){const d=await api({a:"wd_link",type:WK,value:$("wAddr").value});if(!d.ok)return toast(d.error||"Failed","err");WD[WK].linked=d.linked;toast("Saved","ok")}
 async function wdDo(){const b=$("wGo");b.disabled=true;const d=await api({a:"wd_do",type:WK,amount:$("wAmt").value,gw:$("wGw")?$("wGw").value:""});b.disabled=false;
  if(d.gate){showGate(d.gate,"btn_withdraw",openWd);return}if(!d.ok)return toast(d.error||"Failed","err");
- toast(d.status==="success"?"Withdrawal sent":(d.message||"Withdrawal failed"),d.status==="success"?"ok":"err");closeSheet();refresh()}
+ if(d.status==="success"&&d.voucher){closeSheet();refresh();setTimeout(()=>voucher(d.voucher),250);return}toast(d.message||"Withdrawal failed","err");closeSheet();refresh()}
 
 /* ---- colour engine ---- */
 function hsl(h,s,l){s/=100;l/=100;const k=n=>(n+h/30)%12,a=s*Math.min(l,1-l),f=n=>l-a*Math.max(-1,Math.min(k(n)-3,Math.min(9-k(n),1)));return[f(0),f(8),f(4)].map(x=>Math.round(x*255))}
 function hexhsl(x){let[r,g,b]=[1,3,5].map(i=>parseInt(x.substr(i,2),16)/255);const mx=Math.max(r,g,b),mn=Math.min(r,g,b),d=mx-mn;let h=0;if(d){h=mx===r?((g-b)/d)%6:mx===g?(b-r)/d+2:(r-g)/d+4;h*=60;if(h<0)h+=360}const l=(mx+mn)/2,s=d?d/(1-Math.abs(2*l-1)):0;return[h,s*100,l*100]}
 const hx=a=>"#"+a.map(v=>v.toString(16).padStart(2,"0")).join("");
-function applyColor(c){if(!/^#[0-9a-f]{6}$/i.test(c||""))return;const[h,sat]=hexhsl(c),S=Math.max(55,Math.min(90,sat)),r=document.documentElement.style,g=hsl(h,S,56),g2=hsl(h,S,34);
- r.setProperty("--g",hx(g));r.setProperty("--g2",hx(g2));r.setProperty("--gl",g.join(","));r.setProperty("--bg",hx(hsl(h,55,4)));r.setProperty("--bgg",hx(hsl(h,55,13)));r.setProperty("--c1",hx(hsl(h,40,9)));r.setProperty("--c2",hx(hsl(h,45,11)));r.setProperty("--ln","rgba("+g.join(",")+",.24)")}
+const lum=a=>(.299*a[0]+.587*a[1]+.114*a[2])/255;
+function applyColor(c){if(!/^#[0-9a-f]{6}$/i.test(c||""))return;const[h,sat]=hexhsl(c),gray=sat<14,S=gray?sat:Math.max(55,Math.min(90,sat)),r=document.documentElement.style,set=(k,v)=>r.setProperty(k,v),g=hsl(h,S,56),g2=hsl(h,S,34),gt=hsl(h,Math.min(100,S+10),72),bgc=hx(hsl(h,gray?S:55,4)),bs=gray?S:null;
+ set("--g",hx(g));set("--g2",hx(g2));set("--gt",hx(gt));set("--gl",g.join(","));set("--bg",bgc);set("--bgg",hx(hsl(h,bs??55,13)));set("--c1",hx(hsl(h,bs??40,9)));set("--c2",hx(hsl(h,bs??45,11)));set("--ln","rgba("+g.join(",")+",.26)");
+ set("--h1",hx(hsl(h,gray?S:Math.min(S,70),26)));set("--h2",hx(hsl(h,gray?S:Math.min(S,65),15)));set("--h3",hx(hsl((h+28)%360,gray?S:55,11)));set("--onG",lum(g)>.55?"#03150d":"#ffffff");
+ try{document.querySelector('meta[name=theme-color]')||document.head.appendChild(Object.assign(document.createElement("meta"),{name:"theme-color"}));document.querySelector('meta[name=theme-color]').content=bgc;if(tg){tg.setHeaderColor(bgc);tg.setBackgroundColor(bgc)}}catch(e){}}
 const PRESETS=["#0b5a3b","#12489c","#5b21b6","#a51d24","#c2570c","#0f766e","#be185d","#1b1f27","#92650a","#3730a3"];
-let pick="#0b5a3b";
+let pick="#0b5a3b";applyColor(pick);syncPref();
 function swatches(){$("swatches").innerHTML=PRESETS.map(c=>`<div class="swc${c===pick?" on":""}" data-c="${c}" style="background:${c}"></div>`).join("")}
 function setPick(c,fromInput){if(!/^#[0-9a-f]{6}$/i.test(c))return;pick=c.toLowerCase();applyColor(pick);$("cpick").value=pick;if(!fromInput)$("chex").value=pick;swatches()}
 document.addEventListener("click",e=>{const x=e.target.closest(".swc");if(x)setPick(x.dataset.c)});
@@ -297,9 +377,10 @@ async function saveColor(){const d=await api({a:"adm_set",f:"WebColor",v:pick});
 /* ---- admin: stats, support channel, name, colour, sign-up bonus ---- */
 async function admLoad(){const d=await api({a:"adm_stats"});if(!d.ok)return toast(d.error||"Failed","err");
  $("a_u").textContent=d.users;$("a_v").textContent=d.verified;$("a_bc").textContent=d.bonusCount;$("a_bt").textContent="₹"+rs(d.bonusTotal);$("a_w").textContent="₹"+rs(d.withdrawn);$("a_wc").textContent=d.withdrawCount;$("a_ch").textContent=d.channels;$("a_pr").textContent="₹"+d.perRef;
- $("sb").value=d.bonus||"";$("sup").value=d.support||"";$("brandIn").value=d.brand||"";me.channel=d.support||me.channel;
+ $("sb").value=d.bonus||"";if(d.wd){$("wMin").value=d.wd.wmin;$("wMax").value=d.wd.wmax;$("uMin").value=d.wd.umin;$("uMax").value=d.wd.umax}$("sup").value=d.support||"";$("brandIn").value=d.brand||"";me.channel=d.support||me.channel;
  $("sbNow").textContent=d.bonus>0?`Now: ₹${d.bonus} per new user. Total given ₹${rs(d.bonusTotal)} to ${d.bonusCount} users.`:"Sign-up bonus is off.";
  pick=d.color||"#0b5a3b";setPick(pick)}
+async function saveWd(){const d=await api({a:"adm_wd_set",wmin:$("wMin").value,wmax:$("wMax").value,umin:$("uMin").value,umax:$("uMax").value});d.ok?toast("Withdraw limits saved","ok"):toast(d.error||"Failed","err")}
 async function saveBonus(){const d=await api({a:"adm_set",f:"StartBonus",v:$("sb").value});d.ok?(toast("Sign-up bonus saved","ok"),admLoad()):toast(d.error||"Failed","err")}
 async function saveSup(){const d=await api({a:"adm_set",f:"SavedLinks",v:$("sup").value});if(!d.ok)return toast(d.error||"Failed","err");let v=$("sup").value.trim();if(v[0]==="@")v="https://t.me/"+v.slice(1);me.channel=v;$("sup").value=v;toast(v?"Support channel saved":"Support channel removed","ok")}
 async function saveBrand(){const d=await api({a:"adm_set",f:"WebBrand",v:$("brandIn").value});if(!d.ok)return toast(d.error||"Failed","err");me.brand=$("brandIn").value.trim()||me.bot;paint(me);toast("Name saved","ok")}
@@ -307,6 +388,7 @@ async function saveBrand(){const d=await api({a:"adm_set",f:"WebBrand",v:$("bran
 /* ---- admin: channel manager (same lists as the bot panel) ---- */
 const GLABEL={start:"App start (first open)",tab_invite:"Refer tab",tab_gift:"Rewards tab",tab_profile:"Profile tab",btn_share:"Share link button",btn_claim:"Claim gift button",btn_withdraw:"Withdraw button"};
 let CH={list:[],pages:1,gates:{},cur:1},ADDP=1;
+function syncGate(k){const g=CH.gates[k];me.gates=me.gates||{};if(g&&g.on)me.gates[k]=g.sel.length?g.sel:[1];else delete me.gates[k];delete GST[k]}
 async function chLoad(){const d=await apiRetry({a:"adm_ch_list"});if(!d.ok)return toast(d.error||"Could not load channels","err");CH.list=d.channels;CH.pages=d.pages;CH.gates=d.gates;if(CH.cur>CH.pages)CH.cur=1;chRender()}
 const pgChips=(att,sel)=>Array.from({length:CH.pages},(_,i)=>`<div class="chip${sel(i+1)?" on":""}" ${att(i+1)}>Page ${i+1}</div>`).join("");
 function chRender(){
@@ -317,8 +399,8 @@ function chRender(){
  $("gateList").innerHTML=Object.keys(GLABEL).map(k=>{const g=CH.gates[k]||{on:false,sel:[]};return `<div class="gl"><div class="row"><b class="f">${GLABEL[k]}</b><div class="sw${g.on?" on":""}" data-gsw="${k}"></div></div>`+(g.on?`<div class="ptabs">${pgChips(n=>`data-g="${k}" data-gp="${n}"`,n=>g.sel.includes(n))}</div><div class="mut">${g.sel.length?"Only the selected pages are required.":"All pages are required. Tap pages to choose only some."}</div>`:"")+"</div>"}).join("")}
 document.addEventListener("click",async e=>{
  const t=e.target.closest(".chip[data-p]");if(t){if(t.dataset.p==="new"){const d=await api({a:"adm_page_add"});if(d.ok){CH.pages=d.pages;CH.cur=d.pages;chRender();toast("Page "+d.pages+" added","ok")}}else{CH.cur=+t.dataset.p;chRender()}return}
- const sw=e.target.closest(".sw[data-gsw]");if(sw){const k=sw.dataset.gsw,cur=CH.gates[k]||{on:false,sel:[]},on=!cur.on,d=await api({a:"adm_gate_set",key:k,on});if(d.ok){CH.gates[k]={on,sel:cur.sel};chRender();refresh();toast(GLABEL[k]+": join "+(on?"ON":"OFF"),"ok")}else toast(d.error||"Failed","err");return}
- const g=e.target.closest(".chip[data-g]");if(g){const k=g.dataset.g,pn=+g.dataset.gp,cur=CH.gates[k]||{on:true,sel:[]};let a=cur.sel.includes(pn)?cur.sel.filter(x=>x!==pn):cur.sel.concat(pn);a.sort((x,y)=>x-y);const d=await api({a:"adm_gate_set",key:k,pages:a});if(d.ok){CH.gates[k]={on:cur.on,sel:a};chRender();refresh()}else toast(d.error||"Failed","err");return}
+ const sw=e.target.closest(".sw[data-gsw]");if(sw){const k=sw.dataset.gsw,old=CH.gates[k]||{on:false,sel:[]},on=!old.on;CH.gates[k]={on,sel:old.sel};syncGate(k);chRender();snd.pop();api({a:"adm_gate_set",key:k,on}).then(d=>{if(d.ok)toast(GLABEL[k]+": join "+(on?"ON":"OFF"),"ok");else{CH.gates[k]=old;syncGate(k);chRender();toast(d.error||"Failed","err")}});return}
+ const g=e.target.closest(".chip[data-g]");if(g){const k=g.dataset.g,pn=+g.dataset.gp,old=CH.gates[k]||{on:true,sel:[]};let a=old.sel.includes(pn)?old.sel.filter(x=>x!==pn):old.sel.concat(pn);a.sort((x,y)=>x-y);CH.gates[k]={on:old.on,sel:a};syncGate(k);chRender();api({a:"adm_gate_set",key:k,pages:a}).then(d=>{if(!d.ok){CH.gates[k]=old;syncGate(k);chRender();toast(d.error||"Failed","err")}});return}
  const ap=e.target.closest(".chip[data-ap]");if(ap){ADDP=+ap.dataset.ap;document.querySelectorAll("#sheet .chip[data-ap]").forEach(x=>x.classList.toggle("on",+x.dataset.ap===ADDP));return}
  const r=e.target.closest(".chrow");if(r)chEdit(r.dataset.id)});
 function chAddSheet(){ADDP=CH.cur;sheet("Add channel",`<p>Add the bot as admin in the channel first.</p><input id="chRef" placeholder="@channel or chat id (-100...)" autocapitalize="off"><input id="chLink" placeholder="Invite link (optional)" autocapitalize="off"><label class="chk"><input type="checkbox" id="chReq"> Create a join-request link</label><h4>Add to page</h4><div class="ptabs">${pgChips(n=>`data-ap="${n}"`,n=>n===ADDP)}</div><button class="btn" style="margin-top:8px" onclick="chAdd()">Add channel</button>`)}
