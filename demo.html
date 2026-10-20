@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+<title>Earn Bot</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#050a18;--card:#0f1830;--line:#14405a;--cy:#22d3ee;--bl:#2563eb;--tx:#fff;--mut:#7f93b5;--gr:#34d399;--yl:#fbbf24;--rd:#f87171}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;background:var(--bg);color:var(--tx);font-family:'Space Grotesk',system-ui,sans-serif;min-height:100%}
+body{background:radial-gradient(circle at 50% 0,#0b2b4a 0,var(--bg) 55%);padding:16px 16px 120px;padding-top:max(16px,env(safe-area-inset-top))}
+.grid-bg{position:fixed;inset:0;background-image:linear-gradient(#0e3a5a22 1px,transparent 1px),linear-gradient(90deg,#0e3a5a22 1px,transparent 1px);background-size:34px 34px;pointer-events:none;z-index:0}
+.wrap{position:relative;z-index:1;max-width:520px;margin:0 auto}
+.card{background:linear-gradient(160deg,#101a33,#0b1428);border:1.5px solid var(--line);border-radius:28px;padding:18px}
+.row{display:flex;align-items:center;gap:12px}
+.sp{justify-content:space-between}
+.logo{width:54px;height:54px;border-radius:16px;background:linear-gradient(135deg,#0ea5e9,#2563eb);display:grid;place-items:center;font-size:26px;flex:none}
+h1{font-size:25px;line-height:1.05;margin:0;text-transform:uppercase;letter-spacing:-.5px}
+.sub{color:var(--cy);font-size:12px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase}
+.lbl{color:var(--cy);font-size:13px;font-weight:700;letter-spacing:2px;text-transform:uppercase;margin:0 0 8px}
+.mut{color:var(--mut)}
+.big{font-size:46px;font-weight:700;letter-spacing:-1px}
+.btn{border:0;color:#fff;font-family:inherit;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;font-size:15px;padding:16px 20px;border-radius:999px;background:linear-gradient(90deg,#0891b2,#2563eb);border:1.5px solid #38bdf8;box-shadow:0 0 22px #0ea5e944;cursor:pointer;width:100%}
+.btn:disabled{opacity:.45;cursor:not-allowed;box-shadow:none}
+.btn.sm{width:auto;padding:12px 20px}
+.tile{flex:1;background:#0d172e;border:1.5px solid var(--line);border-radius:24px;padding:14px;display:flex;gap:10px;align-items:center;cursor:pointer}
+.tile .ic{width:44px;height:44px;border-radius:14px;background:#0b3044;border:1.5px solid var(--line);display:grid;place-items:center;font-size:20px}
+.tile b{display:block;font-size:15px;letter-spacing:1px}
+.tile small{font-size:11px;font-weight:700;letter-spacing:1px}
+.pill{border:1.5px solid var(--line);background:#0b2236;color:var(--cy);border-radius:999px;padding:8px 14px;font-weight:700;font-size:13px;letter-spacing:1.5px;text-transform:uppercase;white-space:nowrap}
+.pod{border:2.5px solid #0e7490;border-radius:34px;padding:8px;background:#0a2a44}
+.pod-in{border-radius:28px;min-height:250px;background:#0b3252;background-image:linear-gradient(#1480a855 2px,transparent 2px),linear-gradient(90deg,#1480a855 2px,transparent 2px);background-size:44px 44px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;text-align:center;padding:20px}
+.circle{width:104px;height:104px;border-radius:50%;background:#02040c;border:3px solid var(--cy);display:grid;place-items:center;font-size:46px}
+.pod-t{font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#a5d8ee}
+.pod-s{font-size:13px;color:#8cc3dc;max-width:260px}
+.input{width:100%;background:#03060f;border:1.5px solid var(--line);border-radius:22px;padding:18px;color:#fff;font-family:'JetBrains Mono',monospace;font-size:17px;outline:none}
+.input:focus{border-color:var(--cy)}
+.sum{border:1.5px solid var(--line);border-radius:20px;padding:14px 18px;font-family:'JetBrains Mono',monospace;font-size:15px}
+.sum div{display:flex;justify-content:space-between;padding:5px 0}
+.sum hr{border:0;border-top:1px solid var(--line);margin:6px 0}
+.g{color:var(--gr)}.y{color:var(--yl)}.r{color:var(--rd)}
+.link{display:flex;gap:10px;align-items:center;background:#0d172e;border:1.5px solid var(--line);border-radius:999px;padding:8px 8px 8px 20px;font-family:'JetBrains Mono',monospace;font-size:14px}
+.link span{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sq{display:flex;align-items:center;gap:14px;border:1.5px solid var(--line);border-radius:22px;padding:14px;margin-top:12px;background:#0d172e}
+.sq .n{width:48px;height:48px;border-radius:14px;background:#0b3044;border:1.5px solid var(--line);display:grid;place-items:center;color:var(--cy);font-weight:700}
+.sq .m{flex:1;min-width:0}.sq .m b{display:block;text-transform:uppercase;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sq .m small{color:var(--mut)}
+.tag{border:1.5px solid var(--line);background:#0b3044;color:var(--cy);border-radius:999px;padding:7px 14px;font-weight:700;font-size:13px}
+.nav{position:fixed;left:14px;right:14px;bottom:max(14px,env(safe-area-inset-bottom));z-index:20;max-width:500px;margin:0 auto;display:flex;background:#0a1226f2;border:1.5px solid var(--line);border-radius:999px;padding:8px;backdrop-filter:blur(10px)}
+.nav button{flex:1;background:none;border:0;color:var(--mut);font-family:inherit;font-weight:700;letter-spacing:2px;font-size:12px;padding:10px 0;border-radius:999px;display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer}
+.nav button .e{font-size:22px}
+.nav button.on{background:linear-gradient(135deg,#0ea5e9,#2563eb);color:#fff;box-shadow:0 0 20px #0ea5e955}
+.hide{display:none!important}
+.toast{position:fixed;top:max(16px,env(safe-area-inset-top));left:50%;transform:translateX(-50%) translateY(-120px);background:#0f1830;border:1.5px solid var(--cy);padding:12px 20px;border-radius:999px;z-index:99;font-weight:700;transition:.3s;max-width:90%;text-align:center}
+.toast.show{transform:translateX(-50%) translateY(0)}
+.ov{position:fixed;inset:0;background:#030712f2;z-index:50;display:flex;align-items:center;justify-content:center;padding:18px;overflow:auto}
+.ch{display:flex;align-items:center;gap:12px;border:1.5px solid var(--line);border-radius:20px;padding:12px 14px;margin-top:10px;background:#0d172e}
+.ch b{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ch a,.ch .ok{font-weight:700;font-size:13px;letter-spacing:1px;text-decoration:none;border-radius:999px;padding:8px 16px}
+.ch a{background:linear-gradient(90deg,#0891b2,#2563eb);color:#fff}
+.ch .ok{color:var(--gr);border:1.5px solid #14532d}
+.spin{text-align:center;padding:80px 0;color:var(--cy);letter-spacing:3px;font-weight:700}
+</style>
+</head>
+<body>
+<div class="grid-bg"></div>
+<div class="toast" id="toast"></div>
+<div class="wrap" id="app"><div class="spin">LOADING...</div></div>
+
+<!-- channel gate (compulsory) -->
+<div class="ov hide" id="gate"><div class="card" style="width:100%;max-width:440px">
+  <h1 style="font-size:22px">Join Channels</h1>
+  <p class="mut" style="margin:6px 0 4px">Join all channels below to use the app.</p>
+  <div id="gateList"></div>
+  <button class="btn" id="gateBtn" style="margin-top:18px">I HAVE JOINED &mdash; CHECK</button>
+</div></div>
+
+<div class="nav hide" id="nav">
+  <button data-t="home" class="on"><span class="e">🎁</span>BONUS</button>
+  <button data-t="invite"><span class="e">👥</span>INVITE</button>
+  <button data-t="wd"><span class="e">🏦</span>WITHDRAW</button>
+</div>
+
+<script>
+const tg = window.Telegram && Telegram.WebApp;
+if (tg) { tg.ready(); tg.expand(); try { tg.setHeaderColor('#050a18'); tg.setBackgroundColor('#050a18'); } catch (e) {} }
+const q = new URLSearchParams(location.search);
+const API = q.get('api');
+const UID = (tg && tg.initDataUnsafe && tg.initDataUnsafe.user && String(tg.initDataUnsafe.user.id)) || q.get('u') || '';
+let S = null, tab = 'home';
+const $ = id => document.getElementById(id);
+const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const money = n => '₹' + (Math.round((Number(n) || 0) * 100) / 100).toFixed(2);
+
+function toast(m) { const t = $('toast'); t.textContent = m; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 2600); }
+
+async function call(a, extra) {
+  const r = await fetch(API, { method: 'POST', headers: { 'Content-Type': 'text/plain' }, body: JSON.stringify(Object.assign({ a, uid: UID }, extra || {})) });
+  return r.json();
+}
+
+async function load() {
+  if (!API || !UID) { $('app').innerHTML = '<div class="card"><b>Open this app from the bot inside Telegram.</b></div>'; return; }
+  try { S = await call('me'); } catch (e) { $('app').innerHTML = '<div class="card r"><b>Connection error. Close and open again.</b></div>'; return; }
+  if (!S.ok) { $('app').innerHTML = '<div class="card r"><b>' + esc(S.error || 'Error') + '</b></div>'; return; }
+  if (S.banned) { $('app').innerHTML = '<div class="card r"><b>Your account is banned.</b></div>'; return; }
+  showGate(S.gate);
+  render();
+}
+
+function showGate(g) {
+  const ov = $('gate');
+  if (!g) { ov.classList.add('hide'); return; }
+  ov.classList.remove('hide');
+  $('gateList').innerHTML = g.channels.filter(c => !c.opt || !c.joined).map(c =>
+    '<div class="ch"><b>' + esc(c.title || c.name) + '</b>' +
+    (c.joined ? '<span class="ok">JOINED ✓</span>' : '<a href="#" data-l="' + esc(c.link) + '">JOIN</a>') + '</div>').join('');
+  $('gateList').querySelectorAll('a').forEach(a => a.onclick = e => {
+    e.preventDefault(); const l = a.dataset.l;
+    if (tg && /^https:\/\/t\.me/.test(l)) tg.openTelegramLink(l); else window.open(l, '_blank');
+  });
+}
+$('gateBtn').onclick = async () => {
+  $('gateBtn').disabled = true;
+  try { const r = await call('gate', { key: 'start', fresh: 1 }); if (r.gate) { showGate(r.gate); toast('Join all channels first'); } else { await load(); toast('All channels joined ✓'); } } catch (e) { toast('Network error'); }
+  $('gateBtn').disabled = false;
+};
+
+/* ---------------- screens ---------------- */
+function head() {
+  return '<div class="row sp" style="margin-bottom:16px"><div class="row"><div class="logo">⚡</div><div><h1>' + esc(S.brand) + '</h1><div class="sub">● Direct Instant UPI</div></div></div></div>';
+}
+
+function bonusPod() {
+  const a = S.bonusAmt;
+  let icon = '🎁', t = 'Welcome Bonus', s = 'Verification successful. Claim your one-time bonus.', btn = '';
+  if (!S.verified) { icon = '🔒'; t = 'Locked'; s = 'Verification not completed. Send /start to the bot and verify first.'; }
+  else if (S.sameDev) { icon = '🚫'; t = 'Not Available'; s = 'Same device detected. Welcome bonus is not available on this device.'; }
+  else if (S.bonusClaimed) { icon = '✅'; t = 'Bonus Claimed'; s = 'You already claimed your welcome bonus.'; }
+  else if (!a) { icon = '🔒'; t = 'Bonus Off'; s = 'Welcome bonus is switched off right now.'; }
+  else btn = '<button class="btn" id="claimBtn">CLAIM ' + money(a).replace('.00', '') + ' BONUS</button>';
+  return '<div class="row sp" style="margin:22px 4px 14px"><div class="sub" style="font-size:14px">✨ Welcome Bonus</div><div class="pill">' + (a ? money(a).replace('.00', '') : '₹0') + ' Bonus</div></div>' +
+    '<div class="pod"><div class="pod-in"><div class="circle">' + icon + '</div><div class="pod-t">' + t + '</div><div class="pod-s">' + s + '</div>' + (btn ? '<div style="width:100%;margin-top:6px">' + btn + '</div>' : '') + '</div></div>';
+}
+
+function home() {
+  return head() +
+    '<div class="row" style="margin-bottom:16px"><div class="tile" data-go="invite"><div class="ic">👤</div><div><b>INVITE</b><small style="color:var(--cy)">EARN ₹' + esc(S.perRef) + '</small></div></div>' +
+    '<div class="tile" data-go="wd"><div class="ic">🏦</div><div><b>WITHDRAW</b><small class="g">INSTANT PAY</small></div></div></div>' +
+    '<div class="card"><div class="lbl">Available Balance</div><div class="row sp"><div class="big">' + money(S.balance) + '</div><button class="btn sm" data-go="wd">⚡ CASHOUT →</button></div></div>' +
+    bonusPod();
+}
+
+function invite() {
+  const sq = (S.refs || []).map((r, i) => '<div class="sq"><div class="n">#' + (i + 1) + '</div><div class="m"><b>' + esc(r.n) + '</b><small>Joined through your link</small></div><div class="tag">+₹' + esc(S.perRef) + '</div></div>').join('') ||
+    '<div class="mut" style="text-align:center;padding:22px 0">No referrals yet. Share your link!</div>';
+  return '<h1 style="font-size:34px">REFER &amp; EARN</h1><div class="mut" style="margin:8px 0 18px;font-size:17px">Share your link and earn <b class="g">₹' + esc(S.perRef) + '</b> for every friend who joins.</div>' +
+    '<div class="card row" style="margin-bottom:22px"><div class="logo">🎟️</div><div><b style="font-size:20px">1 REFERRAL = ₹' + esc(S.perRef) + '</b><div class="sub" style="margin-top:6px">Paid when your friend verifies</div></div></div>' +
+    '<div class="lbl">Your Dedicated Invite Link</div><div class="link"><span>' + esc(S.link) + '</span><button class="btn sm" id="copyBtn">COPY</button></div>' +
+    '<button class="btn" id="shareBtn" style="margin:16px 0 22px">✈ SHARE LINK ON TELEGRAM</button>' +
+    '<div class="card"><div class="row sp"><b style="letter-spacing:1px">REFERRED SQUAD</b><div class="pill">Total: ' + (S.invites || 0) + '</div></div>' + sq + '</div>';
+}
+
+function wd() {
+  const w = S.wd || {};
+  const cash = (S.activity || []).filter(a => a.a < 0).slice(0, 5).map(a =>
+    '<div class="sq" style="display:block"><div class="row sp"><b style="font-size:20px">' + money(-a.a) + '</b><span class="g" style="font-weight:700">COMPLETED</span></div><div class="mut" style="margin-top:4px">' + esc(a.upi || '') + ' ' + esc(a.d || '') + '</div></div>').join('') ||
+    '<div class="mut" style="text-align:center;padding:14px 0">No cashouts yet</div>';
+  return '<div class="row sp" style="margin-bottom:16px"><div><h1 style="font-size:26px">' + esc(S.brand) + '</h1><div class="sub" style="margin-top:4px">Direct Instant UPI Transfer</div></div></div>' +
+    '<div class="card"><div class="row sp"><div><div class="lbl">Available Balance</div><div class="big">' + money(S.balance) + '</div></div><div style="text-align:right"><div class="pill" style="display:inline-block">🛡 DIRECT UPI</div><div class="mut" style="margin-top:10px;font-weight:700">Min ₹' + w.min + ' | Max ₹' + w.max + '</div><div class="y" style="font-weight:700;margin-top:4px">Limit: 1 Cashout / Day</div></div></div></div>' +
+    '<div class="card" style="margin-top:18px"><div class="row sp" style="margin-bottom:14px"><b style="letter-spacing:1px">ENTER UPI DETAILS</b><span class="pill g" style="border-color:#14532d">0% FEE</span></div>' +
+    '<div class="lbl">Receiver UPI ID</div><input class="input" id="upi" placeholder="name@bank" autocomplete="off" autocapitalize="off">' +
+    '<div class="lbl" style="margin-top:16px">Amount (₹' + w.min + ' - ₹' + w.max + ')</div><input class="input" id="amt" type="number" inputmode="decimal" value="' + w.min + '">' +
+    '<div class="sum" style="margin:16px 0"><div><span class="mut">Withdraw Request:</span><span id="s1">₹' + w.min + '.00</span></div><div><span class="mut">Gateway Fee:</span><span class="g">₹0.00 (Free)</span></div><hr><div><b>Final UPI Credit:</b><b class="g" id="s2">₹' + w.min + '.00</b></div></div>' +
+    '<button class="btn" id="wdBtn">✈ TRANSFER TO UPI NOW</button></div>' +
+    '<div class="card" style="margin-top:18px"><b style="letter-spacing:1px;font-size:19px">RECENT CASHOUTS</b>' + cash + '</div>';
+}
+
+function render() {
+  const app = $('app');
+  app.innerHTML = tab === 'home' ? home() : tab === 'invite' ? invite() : wd();
+  $('nav').classList.remove('hide');
+  document.querySelectorAll('.nav button').forEach(b => b.classList.toggle('on', b.dataset.t === tab));
+  app.querySelectorAll('[data-go]').forEach(e => e.onclick = () => go(e.dataset.go));
+  window.scrollTo(0, 0);
+
+  const cb = $('claimBtn');
+  if (cb) cb.onclick = async () => {
+    cb.disabled = true;
+    try {
+      const r = await call('claim_bonus');
+      if (r.ok) { toast('🎉 ' + money(r.amount).replace('.00', '') + ' bonus added!'); await load(); }
+      else if (r.gate) { showGate(r.gate); toast(r.error); }
+      else { toast(r.error || 'Failed'); cb.disabled = false; }
+    } catch (e) { toast('Network error'); cb.disabled = false; }
+  };
+  if ($('copyBtn')) {
+    $('copyBtn').onclick = () => { (navigator.clipboard ? navigator.clipboard.writeText(S.link) : Promise.reject()).then(() => toast('Link copied ✓')).catch(() => toast(S.link)); };
+    $('shareBtn').onclick = () => {
+      const u = 'https://t.me/share/url?url=' + encodeURIComponent(S.link) + '&text=' + encodeURIComponent('Join and earn money! 💰');
+      if (tg) tg.openTelegramLink(u); else window.open(u, '_blank');
+    };
+  }
+  if ($('wdBtn')) {
+    const sync = () => { const v = (Number($('amt').value) || 0).toFixed(2); $('s1').textContent = '₹' + v; $('s2').textContent = '₹' + v; };
+    $('amt').oninput = sync;
+    $('wdBtn').onclick = async () => {
+      const upi = $('upi').value.trim(), amount = Number($('amt').value);
+      if (!/^[\w.\-]{2,}@[a-zA-Z]{2,}$/.test(upi)) return toast('Enter a valid UPI ID');
+      if (S.wd.used) return toast('Limit: 1 cashout per day');
+      $('wdBtn').disabled = true;
+      try {
+        const r = await call('wd_do', { upi, amount });
+        if (r.ok) { toast('✅ Cashout request sent'); await load(); tab = 'wd'; render(); }
+        else if (r.gate) { showGate(r.gate); toast(r.error); }
+        else { toast(r.error || 'Failed'); $('wdBtn').disabled = false; }
+      } catch (e) { toast('Network error'); $('wdBtn').disabled = false; }
+    };
+  }
+}
+
+function go(t) { tab = t; render(); }
+document.querySelectorAll('.nav button').forEach(b => b.onclick = () => go(b.dataset.t));
+load();
+// re-check the channels when the user comes back to the app (catches someone who left a channel)
+document.addEventListener('visibilitychange', () => { if (!document.hidden && S) load(); });
+</script>
+</body>
+</html>
