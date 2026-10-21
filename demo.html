@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
 <title>Earn Wallet</title>
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
 <style>
 :root{
  --bg:#070716;--glass:rgba(255,255,255,.055);--glass2:rgba(255,255,255,.09);--ln:rgba(255,255,255,.11);
@@ -133,51 +133,58 @@ label.f{display:block;font-family:var(--mono);font-size:10.5px;letter-spacing:1.
 .btn.ap{background:linear-gradient(120deg,#12b981,#35e3a4);color:#03281c;box-shadow:0 8px 22px #12b98144}
 .btn.rj{background:linear-gradient(120deg,#ff4d6d,#ff8aa0);box-shadow:0 8px 22px #ff4d6d44}
 
-.splash{position:fixed;inset:0;z-index:200;background:radial-gradient(circle at 50% 38%,#241866 0,#0c0a2b 45%,#070716 75%);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;transition:opacity .55s ease,visibility .55s,transform .55s}
-.splash.out{opacity:0;visibility:hidden;transform:scale(1.06)}
-.sp-ring{width:138px;height:138px;border-radius:50%;padding:5px;background:conic-gradient(from 0deg,#6d5dfc,#c471ed,#ff7eb3,#ffd36e,#35e3a4,#6d5dfc);animation:spin 1.7s linear infinite;box-shadow:0 0 60px #6d5dfc88,0 0 120px #ff7eb344}
-.sp-in{width:100%;height:100%;border-radius:50%;background:#0b0a22;display:grid;place-items:center;animation:spin 1.7s linear infinite reverse}
-.sp-in img{animation:bob 1.6s ease-in-out infinite}
+:root{--bg:#05090f;--glass:rgba(255,255,255,.05);--glass2:rgba(255,255,255,.085);--ln:rgba(255,255,255,.09);--mut:#8fa3bf;--p1:#00d4aa;--p2:#2f80ff;--p3:#8b5cf6;--gold:#ffc83d;--ok:#2ee6a6;--bad:#ff6b81;--grad:linear-gradient(120deg,#00d4aa,#2f80ff 60%,#8b5cf6)}
+.aurora{background:radial-gradient(420px 320px at 92% -4%,#2f80ff40,transparent 70%),radial-gradient(380px 300px at -12% 32%,#8b5cf62e,transparent 70%),radial-gradient(360px 280px at 100% 100%,#00d4aa24,transparent 70%)}
+.aurora i{display:none}
+.wrap{animation:none}
+.enter{animation:ent .26s ease both}
+@keyframes ent{from{opacity:0;transform:translateY(10px)}}
+.glass,.dock,.toast,.ov.pop{backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
+.glass{box-shadow:none;background:linear-gradient(180deg,#ffffff0e,#ffffff05)}
+.dock{background:#0b1220;box-shadow:0 10px 30px #000b;transform:translateZ(0)}
+.dock button.on{box-shadow:none}
+.toast{background:#101a2e;border-color:var(--p2)}
+.ov.pop{background:rgba(2,5,10,.8)}
+.sheet{background:#0b1220;box-shadow:none;border-color:#ffffff14}
+.hero{background:linear-gradient(135deg,#0a8f86 0%,#1f5fe0 55%,#6a35d9 100%);box-shadow:0 14px 34px #1f5fe044}
+.hero:after{border-color:#ffffff10}
+.cc{position:absolute;top:18px;right:20px;width:46px;height:34px;border-radius:9px;background:linear-gradient(135deg,#ffe28a,#f5a524);z-index:1;box-shadow:inset 0 0 0 1px #0002}
+.cc:before{content:"";position:absolute;inset:7px 4px;border-top:1.5px solid #0003;border-bottom:1.5px solid #0003}
+.cc:after{content:"";position:absolute;left:50%;top:0;bottom:0;border-left:1.5px solid #0003}
+.hero .amt{margin-top:14px}
+.mark{background:none;box-shadow:none;width:46px;height:46px;border-radius:0}
+.mark .em{display:block}
+.btn{box-shadow:0 8px 20px #2f80ff40}
+.btn.w{color:#0b3fa8}
+.btn.ghost{box-shadow:none}
+.tk{background:linear-gradient(120deg,#00d4aa,#2f80ff 60%,#8b5cf6)}
+.tk-in,.tk-in:before,.tk-in:after{background:#0a1220}
+.tk-in:before,.tk-in:after{background:var(--bg)}
+.tk-r{background:linear-gradient(180deg,#ffc83d14,#2f80ff14)}
+.sec span:first-child:before{content:"";width:4px;height:14px;border-radius:4px;background:var(--grad)}
+.sec span{display:flex;align-items:center;gap:8px}
+.st:nth-child(1) .k{color:#7fb4ff}.st:nth-child(2) .k{color:#5cf0bd}.st:nth-child(3) .k{color:#ffd36e}
+.st .k{display:flex;align-items:center;gap:6px}
+.li{transition:opacity .12s}
+.live:before{animation:none}
+.splash{position:fixed;inset:0;z-index:200;background:radial-gradient(circle at 50% 38%,#0e2a52 0,#08111f 48%,#05090f 78%);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;transition:opacity .45s ease,visibility .45s}
+.splash.out{opacity:0;visibility:hidden}
+.sp-ring{width:138px;height:138px;border-radius:50%;padding:5px;background:conic-gradient(from 0deg,#00d4aa,#2f80ff,#8b5cf6,#ffc83d,#00d4aa);animation:spin 1.6s linear infinite;will-change:transform}
+.sp-in{width:100%;height:100%;border-radius:50%;background:#070d18;display:grid;place-items:center;animation:spin 1.6s linear infinite reverse;will-change:transform}
 @keyframes spin{to{transform:rotate(360deg)}}
-@keyframes bob{50%{transform:scale(1.12)}}
 .sp-t{font-size:26px;font-weight:800;letter-spacing:-.5px;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
 .sp-s{font-family:var(--mono);font-size:11.5px;letter-spacing:2.4px;color:var(--mut);text-transform:uppercase}
-.sp-s:after{content:"";animation:dots 1.4s steps(4,end) infinite}
-@keyframes dots{0%{content:""}25%{content:"."}50%{content:".."}75%,100%{content:"..."}}
 .sp-bar{width:190px;height:5px;border-radius:9px;background:#ffffff14;overflow:hidden}
-.sp-bar i{display:block;height:100%;width:40%;border-radius:9px;background:var(--grad);animation:bar 1.3s ease-in-out infinite}
-@keyframes bar{0%{margin-left:-40%}100%{margin-left:100%}}
-.sp-f{position:absolute;opacity:.85;animation:fly 5s ease-in-out infinite}
-.sp-f:nth-of-type(1){left:14%;top:22%}
-.sp-f:nth-of-type(2){right:13%;top:30%;animation-delay:-1.5s}
-.sp-f:nth-of-type(3){left:20%;bottom:20%;animation-delay:-3s}
-.sp-f:nth-of-type(4){right:18%;bottom:24%;animation-delay:-2.2s}
-@keyframes fly{50%{transform:translateY(-22px) rotate(12deg)}}
-.wrap>*{animation:rise .55s cubic-bezier(.2,.9,.3,1) both}
-.wrap>*:nth-child(2){animation-delay:.05s}.wrap>*:nth-child(3){animation-delay:.1s}.wrap>*:nth-child(4){animation-delay:.15s}.wrap>*:nth-child(5){animation-delay:.2s}.wrap>*:nth-child(6){animation-delay:.25s}.wrap>*:nth-child(n+7){animation-delay:.3s}
-@keyframes rise{from{opacity:0;transform:translateY(18px) scale(.98)}}
-.hero .shine{position:absolute;inset:0;background:linear-gradient(110deg,transparent 35%,#ffffff2e 50%,transparent 65%);transform:translateX(-120%);animation:sh 4.5s ease-in-out infinite;z-index:1;pointer-events:none}
-@keyframes sh{55%,100%{transform:translateX(120%)}}
-.amt{background:linear-gradient(180deg,#fff,#ffe3f1);-webkit-background-clip:text;background-clip:text;color:transparent;text-shadow:none;filter:drop-shadow(0 4px 18px #ffffff40)}
-.amt i{color:#fff;-webkit-text-fill-color:#fffc}
-.sec span{display:flex;align-items:center;gap:8px}
-.sec span:first-child:before{content:"";width:4px;height:14px;border-radius:4px;background:var(--grad)}
-.glass{box-shadow:0 10px 34px #00000040,inset 0 1px 0 #ffffff12}
-.st{transition:.2s}.st:active{transform:scale(.96)}
-.st:nth-child(1) .k{color:#8fb4ff}.st:nth-child(2) .k{color:#7df0c4}.st:nth-child(3) .k{color:#ffd36e}
-.btn:not(.ghost):not(:disabled):after{content:"";position:absolute;top:0;left:-60%;width:40%;height:100%;background:linear-gradient(100deg,transparent,#ffffff40,transparent);transform:skewX(-20deg);animation:bs 3.2s ease-in-out infinite}
-@keyframes bs{60%,100%{left:130%}}
-.dock{box-shadow:0 14px 40px #00000066,0 0 0 1px #ffffff10,0 0 40px #6d5dfc22}
-.dock button.on{animation:glow 2.4s ease-in-out infinite}
-@keyframes glow{50%{box-shadow:0 6px 26px #c471edaa}}
-.li{border-radius:12px;transition:.15s}
-.pill{box-shadow:inset 0 0 0 1px #ffffff10}
-.live:before{animation:pu 1.2s infinite}
+.sp-bar i{display:block;height:100%;width:40%;border-radius:9px;background:var(--grad);animation:bar 1.2s ease-in-out infinite;will-change:transform}
+@keyframes bar{0%{transform:translateX(-100%)}100%{transform:translateX(260%)}}
+.sp-f{position:absolute;opacity:.9;animation:fly 5s ease-in-out infinite;will-change:transform}
+.sp-f:nth-of-type(1){left:14%;top:22%}.sp-f:nth-of-type(2){right:13%;top:30%;animation-delay:-1.5s}.sp-f:nth-of-type(3){left:20%;bottom:20%;animation-delay:-3s}.sp-f:nth-of-type(4){right:18%;bottom:24%;animation-delay:-2.2s}
+@keyframes fly{50%{transform:translateY(-18px)}}
 </style>
 </head>
 <body>
 <div class="aurora"><i></i><i></i><i></i></div>
-<div class="splash" id="splash"><img class="sp-f" src="https://fonts.gstatic.com/s/e/notoemoji/latest/1f4b0/512.gif" width="38" height="38" alt="" onerror="this.remove()"><img class="sp-f" src="https://fonts.gstatic.com/s/e/notoemoji/latest/1f48e/512.gif" width="38" height="38" alt="" onerror="this.remove()"><img class="sp-f" src="https://fonts.gstatic.com/s/e/notoemoji/latest/2728/512.gif" width="38" height="38" alt="" onerror="this.remove()"><img class="sp-f" src="https://fonts.gstatic.com/s/e/notoemoji/latest/1f4b8/512.gif" width="38" height="38" alt="" onerror="this.remove()"><div class="sp-ring"><div class="sp-in"><img src="https://fonts.gstatic.com/s/e/notoemoji/latest/1f680/512.gif" width="64" height="64" alt="" onerror="this.outerHTML='<span style=font-size:56px>&#128640;</span>'"></div></div><div class="sp-t" id="spT">Earn Wallet</div><div class="sp-bar"><i></i></div><div class="sp-s">Loading your wallet</div></div>
+<div class="splash" id="splash"><span class="sp-f" data-i="1f4b0"></span><span class="sp-f" data-i="1f48e"></span><span class="sp-f" data-i="2728"></span><span class="sp-f" data-i="1f4b8"></span><div class="sp-ring"><div class="sp-in" id="spMain"></div></div><div class="sp-t">Earn Wallet</div><div class="sp-bar"><i></i></div><div class="sp-s">Loading your wallet</div></div>
 <div class="toast" id="toast"></div>
 <div class="wrap" id="app"><div class="skel"></div><div class="skel" style="height:90px"></div><div class="skel" style="height:120px"></div></div>
 
@@ -205,7 +212,7 @@ const $ = id => document.getElementById(id);
 const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 const rs = n => { n = Math.round((Number(n) || 0) * 100) / 100; return Number.isInteger(n) ? String(n) : n.toFixed(2); };
 function toast(m) { const t = $('toast'); t.textContent = m; t.classList.add('show'); clearTimeout(toast.t); toast.t = setTimeout(() => t.classList.remove('show'), 2800); }
-function boom() { for (let i = 0; i < 14; i++) { const e = document.createElement('div'); e.className = 'boom'; const z = [['1f389','🎉'],['2728','✨'],['1f4b0','💰'],['2b50','⭐']][i % 4]; e.innerHTML = EM(z[0], z[1], 34); e.style.setProperty('--x', (Math.random() * 300 - 150) + 'px'); e.style.setProperty('--y', (Math.random() * -260 - 40) + 'px'); e.style.setProperty('--r', (Math.random() * 360) + 'deg'); document.body.appendChild(e); setTimeout(() => e.remove(), 1200); } }
+function boom() { for (let i = 0; i < 10; i++) { const e = document.createElement('div'); e.className = 'boom'; const z = [['1f389','🎉'],['2728','✨'],['1f4b0','💰'],['2b50','⭐']][i % 4]; e.innerHTML = EM(z[0], z[1], 34); e.style.setProperty('--x', (Math.random() * 300 - 150) + 'px'); e.style.setProperty('--y', (Math.random() * -260 - 40) + 'px'); e.style.setProperty('--r', (Math.random() * 360) + 'deg'); document.body.appendChild(e); setTimeout(() => e.remove(), 1200); } }
 
 async function call(a, extra) {
   const ctl = new AbortController(); const tm = setTimeout(() => ctl.abort(), 20000);
@@ -226,8 +233,26 @@ function norm(r) {
 }
 const sig = r => JSON.stringify([r.balance, r.verified, r.sameDev, r.bonusClaimed, r.bonusAmt, r.invites, r.earned, r.perRef, r.activity, (r.refs || []).length, r.wd, r.gate && r.gate.channels.map(c => c.joined), r.admin]);
 
-/* ---------- animated emoji (not the keyboard ones) ---------- */
-const EM = (c, f, s) => '<img class="em" src="https://fonts.gstatic.com/s/e/notoemoji/latest/' + c + '/512.gif" width="' + (s || 24) + '" height="' + (s || 24) + '" alt="" onerror="this.outerHTML=\'' + f + '\'">';
+/* ---------- own icon set (drawn as SVG, not keyboard emoji) ---------- */
+document.body.insertAdjacentHTML('afterbegin', '<svg width="0" height="0" style="position:absolute"><defs>' + [['gA', '#8b5cf6', '#ec4899'], ['gB', '#ffd24d', '#ff8a1f'], ['gC', '#2ee6a6', '#0ea5a0'], ['gD', '#ff6b81', '#ff3d6e'], ['gE', '#38bdf8', '#2f6bff']].map(g => '<linearGradient id="' + g[0] + '" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="' + g[1] + '"/><stop offset="1" stop-color="' + g[2] + '"/></linearGradient>').join('') + '</defs></svg>');
+const IC = {
+  '1f4b0': ['gB', '<circle cx="24" cy="24" r="11"/><text x="24" y="30" text-anchor="middle" font-size="16" font-weight="800" fill="#fff" stroke="none" font-family="system-ui,sans-serif">₹</text>'],
+  '1f48e': ['gA', '<path d="M15 19l4-6h10l4 6-9 16z"/><path d="M15 19h18M21 13l3 22 3-22"/>'],
+  '1f3e6': ['gE', '<path d="M11 19l13-7 13 7z"/><path d="M15 22v9M21 22v9M27 22v9M33 22v9M11 35h26"/>'],
+  '1f680': ['gD', '<path d="M24 10c6 4 9 11 7 18H17c-2-7 1-14 7-18z"/><circle cx="24" cy="21" r="2.5"/><path d="M19 28l-4 6 5-2M29 28l4 6-5-2M24 31v6"/>'],
+  '23f3': ['gB', '<path d="M16 12h16M16 36h16M17 12c0 8 7 8 7 12s-7 4-7 12M31 12c0 8-7 8-7 12s7 4 7 12"/>'],
+  '2705': ['gC', '<path d="M14 25l7 7 13-14"/>'],
+  '274c': ['gD', '<path d="M16 16l16 16M32 16L16 32"/>'],
+  '1f389': ['gA', '<path d="M24 11l3.2 9.3 9.8.4-7.7 6 2.7 9.4L24 30.6l-8.1 5.5 2.7-9.4-7.7-6 9.8-.4z"/>'],
+  '1f4ed': ['gE', '<path d="M12 27l4-12h16l4 12v9H12z"/><path d="M12 27h8l2 3h4l2-3h8"/>'],
+  '1f465': ['gE', '<circle cx="19" cy="18" r="5"/><path d="M10 35c0-6 4-9 9-9s9 3 9 9"/><circle cx="32" cy="19" r="4"/><path d="M31 27c5 0 8 3 8 8"/>'],
+  '1f4b8': ['gC', '<path d="M24 35V14M15 23l9-9 9 9"/>'],
+  '1f381': ['gD', '<rect x="12" y="21" width="24" height="15" rx="2"/><path d="M10 21h28v5H10zM24 21v15M24 21c-4-1-7-3-5-6s5 1 5 6zM24 21c4-1 7-3 5-6s-5 1-5 6z"/>'],
+  '1f91d': ['gA', '<path d="M21 27l6-6M18 24a5 5 0 017-7l2 2M30 24a5 5 0 01-7 7l-2-2"/>'],
+  '2728': ['gB', '<path d="M24 10l4 10 10 4-10 4-4 10-4-10-10-4 10-4z"/>'],
+  '2b50': ['gB', '<path d="M24 11l4 9 10 1-7.5 6.7L33 38l-9-5-9 5 2.5-10.3L10 21l10-1z"/>']
+};
+const EM = (c, f, s) => { const i = IC[c] || IC['2728']; s = s || 24; return '<svg class="em" width="' + s + '" height="' + s + '" viewBox="0 0 48 48"><rect width="48" height="48" rx="14" fill="url(#' + i[0] + ')"/><path d="M5 15A9 9 0 0114 6h20a9 9 0 019 9v1C33 22 14 22 5 16z" fill="#fff" opacity=".2"/><g fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">' + i[1] + '</g></svg>'; };
 
 /* ---------- withdrawal statuses ---------- */
 const ST = {
@@ -307,7 +332,7 @@ function paintDock() {
   const n = P && P.pending ? P.pending.length : 0;
   const dk = $('dock'); dk.classList.remove('hide');
   dk.innerHTML = items.map(i => '<button data-t="' + i[0] + '" class="' + (tab === i[0] ? 'on' : '') + '">' + ICONS[i[0]] + i[1] + (i[0] === 'admin' && n ? '<i class="bdg">' + n + '</i>' : '') + '</button>').join('');
-  dk.querySelectorAll('button').forEach(b => b.onclick = () => { tab = b.dataset.t; render(); });
+  dk.querySelectorAll('button').forEach(b => b.onclick = () => { tab = b.dataset.t; window._anim = 1; render(); });
 }
 function admAsk(op, rid) {
   const r = (P.pending || []).find(x => x.id === rid); if (!r) return;
@@ -356,7 +381,7 @@ function notifyChanges(o, n) {
   }
 }
 
-let busy = false;
+let busy = false, _pq = 0;
 async function refresh() {            // real time: every 2s, redraw only when something changed and never while typing
   if (busy || document.hidden || !S || !API || !UID) return;
   busy = true;
@@ -371,11 +396,11 @@ async function refresh() {            // real time: every 2s, redraw only when s
         else if (tab === 'wd') { const a = document.querySelector('.hero .amt'); if (a) a.innerHTML = '<i>₹</i>' + rs(S.balance); paintHist(); }
       }
     }
-    if (S && S.admin) await pollQ();
+    if (S && S.admin && (tab === 'admin' || ++_pq % 3 === 0)) await pollQ();
   } catch (e) {}
   busy = false;
 }
-setInterval(refresh, 2000);
+setInterval(refresh, 2500);
 
 async function load(keepTab) {
   if (!API || !UID) { $('app').innerHTML = '<div class="glass"><b>Open this app from the bot inside Telegram.</b><div class="help">Missing: ' + (!API ? 'api ' : '') + (!UID ? 'user id' : '') + '</div></div>'; return; }
@@ -408,7 +433,7 @@ $('gateBtn').onclick = async () => {
 
 /* ---------- screens ---------- */
 function hdr() {
-  return '<div class="head"><div class="brand"><div class="mark">' + EM('1f48e', '💎', 30) + '</div><div style="min-width:0"><b>' + esc(S.brand) + '</b><small>' + (S.bot ? '@' + esc(S.bot) + ' · ' : '') + 'ID ' + esc(S.uid || UID) + '</small></div></div><div class="live">UPI LIVE</div></div>';
+  return '<div class="head"><div class="brand"><div class="mark">' + EM('1f48e', '', 46) + '</div><div style="min-width:0"><b>' + esc(S.brand) + '</b><small>' + (S.bot ? '@' + esc(S.bot) + ' · ' : '') + 'ID ' + esc(S.uid || UID) + '</small></div></div><div class="live">UPI LIVE</div></div>';
 }
 function foot() { return ''; }
 
@@ -432,7 +457,7 @@ function home() {
     return '<div class="li" data-tx="' + i + '"><div class="ic ' + (neg ? 'out' : 'in') + '">' + EM(e[0], e[1], 26) + '</div><div class="m"><b>' + esc(ttl(a)) + '</b><small>' + esc(a.d || '') + (s ? ' · ' + s.t : '') + '</small></div><div class="' + (neg ? 'bad' : 'ok') + '" style="font-family:var(--mono);font-weight:700">' + (neg ? '-' : '+') + '₹' + rs(Math.abs(a.a)) + '</div></div>';
   }).join('') || '<div class="mut" style="text-align:center;padding:12px">' + EM('1f4ed', '📭', 40) + '<br>Nothing yet</div>';
   return hdr() +
-    '<div class="hero"><div class="shine"></div><div class="k">' + EM('1f4b0', '💰', 18) + ' Wallet balance</div><div class="amt"><i>₹</i>' + rs(S.balance) + '</div><button class="btn w" data-go="wd">Cash out to UPI ' + EM('1f680', '🚀', 20) + '</button></div>' +
+    '<div class="hero"><div class="cc"></div><div class="k">' + EM('1f4b0', '💰', 18) + ' Wallet balance</div><div class="amt"><i>₹</i>' + rs(S.balance) + '</div><button class="btn w" data-go="wd">Cash out to UPI ' + EM('1f680', '🚀', 20) + '</button></div>' +
     '<div class="stats"><div class="st"><div class="k">' + EM('1f465', '👥', 16) + ' Invites</div><b>' + (S.invites || 0) + '</b></div><div class="st"><div class="k">' + EM('1f4b8', '💸', 16) + ' Earned</div><b>₹' + rs(S.earned) + '</b></div><div class="st"><div class="k">' + EM('1f381', '🎁', 16) + ' Per refer</div><b class="gold">₹' + esc(S.perRef) + '</b></div></div>' +
     '<div class="sec"><span>Rewards</span></div>' + ticket() +
     '<div class="sec"><span>Activity</span></div><div class="glass">' + act + '</div>' + foot();
@@ -447,7 +472,7 @@ function invite() {
 
 function wd() {
   const w = S.wd || {}, off = !w.on || !w.botOn;
-  return hdr() + '<div class="hero"><div class="shine"></div><div class="k">' + EM('1f3e6', '🏦', 18) + ' Available to withdraw</div><div class="amt"><i>₹</i>' + rs(S.balance) + '</div><div style="font-family:var(--mono);font-size:12px;color:#ffffffcc">Min ₹' + rs(w.min) + ' · Max ₹' + rs(w.max) + ' · ' + (w.count || 0) + '/' + (w.limit || 1) + ' today</div></div>' +
+  return hdr() + '<div class="hero"><div class="cc"></div><div class="k">' + EM('1f3e6', '🏦', 18) + ' Available to withdraw</div><div class="amt"><i>₹</i>' + rs(S.balance) + '</div><div style="font-family:var(--mono);font-size:12px;color:#ffffffcc">Min ₹' + rs(w.min) + ' · Max ₹' + rs(w.max) + ' · ' + (w.count || 0) + '/' + (w.limit || 1) + ' today</div></div>' +
     '<div class="glass" style="margin-top:14px">' + (off ? '<div class="bad" style="font-weight:700">Withdrawals are switched off right now.</div>' : '') +
     '<label class="f" style="margin-top:0">Receiver UPI ID</label><input class="in" id="upi" placeholder="name@bank" autocomplete="off" autocapitalize="off">' +
     '<label class="f">Amount (₹' + rs(w.min) + ' – ₹' + rs(w.max) + ')</label><input class="in" id="amt" type="number" inputmode="decimal" value="' + rs(w.min) + '">' +
@@ -497,8 +522,9 @@ function render() {
   if (tab === 'admin' && !admin_ok) tab = 'home';
   app.innerHTML = tab === 'home' ? home() : tab === 'invite' ? invite() : tab === 'wd' ? wd() : admin();
   paintDock();
-  app.querySelectorAll('[data-go]').forEach(e => e.onclick = () => { tab = e.dataset.go; render(); });
+  app.querySelectorAll('[data-go]').forEach(e => e.onclick = () => { tab = e.dataset.go; window._anim = 1; render(); });
   wireTx(app);
+  if (window._anim) { window._anim = 0; app.classList.remove('enter'); void app.offsetWidth; app.classList.add('enter'); }
   window.scrollTo(0, 0);
   const cb = $('claimBtn');
   if (cb) cb.onclick = async () => {
@@ -528,10 +554,12 @@ function render() {
   }
   if (tab === 'admin') { wireAdmin(); paintQ(); }
 }
-function hideSplash() { const s = $('splash'); if (!s || s.dataset.d) return; s.dataset.d = 1; s.classList.add('out'); setTimeout(() => s.remove(), 700); }
+document.querySelectorAll('.sp-f').forEach(e => e.innerHTML = EM(e.dataset.i, '', 38));
+$('spMain').innerHTML = EM('1f680', '', 70);
+function hideSplash() { const s = $('splash'); if (!s || s.dataset.d) return; s.dataset.d = 1; s.classList.add('out'); setTimeout(() => s.remove(), 600); }
 setTimeout(hideSplash, 12000);
 const _t0 = Date.now();
-load().catch(e => { $('app').innerHTML = '<div class="glass bad"><b>' + esc(e.message) + '</b></div>'; }).finally(() => setTimeout(hideSplash, Math.max(0, 900 - (Date.now() - _t0))));
+load().catch(e => { $('app').innerHTML = '<div class="glass bad"><b>' + esc(e.message) + '</b></div>'; }).finally(() => setTimeout(hideSplash, Math.max(0, 700 - (Date.now() - _t0))));
 document.addEventListener('visibilitychange', () => { if (!document.hidden && S) refresh(); });
 </script>
 </body>
