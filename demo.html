@@ -5,114 +5,143 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
 <title>Earn Wallet</title>
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
-<link href="https://fonts.googleapis.com/css2?family=Sora:wght@500;700;800&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#0c0a1f;--s1:#161232;--s2:#201a45;--ln:#352c66;--lime:#ff5ca8;--vio:#7c5cff;--gold:#ffd166;--tx:#fbf9ff;--mut:#a39ccc;--ok:#34e0a1;--warn:#ffd166;--bad:#ff7a90;--grad:linear-gradient(135deg,#7c5cff,#ff5ca8);
---font:'Sora',system-ui,sans-serif;--mono:'IBM Plex Mono',ui-monospace,monospace}
+:root{
+ --bg:#070716;--glass:rgba(255,255,255,.055);--glass2:rgba(255,255,255,.09);--ln:rgba(255,255,255,.11);
+ --tx:#f6f5ff;--mut:#9d9bc4;--p1:#6d5dfc;--p2:#c471ed;--p3:#ff7eb3;--gold:#ffd36e;--ok:#35e3a4;--bad:#ff7a90;
+ --grad:linear-gradient(120deg,#6d5dfc,#c471ed 55%,#ff7eb3);
+ --font:'Plus Jakarta Sans',system-ui,sans-serif;--mono:'JetBrains Mono',ui-monospace,monospace}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{margin:0;background:var(--bg);color:var(--tx);font-family:var(--font);min-height:100%}
-body{padding:calc(env(safe-area-inset-top,0px) + 16px) 16px 130px;background:
- radial-gradient(520px 320px at 95% -5%,#7c5cff55,transparent 70%),radial-gradient(460px 300px at -10% 10%,#ff5ca83a,transparent 70%),var(--bg)}
-.wrap{max-width:520px;margin:0 auto}
-.top{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
-.brand{display:flex;align-items:center;gap:12px}
-.mark{width:46px;height:46px;border-radius:14px;background:var(--grad);color:#fff;display:grid;place-items:center;font-weight:800;font-size:22px;transform:rotate(-6deg)}
-.brand b{font-size:19px;font-weight:800;letter-spacing:-.3px;display:block}
-.brand small{color:var(--mut);font-size:11px;font-family:var(--mono)}
-.live{font-family:var(--mono);font-size:11px;color:var(--ok);display:flex;align-items:center;gap:6px;border:1px solid #14532d;background:#052e16;border-radius:99px;padding:6px 10px}
-.live:before{content:"";width:7px;height:7px;border-radius:50%;background:var(--ok);box-shadow:0 0 8px var(--ok)}
-.bal{background:linear-gradient(135deg,#3b2a9e,#a63a8f 70%,#e0507f);border:0;border-radius:26px;padding:22px;position:relative;overflow:hidden;box-shadow:0 14px 40px #7c5cff44}
-.bal .k{color:#ffffffb3}.bal .btn{background:#fff;color:#4b2fb8;box-shadow:none}.bal:after{content:"";position:absolute;right:-40px;top:-40px;width:150px;height:150px;border-radius:50%;border:26px solid #ffffff14}
-.k{font-family:var(--mono);font-size:11px;color:var(--mut);letter-spacing:2px;text-transform:uppercase}
-.amt{font-size:48px;font-weight:800;letter-spacing:-2px;margin:6px 0 14px;font-family:var(--font)}
-.amt i{font-style:normal;color:var(--gold);margin-right:2px}
-.stats{display:flex;gap:10px;margin-top:12px}
-.st{flex:1;background:var(--s1);border:1px solid var(--ln);border-radius:18px;padding:12px 14px}
-.st b{display:block;font-size:20px;margin-top:4px}
-.btn{display:block;width:100%;border:0;border-radius:16px;padding:16px;font-family:var(--font);font-weight:700;font-size:15px;color:#fff;background:var(--grad);cursor:pointer;box-shadow:0 8px 24px #7c5cff55;letter-spacing:.3px}
-.btn.alt{background:var(--s2);color:var(--tx);box-shadow:none;border:1px solid var(--ln)}
-.btn.sm{display:inline-block;width:auto;padding:11px 18px;font-size:13px}
-.btn:disabled{opacity:.4;box-shadow:none;cursor:not-allowed}
-.btn:active{transform:scale(.98)}
-.h{font-size:13px;font-family:var(--mono);color:var(--mut);letter-spacing:2px;text-transform:uppercase;margin:26px 4px 12px}
-/* coupon ticket */
-.ticket{position:relative;display:flex;background:var(--s1);border:1px solid var(--ln);border-radius:22px;overflow:hidden}
-.ticket .l{flex:1;padding:18px}
-.ticket .r{width:112px;padding:18px 10px;text-align:center;border-left:2px dashed var(--ln);display:flex;flex-direction:column;justify-content:center;align-items:center;background:#ffd16614}
-.ticket:before,.ticket:after{content:"";position:absolute;right:101px;width:20px;height:20px;border-radius:50%;background:var(--bg);border:1px solid var(--ln)}
-.ticket:before{top:-11px}.ticket:after{bottom:-11px}
-.ticket h3{margin:0 0 6px;font-size:19px}
-.ticket p{margin:0 0 14px;color:var(--mut);font-size:13px;line-height:1.5}
-.ticket .v{font-size:34px;font-weight:800;color:var(--gold);line-height:1}
-.ticket .v small{display:block;font-size:10px;font-family:var(--mono);color:var(--mut);margin-top:6px;letter-spacing:2px;font-weight:500}
-.ticket.off .v{color:var(--mut)}
-.ticket.off{opacity:.9}
-.card{background:var(--s1);border:1px solid var(--ln);border-radius:22px;padding:18px}
-.in{width:100%;background:var(--bg);border:1px solid var(--ln);border-radius:14px;padding:15px 16px;color:var(--tx);font-family:var(--mono);font-size:15px;outline:none}
-.in:focus{border-color:var(--vio)}
-label.f{display:block;font-family:var(--mono);font-size:11px;color:var(--mut);letter-spacing:1.5px;text-transform:uppercase;margin:14px 0 7px}
-.sum{margin:16px 0;border:1px dashed var(--ln);border-radius:14px;padding:6px 14px;font-family:var(--mono);font-size:13px}
+body{padding:calc(env(safe-area-inset-top,0px) + 14px) 16px 120px;overflow-x:hidden}
+.aurora{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+.aurora i{position:absolute;border-radius:50%;filter:blur(70px);opacity:.55;animation:fl 14s ease-in-out infinite alternate}
+.aurora i:nth-child(1){width:300px;height:300px;background:#6d5dfc;top:-80px;right:-60px}
+.aurora i:nth-child(2){width:260px;height:260px;background:#ff7eb3;top:240px;left:-110px;animation-delay:-5s;opacity:.35}
+.aurora i:nth-child(3){width:240px;height:240px;background:#2bd9a8;bottom:-90px;right:-60px;animation-delay:-9s;opacity:.22}
+@keyframes fl{to{transform:translate(30px,40px) scale(1.15)}}
+.wrap{position:relative;z-index:1;max-width:520px;margin:0 auto;animation:in .35s ease}
+@keyframes in{from{opacity:0;transform:translateY(8px)}}
+.head{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
+.brand{display:flex;align-items:center;gap:12px;min-width:0}
+.mark{width:46px;height:46px;border-radius:15px;background:var(--grad);display:grid;place-items:center;font-weight:800;font-size:21px;box-shadow:0 8px 22px #6d5dfc66;flex:none}
+.brand b{display:block;font-size:18px;font-weight:800;letter-spacing:-.3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.brand small{font-family:var(--mono);font-size:11px;color:var(--mut)}
+.live{font-family:var(--mono);font-size:10.5px;font-weight:700;color:var(--ok);display:flex;align-items:center;gap:6px;border:1px solid #35e3a444;background:#35e3a412;border-radius:99px;padding:7px 11px;flex:none}
+.live:before{content:"";width:6px;height:6px;border-radius:50%;background:var(--ok);box-shadow:0 0 10px var(--ok);animation:pu 1.6s infinite}
+@keyframes pu{50%{opacity:.3}}
+.glass{background:var(--glass);border:1px solid var(--ln);border-radius:24px;padding:18px;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px)}
+.hero{position:relative;border-radius:28px;padding:22px;overflow:hidden;background:linear-gradient(135deg,#4a3df0 0%,#9a4fe0 55%,#ec6aa6 100%);box-shadow:0 18px 50px #6d5dfc55}
+.hero:before{content:"";position:absolute;inset:0;background:radial-gradient(240px 160px at 85% 0,#ffffff38,transparent 70%)}
+.hero:after{content:"";position:absolute;right:-50px;bottom:-70px;width:190px;height:190px;border-radius:50%;border:30px solid #ffffff12}
+.hero>*{position:relative;z-index:1}
+.k{font-family:var(--mono);font-size:10.5px;letter-spacing:2px;text-transform:uppercase;color:var(--mut)}
+.hero .k{color:#ffffffb8}
+.amt{font-size:50px;font-weight:800;letter-spacing:-2.5px;margin:8px 0 18px;line-height:1}
+.amt i{font-style:normal;font-size:28px;margin-right:4px;opacity:.85;vertical-align:top;position:relative;top:6px}
+.btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;border:0;border-radius:16px;padding:16px;font-family:var(--font);font-weight:700;font-size:15px;color:#fff;background:var(--grad);cursor:pointer;box-shadow:0 10px 26px #6d5dfc55;position:relative;overflow:hidden}
+.btn.w{background:#fff;color:#4a3df0;box-shadow:0 10px 26px #00000033}
+.btn.ghost{background:var(--glass2);box-shadow:none;border:1px solid var(--ln);color:var(--tx)}
+.btn.sm{display:inline-flex;width:auto;padding:12px 20px;font-size:13.5px;border-radius:14px}
+.btn:disabled{opacity:.45;cursor:not-allowed;box-shadow:none}
+.btn:active{transform:scale(.97)}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:12px}
+.st{background:var(--glass);border:1px solid var(--ln);border-radius:18px;padding:13px}
+.st b{display:block;font-size:19px;margin-top:5px;font-weight:800}
+.sec{display:flex;align-items:center;justify-content:space-between;margin:26px 4px 12px}
+.sec span{font-family:var(--mono);font-size:11.5px;letter-spacing:2px;text-transform:uppercase;color:var(--mut)}
+/* bonus ticket */
+.tk{position:relative;border-radius:24px;padding:1.5px;background:var(--grad)}
+.tk.off{background:var(--ln)}
+.tk-in{position:relative;display:flex;border-radius:23px;background:#0e0e24;overflow:hidden}
+.tk-l{flex:1;padding:18px;min-width:0}
+.tk-r{width:106px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;border-left:2px dashed var(--ln);background:linear-gradient(180deg,#ffd36e14,#ff7eb314);padding:14px 6px}
+.tk-r .v{font-size:32px;font-weight:800;color:var(--gold);line-height:1}
+.tk-r small{font-family:var(--mono);font-size:9.5px;letter-spacing:2px;color:var(--mut);margin-top:7px}
+.tk.off .v{color:var(--mut)}
+.tk-in:before,.tk-in:after{content:"";position:absolute;right:95px;width:18px;height:18px;border-radius:50%;background:var(--bg);border:1px solid var(--ln)}
+.tk-in:before{top:-10px}.tk-in:after{bottom:-10px}
+.tk h3{margin:0 0 6px;font-size:18px;font-weight:800}
+.tk p{margin:0 0 14px;font-size:13px;line-height:1.55;color:var(--mut)}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
+.chip{font-family:var(--mono);font-size:10.5px;font-weight:700;padding:5px 9px;border-radius:99px;border:1px solid}
+.chip.y{color:var(--ok);border-color:#35e3a444;background:#35e3a412}
+.chip.n{color:var(--bad);border-color:#ff7a9055;background:#ff7a9012}
+/* inputs */
+label.f{display:block;font-family:var(--mono);font-size:10.5px;letter-spacing:1.6px;text-transform:uppercase;color:var(--mut);margin:16px 0 8px}
+.in{width:100%;background:rgba(0,0,0,.35);border:1px solid var(--ln);border-radius:15px;padding:15px 16px;color:var(--tx);font-family:var(--mono);font-size:15px;outline:none;transition:.2s}
+.in:focus{border-color:var(--p2);box-shadow:0 0 0 3px #c471ed26}
+.sum{margin:16px 0;border:1px dashed var(--ln);border-radius:16px;padding:6px 14px;font-family:var(--mono);font-size:13px}
 .sum div{display:flex;justify-content:space-between;padding:7px 0}
-.ok{color:var(--ok)}.warn{color:var(--warn)}.bad{color:var(--bad)}.mut{color:var(--mut)}
+.ok{color:var(--ok)}.bad{color:var(--bad)}.mut{color:var(--mut)}.gold{color:var(--gold)}
 .row{display:flex;align-items:center;justify-content:space-between;gap:10px}
-.item{display:flex;align-items:center;gap:12px;padding:13px 0;border-bottom:1px solid var(--ln)}
-.item:last-child{border:0}
-.av{width:42px;height:42px;border-radius:13px;background:var(--s2);display:grid;place-items:center;font-weight:800;color:var(--gold);flex:none}
-.item .m{flex:1;min-width:0}.item .m b{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.item .m small{color:var(--mut);font-size:12px}
-.tag{font-family:var(--mono);font-size:12px;font-weight:600;border-radius:99px;padding:6px 11px;background:#34e0a122;color:var(--ok)}
-.link{display:flex;align-items:center;gap:8px;background:var(--bg);border:1px solid var(--ln);border-radius:16px;padding:8px 8px 8px 16px;font-family:var(--mono);font-size:13px}
+.li{display:flex;align-items:center;gap:12px;padding:13px 0;border-bottom:1px solid var(--ln)}
+.li:last-child{border:0;padding-bottom:0}.li:first-child{padding-top:0}
+.ic{width:42px;height:42px;border-radius:14px;display:grid;place-items:center;font-weight:800;flex:none;background:var(--glass2)}
+.ic.in{color:var(--ok)}.ic.out{color:var(--bad)}
+.li .m{flex:1;min-width:0}.li .m b{display:block;font-size:14.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.li .m small{font-size:12px;color:var(--mut)}
+.pill{font-family:var(--mono);font-size:11.5px;font-weight:700;padding:6px 11px;border-radius:99px;background:#35e3a418;color:var(--ok);white-space:nowrap}
+.pill.q{background:#ffd36e18;color:var(--gold)}
+.link{display:flex;align-items:center;gap:8px;background:rgba(0,0,0,.35);border:1px solid var(--ln);border-radius:16px;padding:7px 7px 7px 15px;font-family:var(--mono);font-size:12.5px}
 .link span{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.dock{position:fixed;left:14px;right:14px;bottom:calc(env(safe-area-inset-bottom,0px) + 14px);max-width:492px;margin:0 auto;z-index:20;display:flex;background:#14102cf2;backdrop-filter:blur(14px);border:1px solid var(--ln);border-radius:24px;padding:6px}
-.dock button{flex:1;background:none;border:0;color:var(--mut);font-family:var(--font);font-weight:700;font-size:11px;padding:11px 0 9px;border-radius:18px;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;letter-spacing:.5px}
-.dock button .e{font-size:19px}
-.dock button.on{color:#fff;background:var(--grad)}
+.dock{position:fixed;left:14px;right:14px;bottom:calc(env(safe-area-inset-bottom,0px) + 14px);max-width:492px;margin:0 auto;z-index:30;display:flex;gap:4px;background:rgba(16,14,40,.82);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border:1px solid var(--ln);border-radius:24px;padding:6px;box-shadow:0 14px 40px #00000066}
+.dock button{flex:1;background:none;border:0;color:var(--mut);font-family:var(--font);font-weight:700;font-size:10.5px;letter-spacing:.6px;padding:10px 0 8px;border-radius:18px;display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;transition:.2s}
+.dock svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.dock button.on{color:#fff;background:var(--grad);box-shadow:0 6px 18px #6d5dfc66}
 .hide{display:none!important}
-.toast{position:fixed;top:calc(env(safe-area-inset-top,0px) + 14px);left:50%;transform:translate(-50%,-140px);background:var(--s2);border:1px solid var(--vio);padding:12px 20px;border-radius:14px;z-index:99;font-weight:700;font-size:14px;transition:.3s;max-width:92%;text-align:center}
+.toast{position:fixed;top:calc(env(safe-area-inset-top,0px) + 12px);left:50%;transform:translate(-50%,-150px);background:rgba(20,18,48,.95);border:1px solid var(--p2);padding:12px 20px;border-radius:16px;z-index:99;font-weight:700;font-size:14px;transition:.35s cubic-bezier(.2,.9,.3,1.2);max-width:92%;text-align:center;backdrop-filter:blur(10px)}
 .toast.show{transform:translate(-50%,0)}
-.ov{position:fixed;inset:0;background:#05050bf5;z-index:60;display:flex;align-items:center;justify-content:center;padding:18px;overflow:auto}
-.ch{display:flex;align-items:center;gap:12px;background:var(--s2);border:1px solid var(--ln);border-radius:16px;padding:12px 14px;margin-top:10px}
+.ov{position:fixed;inset:0;background:rgba(5,5,16,.94);z-index:60;display:flex;align-items:center;justify-content:center;padding:18px;overflow:auto}
+.ch{display:flex;align-items:center;gap:12px;background:var(--glass);border:1px solid var(--ln);border-radius:16px;padding:12px 14px;margin-top:10px}
 .ch b{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .ch a{background:var(--grad);color:#fff;font-weight:800;font-size:12px;text-decoration:none;border-radius:99px;padding:8px 16px}
 .ch .j{color:var(--ok);font-size:12px;font-weight:700}
-.sw{position:relative;width:54px;height:30px;border-radius:99px;background:var(--s2);border:1px solid var(--ln);cursor:pointer;flex:none;transition:.2s}
-.sw:after{content:"";position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:var(--mut);transition:.2s}
-.sw.on{background:#7c5cff44;border-color:var(--vio)}
+.sw{position:relative;width:54px;height:30px;border-radius:99px;background:var(--glass2);border:1px solid var(--ln);cursor:pointer;flex:none;transition:.25s}
+.sw:after{content:"";position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:var(--mut);transition:.25s}
+.sw.on{background:var(--grad);border-color:transparent}
 .sw.on:after{left:27px;background:#fff}
 .grp{margin-top:14px;padding-top:14px;border-top:1px solid var(--ln)}
-.two{display:flex;gap:10px}.two>div{flex:1}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .help{font-size:12px;color:var(--mut);line-height:1.6;margin-top:8px}
-.help code{font-family:var(--mono);color:var(--gold);background:var(--bg);padding:1px 5px;border-radius:5px}
-.spin{text-align:center;padding:90px 0;font-family:var(--mono);color:var(--gold);letter-spacing:4px}
+.help code{font-family:var(--mono);color:var(--gold)}
+.foot{text-align:center;font-family:var(--mono);font-size:10px;color:#6a6891;margin-top:26px}
+.skel{height:150px;border-radius:28px;background:linear-gradient(100deg,var(--glass) 30%,var(--glass2) 50%,var(--glass) 70%);background-size:200% 100%;animation:sk 1.2s infinite;margin-bottom:12px}
+@keyframes sk{to{background-position:-200% 0}}
+.boom{position:fixed;left:50%;top:40%;font-size:34px;z-index:98;pointer-events:none;animation:bm 1.1s ease-out forwards}
+@keyframes bm{to{transform:translate(var(--x),var(--y)) rotate(var(--r));opacity:0}}
 </style>
 </head>
 <body>
+<div class="aurora"><i></i><i></i><i></i></div>
 <div class="toast" id="toast"></div>
-<div class="wrap" id="app"><div class="spin">LOADING</div></div>
-<script>(function(){var p=new URLSearchParams(location.search),n=p.get("bn")||p.get("bu");if(n){var a=document.getElementById("app");a.innerHTML='<div class="spin">'+n.replace(/[<>&]/g,"")+'<br><small style="opacity:.6;letter-spacing:2px">LOADING</small></div>'}})();</script>
+<div class="wrap" id="app"><div class="skel"></div><div class="skel" style="height:90px"></div><div class="skel" style="height:120px"></div></div>
 
-<div class="ov hide" id="gate"><div class="card" style="width:100%;max-width:440px">
-  <div class="k">Step 3 of 3</div>
-  <h2 style="margin:6px 0 4px;font-size:24px">Join our channels</h2>
-  <div class="mut" style="font-size:14px">Join all of them to unlock the wallet.</div>
+<div class="ov hide" id="gate"><div class="glass" style="width:100%;max-width:440px">
+  <div class="k">Last step</div>
+  <h2 style="margin:6px 0 4px;font-size:25px;font-weight:800">Join our channels</h2>
+  <div class="mut" style="font-size:14px">Join every channel below to unlock your wallet.</div>
   <div id="gateList"></div>
-  <button class="btn" id="gateBtn" style="margin-top:18px">I joined &mdash; check</button>
+  <button class="btn" id="gateBtn" style="margin-top:18px">I joined — check</button>
 </div></div>
 
 <div class="dock hide" id="dock"></div>
 
 <script>
-window.addEventListener('error', e => { const a = document.getElementById('app'); if (a && a.querySelector('.spin')) a.innerHTML = '<div class="card" style="color:#ff7a90"><b>App error:</b> ' + String(e.message).replace(/</g,'&lt;') + '</div>'; });
+window.addEventListener('error', e => { const a = document.getElementById('app'); if (a && a.querySelector('.skel')) a.innerHTML = '<div class="glass" style="color:#ff7a90"><b>App error:</b> ' + String(e.message).replace(/</g, '&lt;') + '</div>'; });
 const tg = window.Telegram && Telegram.WebApp;
-if (tg) { tg.ready(); tg.expand(); try { tg.setHeaderColor('#0a0a10'); tg.setBackgroundColor('#0a0a10'); } catch (e) {} }
+if (tg) { tg.ready(); tg.expand(); try { tg.setHeaderColor('#070716'); tg.setBackgroundColor('#070716'); } catch (e) {} }
 const q = new URLSearchParams(location.search);
 const API = q.get('api');
 const UID = (tg && tg.initDataUnsafe && tg.initDataUnsafe.user && String(tg.initDataUnsafe.user.id)) || q.get('u') || '';
+const BUILD = 'app-v3';
 let S = null, A = null, tab = 'home';
 const $ = id => document.getElementById(id);
 const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 const rs = n => { n = Math.round((Number(n) || 0) * 100) / 100; return Number.isInteger(n) ? String(n) : n.toFixed(2); };
 function toast(m) { const t = $('toast'); t.textContent = m; t.classList.add('show'); clearTimeout(toast.t); toast.t = setTimeout(() => t.classList.remove('show'), 2800); }
+function boom() { for (let i = 0; i < 14; i++) { const e = document.createElement('div'); e.className = 'boom'; e.textContent = ['🎉', '✨', '💰', '⭐'][i % 4]; e.style.setProperty('--x', (Math.random() * 300 - 150) + 'px'); e.style.setProperty('--y', (Math.random() * -260 - 40) + 'px'); e.style.setProperty('--r', (Math.random() * 360) + 'deg'); document.body.appendChild(e); setTimeout(() => e.remove(), 1200); } }
 
 async function call(a, extra) {
   const ctl = new AbortController(); const tm = setTimeout(() => ctl.abort(), 20000);
@@ -121,7 +150,6 @@ async function call(a, extra) {
     return await r.json();
   } finally { clearTimeout(tm); }
 }
-
 function norm(r) {
   r.bot = r.bot || q.get('bu') || '';
   r.brand = r.brand || q.get('bn') || r.bot || 'Earn Wallet';
@@ -131,9 +159,9 @@ function norm(r) {
   return r;
 }
 const sig = r => JSON.stringify([r.balance, r.verified, r.sameDev, r.bonusClaimed, r.bonusAmt, r.invites, r.earned, r.perRef, (r.activity || []).length, (r.activity || [])[0], (r.refs || []).length, r.wd, r.gate && r.gate.channels.map(c => c.joined), r.admin]);
+
 let busy = false;
-// real time: ask the server every 4 seconds, redraw only when something changed (and never while typing)
-async function refresh() {
+async function refresh() {            // real time: every 4s, redraw only when something changed and never while typing
   if (busy || document.hidden || !S || !API || !UID) return;
   busy = true;
   try {
@@ -144,7 +172,7 @@ async function refresh() {
         const typing = document.activeElement && /INPUT|TEXTAREA/.test(document.activeElement.tagName);
         S = r; showGate(S.gate);
         if (tab !== 'admin' && !typing) render();
-        else if (tab === 'wd') { const a = document.querySelector('.bal .amt'); if (a) a.innerHTML = '<i>₹</i>' + rs(S.balance); }
+        else if (tab === 'wd') { const a = document.querySelector('.hero .amt'); if (a) a.innerHTML = '<i>₹</i>' + rs(S.balance); }
       }
     }
   } catch (e) {}
@@ -153,10 +181,10 @@ async function refresh() {
 setInterval(refresh, 4000);
 
 async function load(keepTab) {
-  if (!API || !UID) { $('app').innerHTML = '<div class="card"><b>Open this app from the bot inside Telegram.</b></div>'; return; }
-  try { S = await call('me'); } catch (e) { $('app').innerHTML = '<div class="card bad"><b>Connection error.</b><div class="mut" style="margin-top:6px;font-size:13px">' + esc(e.message) + '. Close and open the app again from the bot.</div></div>'; return; }
-  if (!S.ok) { $('app').innerHTML = '<div class="card bad"><b>' + esc(S.error || 'Error') + '</b></div>'; return; }
-  if (S.banned) { $('app').innerHTML = '<div class="card bad"><b>Your account is banned.</b></div>'; return; }
+  if (!API || !UID) { $('app').innerHTML = '<div class="glass"><b>Open this app from the bot inside Telegram.</b><div class="help">Missing: ' + (!API ? 'api ' : '') + (!UID ? 'user id' : '') + '</div></div>'; return; }
+  try { S = await call('me'); } catch (e) { $('app').innerHTML = '<div class="glass"><b class="bad">Connection error</b><div class="help">' + esc(e.message) + '. Close the app and open it again from the bot.</div></div>'; return; }
+  if (!S.ok) { $('app').innerHTML = '<div class="glass bad"><b>' + esc(S.error || 'Error') + '</b></div>'; return; }
+  if (S.banned) { $('app').innerHTML = '<div class="glass bad"><b>Your account is banned.</b></div>'; return; }
   norm(S);
   if (S.admin) { try { A = await call('adm_cfg_get'); } catch (e) { A = null; } }
   showGate(S.gate);
@@ -177,120 +205,110 @@ function showGate(g) {
 }
 $('gateBtn').onclick = async () => {
   $('gateBtn').disabled = true;
-  try { const r = await call('gate', { key: 'start', fresh: 1 }); if (r.gate) { showGate(r.gate); toast('Join all channels first'); } else { await load(); toast('All set ✓'); } } catch (e) { toast('Network error'); }
+  try { const r = await call('gate', { key: 'start', fresh: 1 }); if (r.gate) { showGate(r.gate); toast('Join all channels first'); } else { await load(true); toast('All set ✓'); } } catch (e) { toast('Network error'); }
   $('gateBtn').disabled = false;
 };
 
 /* ---------- screens ---------- */
 function hdr() {
-  return '<div class="top"><div class="brand"><div class="mark">' + esc((S.brand || 'E')[0].toUpperCase()) + '</div><div><b>' + esc(S.brand) + '</b><small>' + (S.bot ? '@' + esc(S.bot) + ' · ' : '') + 'ID ' + esc(UID) + '</small></div></div><div class="live">UPI LIVE</div></div>';
+  return '<div class="head"><div class="brand"><div class="mark">' + esc((S.brand || 'E')[0].toUpperCase()) + '</div><div style="min-width:0"><b>' + esc(S.brand) + '</b><small>' + (S.bot ? '@' + esc(S.bot) + ' · ' : '') + 'ID ' + esc(S.uid || UID) + '</small></div></div><div class="live">UPI LIVE</div></div>';
 }
+function foot() { return '<div class="foot">' + BUILD + ' · ' + esc(S.ver || 'api: old') + (S.admin ? ' · admin' : '') + '</div>'; }
 
 function ticket() {
   const a = S.bonusAmt;
-  let h = 'Welcome bonus', p = 'Verification passed. One-time reward, tap to add it to your wallet.', btn = '', off = false;
-  if (!S.verified) { h = 'Bonus locked'; p = 'Complete verification in the bot first: send /start, verify, join the channels, then reopen this app.'; off = true; }
+  let h = 'Welcome bonus', p = 'Verification passed. Your one-time reward is ready, tap to add it to your wallet.', btn = '', off = false;
+  if (!S.verified) { h = 'Bonus locked'; p = 'Verification is not complete yet. Send /start in the bot, finish verification and join the channels. This page updates by itself.'; off = true; }
   else if (S.sameDev) { h = 'Not available'; p = 'Same device detected. The welcome bonus cannot be claimed on this device.'; off = true; }
   else if (S.bonusClaimed) { h = 'Bonus claimed ✓'; p = 'You already received your welcome bonus.'; off = true; }
   else if (!a) { h = 'Bonus is off'; p = 'The welcome bonus is switched off right now.'; off = true; }
-  else btn = '<button class="btn sm" id="claimBtn">Claim ₹' + rs(a) + '</button>';
-  const chip = (ok, t) => '<span style="font-family:var(--mono);font-size:11px;margin-right:8px;color:var(--' + (ok ? 'ok' : 'bad') + ')">' + (ok ? '✓ ' : '✗ ') + t + '</span>';
-  const chips = '<div style="margin-top:12px">' + chip(S.verified, 'Verified') + chip(!S.sameDev, 'Device') + chip(!S.bonusClaimed, 'Not claimed') + '</div>';
-  return '<div class="ticket' + (off ? ' off' : '') + '"><div class="l"><h3>' + h + '</h3><p>' + p + '</p>' + btn + chips + '</div><div class="r"><div class="v">₹' + rs(a || 0) + '<small>BONUS</small></div></div></div>';
+  else btn = '<button class="btn sm" id="claimBtn">Claim ₹' + rs(a) + ' now</button>';
+  const c = (ok, t) => '<span class="chip ' + (ok ? 'y' : 'n') + '">' + (ok ? '✓ ' : '✗ ') + t + '</span>';
+  return '<div class="tk' + (off ? ' off' : '') + '"><div class="tk-in"><div class="tk-l"><h3>' + h + '</h3><p>' + p + '</p>' + btn +
+    '<div class="chips">' + c(S.verified, 'Verified') + c(!S.sameDev, 'Device ok') + c(!S.bonusClaimed, 'Not claimed') + '</div></div>' +
+    '<div class="tk-r"><div class="v">₹' + rs(a || 0) + '</div><small>BONUS</small></div></div></div>';
 }
 
 function home() {
+  const act = (S.activity || []).slice(0, 6).map(a => '<div class="li"><div class="ic ' + (a.a < 0 ? 'out' : 'in') + '">' + (a.a < 0 ? '↑' : '↓') + '</div><div class="m"><b>' + esc(a.t) + '</b><small>' + esc(a.d || '') + '</small></div><div class="' + (a.a < 0 ? 'bad' : 'ok') + '" style="font-family:var(--mono);font-weight:700">' + (a.a < 0 ? '-' : '+') + '₹' + rs(Math.abs(a.a)) + '</div></div>').join('') || '<div class="mut" style="text-align:center;padding:12px">Nothing yet</div>';
   return hdr() +
-    '<div class="bal"><div class="k">Wallet balance</div><div class="amt"><i>₹</i>' + rs(S.balance) + '</div><button class="btn" data-go="wd">Cash out to UPI →</button></div>' +
-    '<div class="stats"><div class="st"><div class="k">Invites</div><b>' + (S.invites || 0) + '</b></div><div class="st"><div class="k">Earned</div><b>₹' + rs(S.earned) + '</b></div><div class="st"><div class="k">Per refer</div><b>₹' + esc(S.perRef) + '</b></div></div>' +
-    '<div class="h">Rewards</div>' + ticket() +
-    '<div class="h">Activity</div><div class="card">' + ((S.activity || []).slice(0, 6).map(a => '<div class="item"><div class="av">' + (a.a < 0 ? '↑' : '↓') + '</div><div class="m"><b>' + esc(a.t) + '</b><small>' + esc(a.d || '') + '</small></div><div class="' + (a.a < 0 ? 'bad' : 'ok') + '" style="font-family:var(--mono);font-weight:600">' + (a.a < 0 ? '-' : '+') + '₹' + rs(Math.abs(a.a)) + '</div></div>').join('') || '<div class="mut" style="text-align:center;padding:14px">Nothing yet</div>') + '</div>';
+    '<div class="hero"><div class="k">Wallet balance</div><div class="amt"><i>₹</i>' + rs(S.balance) + '</div><button class="btn w" data-go="wd">Cash out to UPI →</button></div>' +
+    '<div class="stats"><div class="st"><div class="k">Invites</div><b>' + (S.invites || 0) + '</b></div><div class="st"><div class="k">Earned</div><b>₹' + rs(S.earned) + '</b></div><div class="st"><div class="k">Per refer</div><b class="gold">₹' + esc(S.perRef) + '</b></div></div>' +
+    '<div class="sec"><span>Rewards</span></div>' + ticket() +
+    '<div class="sec"><span>Activity</span></div><div class="glass">' + act + '</div>' + foot();
 }
 
 function invite() {
-  const sq = (S.refs || []).map((r, i) => '<div class="item"><div class="av">' + (i + 1) + '</div><div class="m"><b>' + esc(r.n) + '</b><small>Joined through your link</small></div><div class="tag">+₹' + esc(S.perRef) + '</div></div>').join('') || '<div class="mut" style="text-align:center;padding:16px">No friends yet. Share your link!</div>';
-  return hdr() + '<div class="card"><div class="k">Refer &amp; earn</div><div style="font-size:26px;font-weight:800;margin:8px 0 4px">₹' + esc(S.perRef) + ' per friend</div><div class="mut" style="font-size:13px;margin-bottom:16px">Paid when your friend verifies and joins the channels.</div>' +
-    '<div class="link"><span>' + esc(S.link) + '</span><button class="btn sm" id="copyBtn">Copy</button></div><button class="btn alt" id="shareBtn" style="margin-top:10px">Share on Telegram</button></div>' +
-    '<div class="h">Your squad · ' + (S.invites || 0) + '</div><div class="card">' + sq + '</div>';
+  const sq = (S.refs || []).map((r, i) => '<div class="li"><div class="ic">' + (i + 1) + '</div><div class="m"><b>' + esc(r.n) + '</b><small>Joined through your link</small></div><div class="pill">+₹' + esc(S.perRef) + '</div></div>').join('') || '<div class="mut" style="text-align:center;padding:14px">No friends yet. Share your link!</div>';
+  return hdr() + '<div class="glass"><div class="k">Refer &amp; earn</div><div style="font-size:28px;font-weight:800;margin:8px 0 4px;letter-spacing:-.5px">₹' + esc(S.perRef) + ' <span class="mut" style="font-size:15px;font-weight:600">per friend</span></div><div class="mut" style="font-size:13px;margin-bottom:16px">Paid when your friend verifies and joins the channels.</div>' +
+    '<div class="link"><span>' + esc(S.link) + '</span><button class="btn sm" id="copyBtn">Copy</button></div><button class="btn ghost" id="shareBtn" style="margin-top:10px">Share on Telegram</button></div>' +
+    '<div class="sec"><span>Your squad</span><span class="gold">' + (S.invites || 0) + ' total</span></div><div class="glass">' + sq + '</div>' + foot();
 }
 
 function wd() {
-  const w = S.wd || {};
-  const off = !w.on || !w.botOn;
-  const cash = (S.activity || []).filter(a => a.a < 0).slice(0, 5).map(a => '<div class="item"><div class="av">₹</div><div class="m"><b>₹' + rs(-a.a) + '</b><small>' + esc(a.upi || 'voucher') + ' · ' + esc(a.d || '') + '</small></div><div class="tag">' + (a.st === 'manual' ? 'QUEUED' : 'PAID') + '</div></div>').join('') || '<div class="mut" style="text-align:center;padding:14px">No cashouts yet</div>';
-  return hdr() + '<div class="bal"><div class="k">Available</div><div class="amt"><i>₹</i>' + rs(S.balance) + '</div><div class="mut" style="font-family:var(--mono);font-size:12px">Min ₹' + rs(w.min) + ' · Max ₹' + rs(w.max) + ' · <span class="warn">' + (w.count || 0) + '/' + (w.limit || 1) + ' today</span></div></div>' +
-    '<div class="card" style="margin-top:14px">' + (off ? '<div class="bad" style="font-weight:700;margin-bottom:6px">Withdrawals are switched off right now.</div>' : '') +
+  const w = S.wd || {}, off = !w.on || !w.botOn;
+  const cash = (S.activity || []).filter(a => a.a < 0).slice(0, 5).map(a => '<div class="li"><div class="ic out">₹</div><div class="m"><b>₹' + rs(-a.a) + '</b><small>' + esc(a.upi || 'voucher') + ' · ' + esc(a.d || '') + '</small></div><div class="pill ' + (a.st === 'manual' ? 'q' : '') + '">' + (a.st === 'manual' ? 'QUEUED' : 'PAID') + '</div></div>').join('') || '<div class="mut" style="text-align:center;padding:12px">No cashouts yet</div>';
+  return hdr() + '<div class="hero"><div class="k">Available to withdraw</div><div class="amt"><i>₹</i>' + rs(S.balance) + '</div><div style="font-family:var(--mono);font-size:12px;color:#ffffffcc">Min ₹' + rs(w.min) + ' · Max ₹' + rs(w.max) + ' · ' + (w.count || 0) + '/' + (w.limit || 1) + ' today</div></div>' +
+    '<div class="glass" style="margin-top:14px">' + (off ? '<div class="bad" style="font-weight:700">Withdrawals are switched off right now.</div>' : '') +
     '<label class="f" style="margin-top:0">Receiver UPI ID</label><input class="in" id="upi" placeholder="name@bank" autocomplete="off" autocapitalize="off">' +
     '<label class="f">Amount (₹' + rs(w.min) + ' – ₹' + rs(w.max) + ')</label><input class="in" id="amt" type="number" inputmode="decimal" value="' + rs(w.min) + '">' +
     '<div class="sum"><div><span class="mut">Request</span><span id="s1">₹' + rs(w.min) + '</span></div><div><span class="mut">Gateway fee</span><span class="ok">₹0 free</span></div><div><b>You receive</b><b class="ok" id="s2">₹' + rs(w.min) + '</b></div></div>' +
     '<button class="btn" id="wdBtn"' + (off ? ' disabled' : '') + '>Transfer to UPI now</button></div>' +
-    '<div class="h">Recent cashouts</div><div class="card">' + cash + '</div>';
+    '<div class="sec"><span>Recent cashouts</span></div><div class="glass">' + cash + '</div>' + foot();
 }
 
 /* ---------- admin ---------- */
-function sw(id, on) { return '<div class="sw' + (on ? ' on' : '') + '" id="' + id + '"></div>'; }
+const sw = (id, on) => '<div class="sw' + (on ? ' on' : '') + '" id="' + id + '"></div>';
 function admin() {
-  if (!A || !A.ok) return hdr() + '<div class="card bad">Admin data could not load.</div>';
-  return hdr() + '<div class="card"><div class="k">Admin panel</div><div class="mut" style="font-size:12px;margin-top:6px">' + A.users + ' users · ₹' + rs(A.bonusTotal) + ' bonus paid to ' + A.bonusCount + ' · ' + A.withdrawCount + ' withdrawals</div>' +
+  if (!A || !A.ok) return hdr() + '<div class="glass bad">Admin data could not load. Reopen the app.</div>';
+  return hdr() + '<div class="glass"><div class="k">Admin panel</div><div class="mut" style="font-size:12px;margin-top:6px">' + A.users + ' users · ₹' + rs(A.bonusTotal) + ' bonus paid to ' + A.bonusCount + ' · ' + A.withdrawCount + ' withdrawals</div>' +
     '<div class="grp row"><div><b>Bot</b><div class="help" style="margin:2px 0 0">Turn the whole bot ON / OFF</div></div>' + sw('swBot', A.botOn) + '</div>' +
     '<div class="grp row"><div><b>Withdraw</b><div class="help" style="margin:2px 0 0">Allow / stop cashouts</div></div>' + sw('swWd', A.wdOn) + '</div></div>' +
-
-    '<div class="h">Bonus &amp; refer</div><div class="card"><div class="two"><div><label class="f" style="margin-top:0">Welcome bonus ₹</label><input class="in" id="aBonus" type="number" value="' + rs(A.bonus) + '"></div><div><label class="f" style="margin-top:0">Per refer ₹</label><input class="in" id="aRef" value="' + esc(A.perRef) + '"></div></div>' +
-    '<div class="help">Bonus 0 = off. Refer can be a number (5) or a range (2-5).</div><button class="btn" id="saveBR" style="margin-top:12px">Save bonus &amp; refer</button></div>' +
-
-    '<div class="h">Withdraw limits</div><div class="card"><div class="two"><div><label class="f" style="margin-top:0">Min ₹</label><input class="in" id="aMin" type="number" value="' + rs(A.wmin) + '"></div><div><label class="f" style="margin-top:0">Max ₹</label><input class="in" id="aMax" type="number" value="' + rs(A.wmax) + '"></div></div>' +
-    '<label class="f">Withdrawals per day (per user)</label><input class="in" id="aDay" type="number" value="' + A.wdPerDay + '"><button class="btn" id="saveWd" style="margin-top:12px">Save limits</button></div>' +
-
-    '<div class="h">Reset user (testing)</div><div class="card"><label class="f" style="margin-top:0">Telegram user id</label><input class="in" id="rUid" type="number" inputmode="numeric" placeholder="123456789"><div class="help">Clears the “same device” mark and the bonus-claimed mark so that user can claim the welcome bonus again.</div><button class="btn alt" id="saveRs" style="margin-top:12px">Reset this user</button></div>' +
-    '<div class="h">UPI gateway API</div><div class="card"><label class="f" style="margin-top:0">API link (GET)</label><input class="in" id="gUrl" placeholder="https://gateway.com/api?token={token}&upi={upi}&amount={amount}" value="' + esc(A.gwUrl) + '" autocapitalize="off">' +
-    '<div class="two"><div><label class="f">Token / API key</label><input class="in" id="gKey" placeholder="' + (A.gwKeySet ? esc(A.gwKeyMask) + ' (saved)' : 'paste key') + '" autocapitalize="off"></div><div><label class="f">Merchant id</label><input class="in" id="gMid" value="' + esc(A.gwMid) + '" placeholder="optional"></div></div>' +
-    '<div class="help">Use placeholders <code>{upi}</code> <code>{amount}</code> <code>{token}</code> <code>{mid}</code> in the link. Payout counts as success when the gateway replies JSON <code>"status":"success"</code>; otherwise the user is refunded automatically. Leave the link empty for manual payout (requests go to your payment channel). Leave the key box empty to keep the saved key.</div>' +
-    '<button class="btn" id="saveGw" style="margin-top:12px">Save gateway</button></div>';
+    '<div class="sec"><span>Bonus &amp; refer</span></div><div class="glass"><div class="two"><div><label class="f" style="margin-top:0">Welcome bonus ₹</label><input class="in" id="aBonus" type="number" value="' + rs(A.bonus) + '"></div><div><label class="f" style="margin-top:0">Per refer ₹</label><input class="in" id="aRef" value="' + esc(A.perRef) + '"></div></div>' +
+    '<div class="help">Bonus 0 = off. Refer can be a number (5) or a range (2-5).</div><button class="btn" id="saveBR" style="margin-top:14px">Save bonus &amp; refer</button></div>' +
+    '<div class="sec"><span>Withdraw limits</span></div><div class="glass"><div class="two"><div><label class="f" style="margin-top:0">Min ₹</label><input class="in" id="aMin" type="number" value="' + rs(A.wmin) + '"></div><div><label class="f" style="margin-top:0">Max ₹</label><input class="in" id="aMax" type="number" value="' + rs(A.wmax) + '"></div></div>' +
+    '<label class="f">Withdrawals per day (per user)</label><input class="in" id="aDay" type="number" value="' + A.wdPerDay + '"><button class="btn" id="saveWd" style="margin-top:14px">Save limits</button></div>' +
+    '<div class="sec"><span>Reset user (testing)</span></div><div class="glass"><label class="f" style="margin-top:0">Telegram user id</label><input class="in" id="rUid" type="number" inputmode="numeric" placeholder="123456789"><div class="help">Clears the “same device” mark and the bonus-claimed mark so that user can claim the welcome bonus again.</div><button class="btn ghost" id="saveRs" style="margin-top:12px">Reset this user</button></div>' +
+    '<div class="sec"><span>UPI gateway API</span></div><div class="glass"><label class="f" style="margin-top:0">API link (GET)</label><input class="in" id="gUrl" placeholder="https://gateway.com/api?token={token}&upi={upi}&amount={amount}" value="' + esc(A.gwUrl) + '" autocapitalize="off">' +
+    '<div class="two"><div><label class="f">Token / key</label><input class="in" id="gKey" placeholder="' + (A.gwKeySet ? esc(A.gwKeyMask) + ' saved' : 'paste key') + '" autocapitalize="off"></div><div><label class="f">Merchant id</label><input class="in" id="gMid" value="' + esc(A.gwMid) + '" placeholder="optional"></div></div>' +
+    '<div class="help">Placeholders: <code>{upi}</code> <code>{amount}</code> <code>{token}</code> <code>{mid}</code>. Success = JSON <code>"status":"success"</code>, otherwise the user is refunded. Empty link = manual payout via your payment channel. Empty key box keeps the saved key.</div>' +
+    '<button class="btn" id="saveGw" style="margin-top:14px">Save gateway</button></div>' + foot();
 }
-
 async function setCfg(f, v) { const r = await call('adm_cfg_set', { f, v }); if (!r.ok) throw new Error(r.error || 'Failed'); }
 function wireAdmin() {
-  const flip = (id, f, key) => { const e = $(id); if (!e) return; e.onclick = async () => {
-    const on = !e.classList.contains('on');
-    try { await setCfg(f, on ? 'ON' : 'OFF'); A[key] = on; e.classList.toggle('on', on); toast(f === 'BotMode' ? 'Bot ' + (on ? 'ON' : 'OFF') : 'Withdraw ' + (on ? 'ON' : 'OFF')); } catch (x) { toast(x.message); } }; };
+  const flip = (id, f, key) => { const e = $(id); if (!e) return; e.onclick = async () => { const on = !e.classList.contains('on'); try { await setCfg(f, on ? 'ON' : 'OFF'); A[key] = on; e.classList.toggle('on', on); toast((f === 'BotMode' ? 'Bot ' : 'Withdraw ') + (on ? 'ON' : 'OFF')); } catch (x) { toast(x.message); } }; };
   flip('swBot', 'BotMode', 'botOn'); flip('swWd', 'WithdrawMode', 'wdOn');
   const run = (id, fn) => { const b = $(id); if (!b) return; b.onclick = async () => { b.disabled = true; try { await fn(); toast('Saved ✓'); await load(true); } catch (x) { toast(x.message); } b.disabled = false; }; };
-  run('saveBR', async () => {
-    let r = await call('adm_set', { f: 'StartBonus', v: $('aBonus').value }); if (!r.ok) throw new Error(r.error);
-    r = await call('adm_set', { f: 'PerRefer', v: $('aRef').value }); if (!r.ok) throw new Error(r.error);
-  });
-  run('saveWd', async () => {
-    let r = await call('adm_wd_set', { wmin: $('aMin').value, wmax: $('aMax').value }); if (!r.ok) throw new Error(r.error);
-    await setCfg('WdPerDay', $('aDay').value);
-  });
-  run('saveRs', async () => {
-    const r = await call('adm_user_reset', { target: $('rUid').value.trim() }); if (!r.ok) throw new Error(r.error || 'Failed');
-  });
-  run('saveGw', async () => {
-    await setCfg('GwUrl', $('gUrl').value.trim());
-    await setCfg('GwMid', $('gMid').value.trim());
-    if ($('gKey').value.trim()) await setCfg('GwKey', $('gKey').value.trim());
-  });
+  run('saveBR', async () => { let r = await call('adm_set', { f: 'StartBonus', v: $('aBonus').value }); if (!r.ok) throw new Error(r.error); r = await call('adm_set', { f: 'PerRefer', v: $('aRef').value }); if (!r.ok) throw new Error(r.error); });
+  run('saveWd', async () => { const r = await call('adm_wd_set', { wmin: $('aMin').value, wmax: $('aMax').value }); if (!r.ok) throw new Error(r.error); await setCfg('WdPerDay', $('aDay').value); });
+  run('saveRs', async () => { const r = await call('adm_user_reset', { target: $('rUid').value.trim() }); if (!r.ok) throw new Error(r.error || 'Failed'); });
+  run('saveGw', async () => { await setCfg('GwUrl', $('gUrl').value.trim()); await setCfg('GwMid', $('gMid').value.trim()); if ($('gKey').value.trim()) await setCfg('GwKey', $('gKey').value.trim()); });
 }
 
+const ICONS = {
+  home: '<svg viewBox="0 0 24 24"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h5v-6h4v6h5V10"/></svg>',
+  invite: '<svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c0-3.6 2.9-6 6.5-6s6.5 2.4 6.5 6"/><path d="M17 5.5a3 3 0 010 5.8M18.5 14.3c2 .7 3.5 2.4 3.5 5.7"/></svg>',
+  wd: '<svg viewBox="0 0 24 24"><path d="M3 10l9-6 9 6"/><path d="M5 10v8M9.5 10v8M14.5 10v8M19 10v8M3 21h18"/></svg>',
+  admin: '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 00.3 1.8l.1.1a2 2 0 11-2.8 2.8l-.1-.1a1.7 1.7 0 00-1.8-.3 1.7 1.7 0 00-1 1.5V21a2 2 0 11-4 0v-.1a1.7 1.7 0 00-1.1-1.5 1.7 1.7 0 00-1.8.3l-.1.1a2 2 0 11-2.8-2.8l.1-.1a1.7 1.7 0 00.3-1.8 1.7 1.7 0 00-1.5-1H3a2 2 0 110-4h.1a1.7 1.7 0 001.5-1.1 1.7 1.7 0 00-.3-1.8l-.1-.1a2 2 0 112.8-2.8l.1.1a1.7 1.7 0 001.8.3H9a1.7 1.7 0 001-1.5V3a2 2 0 114 0v.1a1.7 1.7 0 001 1.5 1.7 1.7 0 001.8-.3l.1-.1a2 2 0 112.8 2.8l-.1.1a1.7 1.7 0 00-.3 1.8V9a1.7 1.7 0 001.5 1H21a2 2 0 110 4h-.1a1.7 1.7 0 00-1.5 1z"/></svg>'
+};
 function render() {
   const app = $('app');
-  if (tab === 'admin' && !S.admin) tab = 'home';
+  const admin_ok = S.admin;
+  if (tab === 'admin' && !admin_ok) tab = 'home';
   app.innerHTML = tab === 'home' ? home() : tab === 'invite' ? invite() : tab === 'wd' ? wd() : admin();
-  const items = [['home', '🏠', 'HOME'], ['invite', '👥', 'INVITE'], ['wd', '💸', 'CASHOUT']];
-  if (S.admin) items.push(['admin', '⚙️', 'ADMIN']);
+  const items = [['home', 'HOME'], ['invite', 'INVITE'], ['wd', 'CASHOUT']];
+  if (admin_ok) items.push(['admin', 'ADMIN']);
   const dk = $('dock'); dk.classList.remove('hide');
-  dk.innerHTML = items.map(i => '<button data-t="' + i[0] + '" class="' + (tab === i[0] ? 'on' : '') + '"><span class="e">' + i[1] + '</span>' + i[2] + '</button>').join('');
+  dk.innerHTML = items.map(i => '<button data-t="' + i[0] + '" class="' + (tab === i[0] ? 'on' : '') + '">' + ICONS[i[0]] + i[1] + '</button>').join('');
   dk.querySelectorAll('button').forEach(b => b.onclick = () => { tab = b.dataset.t; render(); });
   app.querySelectorAll('[data-go]').forEach(e => e.onclick = () => { tab = e.dataset.go; render(); });
   window.scrollTo(0, 0);
-
   const cb = $('claimBtn');
   if (cb) cb.onclick = async () => {
     cb.disabled = true;
     try {
       const r = await call('claim_bonus');
-      if (r.ok) { toast('🎉 ₹' + rs(r.amount) + ' added to wallet'); await load(true); }
+      if (r.ok) { boom(); toast('🎉 ₹' + rs(r.amount) + ' added to wallet'); await load(true); }
       else if (r.gate) { showGate(r.gate); toast(r.error); }
       else { toast(r.error || 'Failed'); cb.disabled = false; }
     } catch (e) { toast('Network error'); cb.disabled = false; }
@@ -309,7 +327,7 @@ function render() {
       $('wdBtn').disabled = true;
       try {
         const r = await call('wd_do', { upi, amount });
-        if (r.ok) { toast('✅ Cashout sent'); await load(true); tab = 'wd'; render(); }
+        if (r.ok) { boom(); toast('✅ Cashout sent'); await load(true); tab = 'wd'; render(); }
         else if (r.gate) { showGate(r.gate); toast(r.error); }
         else { toast(r.error || 'Failed'); $('wdBtn').disabled = false; }
       } catch (e) { toast('Network error'); $('wdBtn').disabled = false; }
