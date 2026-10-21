@@ -111,6 +111,27 @@ label.f{display:block;font-family:var(--mono);font-size:10.5px;letter-spacing:1.
 @keyframes sk{to{background-position:-200% 0}}
 .boom{position:fixed;left:50%;top:40%;font-size:34px;z-index:98;pointer-events:none;animation:bm 1.1s ease-out forwards}
 @keyframes bm{to{transform:translate(var(--x),var(--y)) rotate(var(--r));opacity:0}}
+.em{display:inline-block;vertical-align:middle}
+.dock button{position:relative}
+.bdg{position:absolute;top:2px;right:16%;background:var(--bad);color:#fff;border-radius:99px;font-size:10px;font-style:normal;min-width:17px;height:17px;display:grid;place-items:center;padding:0 4px;box-shadow:0 0 10px #ff7a90aa}
+.pill.r{background:#ff7a9018;color:var(--bad)}
+.li[data-tx]{cursor:pointer;transition:.15s}
+.li[data-tx]:active{opacity:.6}
+.ov.pop{align-items:flex-end;background:rgba(5,5,16,.72);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);z-index:80;padding:0}
+.sheet{width:100%;max-width:520px;margin:0 auto;background:#0f0e26;border:1px solid var(--ln);border-bottom:0;border-radius:30px 30px 0 0;padding:24px 18px calc(env(safe-area-inset-bottom,0px) + 20px);animation:up .3s cubic-bezier(.2,.9,.3,1.1);box-shadow:0 -20px 60px #6d5dfc33}
+@keyframes up{from{transform:translateY(80px);opacity:0}}
+.pc{text-align:center;margin-bottom:8px}
+.pc h3{margin:8px 0 4px;font-size:20px;font-weight:800}
+.pc .big{font-size:36px;font-weight:800;margin:4px 0 10px;font-family:var(--mono)}
+.sheet .btn{margin-top:6px}
+.sheet .two{margin-top:12px}
+.sheet .sum code{font-family:var(--mono);color:var(--gold)}
+.rq{border:1px solid var(--ln);border-radius:20px;padding:14px;margin-top:12px;background:var(--glass)}
+.rq .m b{display:block;font-size:24px;font-weight:800}
+.rq .m small{display:block;color:var(--mut);font-size:12px;margin-top:3px}
+.btn.sm2{padding:13px;font-size:14px}
+.btn.ap{background:linear-gradient(120deg,#12b981,#35e3a4);color:#03281c;box-shadow:0 8px 22px #12b98144}
+.btn.rj{background:linear-gradient(120deg,#ff4d6d,#ff8aa0);box-shadow:0 8px 22px #ff4d6d44}
 </style>
 </head>
 <body>
@@ -126,11 +147,7 @@ label.f{display:block;font-family:var(--mono);font-size:10.5px;letter-spacing:1.
   <button class="btn" id="gateBtn" style="margin-top:18px">I joined — check</button>
 </div></div>
 
-<div class="ov hide" id="dbg"><div class="glass" style="width:100%;max-width:460px">
-  <div class="k">Diagnostics</div>
-  <pre id="dbgTxt" style="white-space:pre-wrap;word-break:break-all;font-family:var(--mono);font-size:11.5px;line-height:1.6;margin:10px 0 14px;color:#d9d7ff"></pre>
-  <button class="btn ghost" id="dbgClose">Close</button>
-</div></div>
+<div class="ov pop hide" id="pop"><div class="sheet" id="popBox"></div></div>
 <div class="dock hide" id="dock"></div>
 
 <script>
@@ -146,7 +163,7 @@ const $ = id => document.getElementById(id);
 const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 const rs = n => { n = Math.round((Number(n) || 0) * 100) / 100; return Number.isInteger(n) ? String(n) : n.toFixed(2); };
 function toast(m) { const t = $('toast'); t.textContent = m; t.classList.add('show'); clearTimeout(toast.t); toast.t = setTimeout(() => t.classList.remove('show'), 2800); }
-function boom() { for (let i = 0; i < 14; i++) { const e = document.createElement('div'); e.className = 'boom'; e.textContent = ['🎉', '✨', '💰', '⭐'][i % 4]; e.style.setProperty('--x', (Math.random() * 300 - 150) + 'px'); e.style.setProperty('--y', (Math.random() * -260 - 40) + 'px'); e.style.setProperty('--r', (Math.random() * 360) + 'deg'); document.body.appendChild(e); setTimeout(() => e.remove(), 1200); } }
+function boom() { for (let i = 0; i < 14; i++) { const e = document.createElement('div'); e.className = 'boom'; const z = [['1f389','🎉'],['2728','✨'],['1f4b0','💰'],['2b50','⭐']][i % 4]; e.innerHTML = EM(z[0], z[1], 34); e.style.setProperty('--x', (Math.random() * 300 - 150) + 'px'); e.style.setProperty('--y', (Math.random() * -260 - 40) + 'px'); e.style.setProperty('--r', (Math.random() * 360) + 'deg'); document.body.appendChild(e); setTimeout(() => e.remove(), 1200); } }
 
 async function call(a, extra) {
   const ctl = new AbortController(); const tm = setTimeout(() => ctl.abort(), 20000);
@@ -165,202 +182,115 @@ function norm(r) {
   if (r.perRef == null) r.perRef = q.get('p') || '0';
   return r;
 }
-const sig = r => JSON.stringify([r.balance, r.verified, r.sameDev, r.bonusClaimed, r.bonusAmt, r.invites, r.earned, r.perRef, (r.activity || []).length, (r.activity || [])[0], (r.refs || []).length, r.wd, r.gate && r.gate.channels.map(c => c.joined), r.admin]);
+const sig = r => JSON.stringify([r.balance, r.verified, r.sameDev, r.bonusClaimed, r.bonusAmt, r.invites, r.earned, r.perRef, r.activity, (r.refs || []).length, r.wd, r.gate && r.gate.channels.map(c => c.joined), r.admin]);
 
-let busy = false;
-async function refresh() {            // real time: every 4s, redraw only when something changed and never while typing
-  if (busy || document.hidden || !S || !API || !UID) return;
-  busy = true;
-  try {
-    const r = await call('me');
-    if (r && r.ok && !r.banned) {
-      norm(r);
-      if (sig(r) !== sig(S)) {
-        const typing = document.activeElement && /INPUT|TEXTAREA/.test(document.activeElement.tagName);
-        S = r; showGate(S.gate);
-        if (tab !== 'admin' && !typing) render();
-        else if (tab === 'wd') { const a = document.querySelector('.hero .amt'); if (a) a.innerHTML = '<i>₹</i>' + rs(S.balance); }
-      }
-    }
-  } catch (e) {}
-  busy = false;
-}
-setInterval(refresh, 4000);
+/* ---------- animated emoji (not the keyboard ones) ---------- */
+const EM = (c, f, s) => '<img class="em" src="https://fonts.gstatic.com/s/e/notoemoji/latest/' + c + '/512.gif" width="' + (s || 24) + '" height="' + (s || 24) + '" alt="" onerror="this.outerHTML=\'' + f + '\'">';
 
-async function load(keepTab) {
-  if (!API || !UID) { $('app').innerHTML = '<div class="glass"><b>Open this app from the bot inside Telegram.</b><div class="help">Missing: ' + (!API ? 'api ' : '') + (!UID ? 'user id' : '') + '</div></div>'; return; }
-  try { S = await call('me'); } catch (e) { $('app').innerHTML = '<div class="glass"><b class="bad">Connection error</b><div class="help">' + esc(e.message) + '. Close the app and open it again from the bot.</div></div>'; return; }
-  if (!S.ok) { $('app').innerHTML = '<div class="glass bad"><b>' + esc(S.error || 'Error') + '</b></div>'; return; }
-  if (S.banned) { $('app').innerHTML = '<div class="glass bad"><b>Your account is banned.</b></div>'; return; }
-  norm(S);
-  if (S.admin) { try { A = await call('adm_cfg_get'); } catch (e) { A = null; } }
-  showGate(S.gate);
-  if (!keepTab) tab = 'home';
-  render();
-  if (!S.ver && !load.shown) { load.shown = 1; showDebug(); }
-}
-
-function showGate(g) {
-  const ov = $('gate');
-  if (!g) { ov.classList.add('hide'); return; }
-  ov.classList.remove('hide');
-  $('gateList').innerHTML = g.channels.filter(c => !c.opt || !c.joined).map(c =>
-    '<div class="ch"><b>' + esc(c.title || c.name) + '</b>' + (c.joined ? '<span class="j">JOINED ✓</span>' : '<a href="#" data-l="' + esc(c.link) + '">JOIN</a>') + '</div>').join('');
-  $('gateList').querySelectorAll('a').forEach(a => a.onclick = e => {
-    e.preventDefault(); const l = a.dataset.l;
-    if (tg && /^https:\/\/t\.me/.test(l)) tg.openTelegramLink(l); else window.open(l, '_blank');
-  });
-}
-$('gateBtn').onclick = async () => {
-  $('gateBtn').disabled = true;
-  try { const r = await call('gate', { key: 'start', fresh: 1 }); if (r.gate) { showGate(r.gate); toast('Join all channels first'); } else { await load(true); toast('All set ✓'); } } catch (e) { toast('Network error'); }
-  $('gateBtn').disabled = false;
+/* ---------- withdrawal statuses ---------- */
+const ST = {
+  pending: { t: 'PENDING', c: 'q', e: ['23f3', '⏳'], m: 'Waiting for admin approval. The result shows here instantly.' },
+  approved: { t: 'PAID', c: '', e: ['2705', '✅'], m: 'Approved by admin. The money is being credited to your UPI.' },
+  rejected: { t: 'REJECTED', c: 'r', e: ['274c', '❌'], m: 'Rejected by admin. The amount was returned to your wallet.' },
+  refund: { t: 'REFUNDED', c: '', e: ['1f4b0', '💰'], m: 'Returned to your wallet.' }
 };
+ST.manual = ST.pending; ST.paid = ST.approved; ST.gateway = ST.approved;
+const stOf = a => ST[a.st] || null;
+const isWd = a => (a.a < 0 && (a.rid || a.upi || a.v)) || a.st === 'refund' || a.st === 'rejected';
+const ttl = a => /voucher/i.test(a.t || '') ? 'Cashout' : (a.t || '');
 
-/* ---------- screens ---------- */
-function hdr() {
-  return '<div class="head"><div class="brand"><div class="mark">' + esc((S.brand || 'E')[0].toUpperCase()) + '</div><div style="min-width:0"><b>' + esc(S.brand) + '</b><small>' + (S.bot ? '@' + esc(S.bot) + ' · ' : '') + 'ID ' + esc(S.uid || UID) + '</small></div></div><div class="live">UPI LIVE</div></div>';
-}
-function foot() { return '<div class="foot">' + BUILD + ' · ' + esc(S.ver || 'api: old') + (S.admin ? ' · admin' : '') + ' · <a href="#" id="dbgLink" style="color:#9d9bc4">debug</a></div>'; }
-async function showDebug() {
-  const o = $('dbg'), t = $('dbgTxt'); o.classList.remove('hide'); t.textContent = 'loading…';
-  let ping = null, me = null;
-  try { ping = await call('ping'); } catch (e) { ping = { error: String(e.message) }; }
-  try { me = await call('me'); } catch (e) { me = { error: String(e.message) }; }
-  const host = (API || '').replace(/^https?:\/\//, '');
-  t.textContent = [
-    'page      : ' + BUILD,
-    'my id     : ' + UID,
-    'api host  : ' + host.slice(0, 32) + '…' + host.slice(-14),
-    'url keys  : ' + Array.from(q.keys()).join(','),
-    'tg user   : ' + ((tg && tg.initDataUnsafe && tg.initDataUnsafe.user && tg.initDataUnsafe.user.id) || 'none'),
-    '--- ping ---', JSON.stringify(ping),
-    '--- me (keys) ---', me && typeof me === 'object' ? Object.keys(me).join(',') : String(me),
-    'ok=' + (me && me.ok) + ' ver=' + (me && me.ver) + ' admin=' + (me && me.admin) + ' verified=' + (me && me.verified) + ' sameDev=' + (me && me.sameDev) + ' banned=' + (me && me.banned)
-  ].join('\n');
-}
-$('dbgClose').onclick = () => $('dbg').classList.add('hide');
+/* ---------- popup ---------- */
+let popRid = null, P = null, qsig = '';
+function openPop(h) { const b = $('popBox'); b.innerHTML = h; $('pop').classList.remove('hide'); b.querySelectorAll('[data-close]').forEach(x => x.onclick = closePop); }
+function closePop() { $('pop').classList.add('hide'); popRid = null; }
+$('pop').onclick = e => { if (e.target.id === 'pop') closePop(); };
 
-function ticket() {
-  const a = S.bonusAmt;
-  let h = 'Welcome bonus', p = 'Verification passed. Your one-time reward is ready, tap to add it to your wallet.', btn = '', off = false;
-  if (!S.verified) { h = 'Bonus locked'; p = 'Verification is not complete yet. Send /start in the bot, finish verification and join the channels. This page updates by itself.'; off = true; }
-  else if (S.sameDev) { h = 'Not available'; p = 'Same device detected. The welcome bonus cannot be claimed on this device.'; off = true; }
-  else if (S.bonusClaimed) { h = 'Bonus claimed ✓'; p = 'You already received your welcome bonus.'; off = true; }
-  else if (!a) { h = 'Bonus is off'; p = 'The welcome bonus is switched off right now.'; off = true; }
-  else btn = '<button class="btn sm" id="claimBtn">Claim ₹' + rs(a) + ' now</button>';
-  const c = (ok, t) => '<span class="chip ' + (ok ? 'y' : 'n') + '">' + (ok ? '✓ ' : '✗ ') + t + '</span>';
-  return '<div class="tk' + (off ? ' off' : '') + '"><div class="tk-in"><div class="tk-l"><h3>' + h + '</h3><p>' + p + '</p>' + btn +
-    '<div class="chips">' + c(S.verified, 'Verified') + c(!S.sameDev, 'Device ok') + c(!S.bonusClaimed, 'Not claimed') + '</div></div>' +
-    '<div class="tk-r"><div class="v">₹' + rs(a || 0) + '</div><small>BONUS</small></div></div></div>';
+function txRow(a, i) {
+  const s = stOf(a) || ST.approved, neg = a.a < 0;
+  return '<div class="li" data-tx="' + i + '"><div class="ic ' + (neg ? 'out' : 'in') + '">' + EM(s.e[0], s.e[1], 26) + '</div><div class="m"><b>' + (neg ? '-' : '+') + '₹' + rs(Math.abs(a.a)) + '</b><small>' + esc(a.upi || ttl(a)) + ' · ' + esc(a.d || '') + (a.tm ? ' ' + esc(a.tm) : '') + '</small></div><div class="pill ' + s.c + '">' + s.t + '</div></div>';
 }
-
-function home() {
-  const act = (S.activity || []).slice(0, 6).map(a => '<div class="li"><div class="ic ' + (a.a < 0 ? 'out' : 'in') + '">' + (a.a < 0 ? '↑' : '↓') + '</div><div class="m"><b>' + esc(a.t) + '</b><small>' + esc(a.d || '') + '</small></div><div class="' + (a.a < 0 ? 'bad' : 'ok') + '" style="font-family:var(--mono);font-weight:700">' + (a.a < 0 ? '-' : '+') + '₹' + rs(Math.abs(a.a)) + '</div></div>').join('') || '<div class="mut" style="text-align:center;padding:12px">Nothing yet</div>';
-  return hdr() +
-    '<div class="hero"><div class="k">Wallet balance</div><div class="amt"><i>₹</i>' + rs(S.balance) + '</div><button class="btn w" data-go="wd">Cash out to UPI →</button></div>' +
-    '<div class="stats"><div class="st"><div class="k">Invites</div><b>' + (S.invites || 0) + '</b></div><div class="st"><div class="k">Earned</div><b>₹' + rs(S.earned) + '</b></div><div class="st"><div class="k">Per refer</div><b class="gold">₹' + esc(S.perRef) + '</b></div></div>' +
-    '<div class="sec"><span>Rewards</span></div>' + ticket() +
-    '<div class="sec"><span>Activity</span></div><div class="glass">' + act + '</div>' + foot();
+function txHtml(a) {
+  const s = stOf(a), neg = a.a < 0, e = s ? s.e : (neg ? ['1f4b8', '💸'] : ['1f4b0', '💰']);
+  let rows = '';
+  const r = (k, v) => { rows += '<div><span class="mut">' + k + '</span><span>' + v + '</span></div>'; };
+  if (a.upi) r('UPI ID', esc(a.upi));
+  r('Type', esc(ttl(a)));
+  if (a.d) r('Date', esc(a.d));
+  if (a.tm) r('Time', esc(a.tm));
+  if (isWd(a) && neg) r('Gateway fee', '<span class="ok">₹0 free</span>');
+  if (a.rid) r('Request ID', '<code>' + esc(String(a.rid).replace(/r$/, '')) + '</code>');
+  return '<div class="pc">' + EM(e[0], e[1], 76) + '<h3>' + esc(ttl(a)) + '</h3><div class="big ' + (neg ? 'bad' : 'ok') + '">' + (neg ? '-' : '+') + '₹' + rs(Math.abs(a.a)) + '</div>' + (s ? '<span class="pill ' + s.c + '">' + s.t + '</span>' : '') + '</div><div class="sum">' + rows + '</div>' + (s ? '<p class="help" style="text-align:center">' + s.m + '</p>' : '') + '<button class="btn ghost" data-close>Close</button>';
 }
+function showTx(a) { popRid = a.rid || null; openPop(txHtml(a)); }
+function wireTx(root) { root.querySelectorAll('[data-tx]').forEach(e => e.onclick = () => { const a = (S.activity || [])[+e.dataset.tx]; if (a) showTx(a); }); }
+function histHtml() {
+  const rows = [];
+  (S.activity || []).forEach((a, i) => { if (isWd(a) && rows.length < 10) rows.push(txRow(a, i)); });
+  return rows.join('') || '<div class="mut" style="text-align:center;padding:12px">' + EM('1f4ed', '📭', 40) + '<br>No cashouts yet</div>';
+}
+function paintHist() { const h = $('hist'); if (h) { h.innerHTML = histHtml(); wireTx(h); } }
 
-function invite() {
-  const sq = (S.refs || []).map((r, i) => '<div class="li"><div class="ic">' + (i + 1) + '</div><div class="m"><b>' + esc(r.n) + '</b><small>Joined through your link</small></div><div class="pill">+₹' + esc(S.perRef) + '</div></div>').join('') || '<div class="mut" style="text-align:center;padding:14px">No friends yet. Share your link!</div>';
-  return hdr() + '<div class="glass"><div class="k">Refer &amp; earn</div><div style="font-size:28px;font-weight:800;margin:8px 0 4px;letter-spacing:-.5px">₹' + esc(S.perRef) + ' <span class="mut" style="font-size:15px;font-weight:600">per friend</span></div><div class="mut" style="font-size:13px;margin-bottom:16px">Paid when your friend verifies and joins the channels.</div>' +
-    '<div class="link"><span>' + esc(S.link) + '</span><button class="btn sm" id="copyBtn">Copy</button></div><button class="btn ghost" id="shareBtn" style="margin-top:10px">Share on Telegram</button></div>' +
-    '<div class="sec"><span>Your squad</span><span class="gold">' + (S.invites || 0) + ' total</span></div><div class="glass">' + sq + '</div>' + foot();
+/* ---------- withdrawal popups (user) ---------- */
+function confirmWd(upi, amount) {
+  openPop('<div class="pc">' + EM('1f3e6', '🏦', 76) + '<h3>Confirm cashout</h3></div><div class="sum"><div><span class="mut">UPI ID</span><span>' + esc(upi) + '</span></div><div><span class="mut">Amount</span><span>₹' + rs(amount) + '</span></div><div><span class="mut">Gateway fee</span><span class="ok">₹0 free</span></div><div><b>You receive</b><b class="ok">₹' + rs(amount) + '</b></div></div><p class="help" style="text-align:center">Admin will approve your request. If it is rejected the money comes back to your wallet.</p><div class="two"><button class="btn ghost" data-close>Cancel</button><button class="btn" id="cfOk">Confirm</button></div>');
+  $('cfOk').onclick = async () => {
+    $('cfOk').disabled = true;
+    try {
+      const r = await call('wd_do', { upi, amount });
+      if (r.ok) {
+        boom(); popRid = r.rid || null;
+        openPop('<div class="pc">' + EM('23f3', '⏳', 76) + '<h3>Request sent</h3><div class="big ok">₹' + rs(r.amount) + '</div><span class="pill q">PENDING</span></div><div class="sum"><div><span class="mut">UPI ID</span><span>' + esc(r.upi || upi) + '</span></div><div><span class="mut">Status</span><span class="gold">Waiting for approval</span></div></div><p class="help" style="text-align:center">You will see the result here instantly.</p><button class="btn" data-close>Done</button>');
+        await load(true);
+      } else if (r.gate) { closePop(); showGate(r.gate); toast(r.error); }
+      else { closePop(); toast(r.error || 'Failed'); }
+    } catch (e) { closePop(); toast('Network error'); }
+  };
 }
 
-function wd() {
-  const w = S.wd || {}, off = !w.on || !w.botOn;
-  const cash = (S.activity || []).filter(a => a.a < 0).slice(0, 5).map(a => '<div class="li"><div class="ic out">₹</div><div class="m"><b>₹' + rs(-a.a) + '</b><small>' + esc(a.upi || 'voucher') + ' · ' + esc(a.d || '') + '</small></div><div class="pill ' + (a.st === 'manual' ? 'q' : '') + '">' + (a.st === 'manual' ? 'QUEUED' : 'PAID') + '</div></div>').join('') || '<div class="mut" style="text-align:center;padding:12px">No cashouts yet</div>';
-  return hdr() + '<div class="hero"><div class="k">Available to withdraw</div><div class="amt"><i>₹</i>' + rs(S.balance) + '</div><div style="font-family:var(--mono);font-size:12px;color:#ffffffcc">Min ₹' + rs(w.min) + ' · Max ₹' + rs(w.max) + ' · ' + (w.count || 0) + '/' + (w.limit || 1) + ' today</div></div>' +
-    '<div class="glass" style="margin-top:14px">' + (off ? '<div class="bad" style="font-weight:700">Withdrawals are switched off right now.</div>' : '') +
-    '<label class="f" style="margin-top:0">Receiver UPI ID</label><input class="in" id="upi" placeholder="name@bank" autocomplete="off" autocapitalize="off">' +
-    '<label class="f">Amount (₹' + rs(w.min) + ' – ₹' + rs(w.max) + ')</label><input class="in" id="amt" type="number" inputmode="decimal" value="' + rs(w.min) + '">' +
-    '<div class="sum"><div><span class="mut">Request</span><span id="s1">₹' + rs(w.min) + '</span></div><div><span class="mut">Gateway fee</span><span class="ok">₹0 free</span></div><div><b>You receive</b><b class="ok" id="s2">₹' + rs(w.min) + '</b></div></div>' +
-    '<button class="btn" id="wdBtn"' + (off ? ' disabled' : '') + '>Transfer to UPI now</button></div>' +
-    '<div class="sec"><span>Recent cashouts</span></div><div class="glass">' + cash + '</div>' + foot();
+/* ---------- admin approve / reject queue ---------- */
+function qRow(r) {
+  return '<div class="rq"><div class="m"><b>₹' + rs(r.amt) + '</b><small>' + esc(r.upi) + '</small><small>User ' + esc(r.uid) + ' · ' + esc(r.d || '') + ' ' + esc(r.tm || '') + '</small></div><div class="two" style="margin-top:12px"><button class="btn sm2 rj" data-op="reject" data-rid="' + esc(r.id) + '">' + EM('274c', '❌', 18) + ' Reject</button><button class="btn sm2 ap" data-op="approve" data-rid="' + esc(r.id) + '">' + EM('2705', '✅', 18) + ' Approve</button></div></div>';
 }
-
-/* ---------- admin ---------- */
-const sw = (id, on) => '<div class="sw' + (on ? ' on' : '') + '" id="' + id + '"></div>';
-function admin() {
-  if (!A || !A.ok) return hdr() + '<div class="glass bad">Admin data could not load. Reopen the app.</div>';
-  return hdr() + '<div class="glass"><div class="k">Admin panel</div><div class="mut" style="font-size:12px;margin-top:6px">' + A.users + ' users · ₹' + rs(A.bonusTotal) + ' bonus paid to ' + A.bonusCount + ' · ' + A.withdrawCount + ' withdrawals</div>' +
-    '<div class="grp row"><div><b>Bot</b><div class="help" style="margin:2px 0 0">Turn the whole bot ON / OFF</div></div>' + sw('swBot', A.botOn) + '</div>' +
-    '<div class="grp row"><div><b>Withdraw</b><div class="help" style="margin:2px 0 0">Allow / stop cashouts</div></div>' + sw('swWd', A.wdOn) + '</div></div>' +
-    '<div class="sec"><span>Bonus &amp; refer</span></div><div class="glass"><div class="two"><div><label class="f" style="margin-top:0">Welcome bonus ₹</label><input class="in" id="aBonus" type="number" value="' + rs(A.bonus) + '"></div><div><label class="f" style="margin-top:0">Per refer ₹</label><input class="in" id="aRef" value="' + esc(A.perRef) + '"></div></div>' +
-    '<div class="help">Bonus 0 = off. Refer can be a number (5) or a range (2-5).</div><button class="btn" id="saveBR" style="margin-top:14px">Save bonus &amp; refer</button></div>' +
-    '<div class="sec"><span>Withdraw limits</span></div><div class="glass"><div class="two"><div><label class="f" style="margin-top:0">Min ₹</label><input class="in" id="aMin" type="number" value="' + rs(A.wmin) + '"></div><div><label class="f" style="margin-top:0">Max ₹</label><input class="in" id="aMax" type="number" value="' + rs(A.wmax) + '"></div></div>' +
-    '<label class="f">Withdrawals per day (per user)</label><input class="in" id="aDay" type="number" value="' + A.wdPerDay + '"><button class="btn" id="saveWd" style="margin-top:14px">Save limits</button></div>' +
-    '<div class="sec"><span>Reset user (testing)</span></div><div class="glass"><label class="f" style="margin-top:0">Telegram user id</label><input class="in" id="rUid" type="number" inputmode="numeric" placeholder="123456789"><div class="help">Clears the “same device” mark and the bonus-claimed mark so that user can claim the welcome bonus again.</div><button class="btn ghost" id="saveRs" style="margin-top:12px">Reset this user</button></div>' +
-    '<div class="sec"><span>UPI gateway API</span></div><div class="glass"><label class="f" style="margin-top:0">API link (GET)</label><input class="in" id="gUrl" placeholder="https://gateway.com/api?token={token}&upi={upi}&amount={amount}" value="' + esc(A.gwUrl) + '" autocapitalize="off">' +
-    '<div class="two"><div><label class="f">Token / key</label><input class="in" id="gKey" placeholder="' + (A.gwKeySet ? esc(A.gwKeyMask) + ' saved' : 'paste key') + '" autocapitalize="off"></div><div><label class="f">Merchant id</label><input class="in" id="gMid" value="' + esc(A.gwMid) + '" placeholder="optional"></div></div>' +
-    '<div class="help">Placeholders: <code>{upi}</code> <code>{amount}</code> <code>{token}</code> <code>{mid}</code>. Success = JSON <code>"status":"success"</code>, otherwise the user is refunded. Empty link = manual payout via your payment channel. Empty key box keeps the saved key.</div>' +
-    '<button class="btn" id="saveGw" style="margin-top:14px">Save gateway</button></div>' + foot();
+function qHtml() {
+  if (!P) return '<div class="mut" style="text-align:center;padding:12px">Loading…</div>';
+  const pend = (P.pending || []).map(qRow).join('') || '<div class="mut" style="text-align:center;padding:14px">' + EM('1f389', '🎉', 44) + '<br>No pending requests</div>';
+  const dn = (P.done || []).slice(0, 6).map(r => { const s = ST[r.st] || ST.approved; return '<div class="li"><div class="ic">' + EM(s.e[0], s.e[1], 24) + '</div><div class="m"><b>₹' + rs(r.amt) + '</b><small>' + esc(r.upi) + '</small></div><div class="pill ' + s.c + '">' + s.t + '</div></div>'; }).join('');
+  return '<div class="row"><b>Pending requests</b><span class="pill q">' + (P.pending || []).length + '</span></div>' + pend + (dn ? '<div class="k" style="margin:18px 0 10px">Recent decisions</div>' + dn : '');
 }
-async function setCfg(f, v) { const r = await call('adm_cfg_set', { f, v }); if (!r.ok) throw new Error(r.error || 'Failed'); }
-function wireAdmin() {
-  const flip = (id, f, key) => { const e = $(id); if (!e) return; e.onclick = async () => { const on = !e.classList.contains('on'); try { await setCfg(f, on ? 'ON' : 'OFF'); A[key] = on; e.classList.toggle('on', on); toast((f === 'BotMode' ? 'Bot ' : 'Withdraw ') + (on ? 'ON' : 'OFF')); } catch (x) { toast(x.message); } }; };
-  flip('swBot', 'BotMode', 'botOn'); flip('swWd', 'WithdrawMode', 'wdOn');
-  const run = (id, fn) => { const b = $(id); if (!b) return; b.onclick = async () => { b.disabled = true; try { await fn(); toast('Saved ✓'); await load(true); } catch (x) { toast(x.message); } b.disabled = false; }; };
-  run('saveBR', async () => { let r = await call('adm_set', { f: 'StartBonus', v: $('aBonus').value }); if (!r.ok) throw new Error(r.error); r = await call('adm_set', { f: 'PerRefer', v: $('aRef').value }); if (!r.ok) throw new Error(r.error); });
-  run('saveWd', async () => { const r = await call('adm_wd_set', { wmin: $('aMin').value, wmax: $('aMax').value }); if (!r.ok) throw new Error(r.error); await setCfg('WdPerDay', $('aDay').value); });
-  run('saveRs', async () => { const r = await call('adm_user_reset', { target: $('rUid').value.trim() }); if (!r.ok) throw new Error(r.error || 'Failed'); });
-  run('saveGw', async () => { await setCfg('GwUrl', $('gUrl').value.trim()); await setCfg('GwMid', $('gMid').value.trim()); if ($('gKey').value.trim()) await setCfg('GwKey', $('gKey').value.trim()); });
-}
-
-const ICONS = {
-  home: '<svg viewBox="0 0 24 24"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h5v-6h4v6h5V10"/></svg>',
-  invite: '<svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c0-3.6 2.9-6 6.5-6s6.5 2.4 6.5 6"/><path d="M17 5.5a3 3 0 010 5.8M18.5 14.3c2 .7 3.5 2.4 3.5 5.7"/></svg>',
-  wd: '<svg viewBox="0 0 24 24"><path d="M3 10l9-6 9 6"/><path d="M5 10v8M9.5 10v8M14.5 10v8M19 10v8M3 21h18"/></svg>',
-  admin: '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 00.3 1.8l.1.1a2 2 0 11-2.8 2.8l-.1-.1a1.7 1.7 0 00-1.8-.3 1.7 1.7 0 00-1 1.5V21a2 2 0 11-4 0v-.1a1.7 1.7 0 00-1.1-1.5 1.7 1.7 0 00-1.8.3l-.1.1a2 2 0 11-2.8-2.8l.1-.1a1.7 1.7 0 00.3-1.8 1.7 1.7 0 00-1.5-1H3a2 2 0 110-4h.1a1.7 1.7 0 001.5-1.1 1.7 1.7 0 00-.3-1.8l-.1-.1a2 2 0 112.8-2.8l.1.1a1.7 1.7 0 001.8.3H9a1.7 1.7 0 001-1.5V3a2 2 0 114 0v.1a1.7 1.7 0 001 1.5 1.7 1.7 0 001.8-.3l.1-.1a2 2 0 112.8 2.8l-.1.1a1.7 1.7 0 00-.3 1.8V9a1.7 1.7 0 001.5 1H21a2 2 0 110 4h-.1a1.7 1.7 0 00-1.5 1z"/></svg>'
-};
-function render() {
-  const app = $('app');
-  const admin_ok = S.admin;
-  if (tab === 'admin' && !admin_ok) tab = 'home';
-  app.innerHTML = tab === 'home' ? home() : tab === 'invite' ? invite() : tab === 'wd' ? wd() : admin();
-  const items = [['home', 'HOME'], ['invite', 'INVITE'], ['wd', 'CASHOUT']];
-  if (admin_ok) items.push(['admin', 'ADMIN']);
-  const dk = $('dock'); dk.classList.remove('hide');
-  dk.innerHTML = items.map(i => '<button data-t="' + i[0] + '" class="' + (tab === i[0] ? 'on' : '') + '">' + ICONS[i[0]] + i[1] + '</button>').join('');
-  dk.querySelectorAll('button').forEach(b => b.onclick = () => { tab = b.dataset.t; render(); });
+function wireQ() { const q = $('wdq'); if (q) q.querySelectorAll('[data-op]').forEach(b => b.onclick = () => admAsk(b.dataset.op, b.dataset.rid)); }
+function paintQ() { const q = $('wdq'); if (q) { q.innerHTML = qHtml(); wireQ(); } }
+function paintDock() {
+  paintDock();
   app.querySelectorAll('[data-go]').forEach(e => e.onclick = () => { tab = e.dataset.go; render(); });
+  wireTx(app);
   window.scrollTo(0, 0);
   const cb = $('claimBtn');
   if (cb) cb.onclick = async () => {
     cb.disabled = true;
     try {
       const r = await call('claim_bonus');
-      if (r.ok) { boom(); toast('🎉 ₹' + rs(r.amount) + ' added to wallet'); await load(true); }
+      if (r.ok) { boom(); toast('₹' + rs(r.amount) + ' added to wallet'); await load(true); }
       else if (r.gate) { showGate(r.gate); toast(r.error); }
       else { toast(r.error || 'Failed'); cb.disabled = false; }
     } catch (e) { toast('Network error'); cb.disabled = false; }
   };
   if ($('copyBtn')) {
     $('copyBtn').onclick = () => { (navigator.clipboard ? navigator.clipboard.writeText(S.link) : Promise.reject()).then(() => toast('Link copied ✓')).catch(() => toast(S.link)); };
-    $('shareBtn').onclick = () => { const u = 'https://t.me/share/url?url=' + encodeURIComponent(S.link) + '&text=' + encodeURIComponent('Join and earn money! 💰'); if (tg) tg.openTelegramLink(u); else window.open(u, '_blank'); };
+    $('shareBtn').onclick = () => { const u = 'https://t.me/share/url?url=' + encodeURIComponent(S.link) + '&text=' + encodeURIComponent('Join and earn money!'); if (tg) tg.openTelegramLink(u); else window.open(u, '_blank'); };
   }
   if ($('wdBtn')) {
     const sync = () => { const v = rs($('amt').value); $('s1').textContent = '₹' + v; $('s2').textContent = '₹' + v; };
     $('amt').oninput = sync;
-    $('wdBtn').onclick = async () => {
-      const upi = $('upi').value.trim(), amount = Number($('amt').value);
+    $('wdBtn').onclick = () => {
+      const upi = $('upi').value.trim().toLowerCase(), amount = Number($('amt').value), w = S.wd || {};
       if (!/^[\w.\-]{2,}@[a-zA-Z]{2,}$/.test(upi)) return toast('Enter a valid UPI ID');
-      if (S.wd.used) return toast('Daily cashout limit reached');
-      $('wdBtn').disabled = true;
-      try {
-        const r = await call('wd_do', { upi, amount });
-        if (r.ok) { boom(); toast('✅ Cashout sent'); await load(true); tab = 'wd'; render(); }
-        else if (r.gate) { showGate(r.gate); toast(r.error); }
-        else { toast(r.error || 'Failed'); $('wdBtn').disabled = false; }
-      } catch (e) { toast('Network error'); $('wdBtn').disabled = false; }
+      if (amount < w.min || amount > w.max) return toast('Amount must be ₹' + rs(w.min) + ' - ₹' + rs(w.max));
+      if (amount > S.balance) return toast('Amount exceeds your balance');
+      if (w.used) return toast('Daily cashout limit reached');
+      confirmWd(upi, amount);
     };
   }
-  if (tab === 'admin') wireAdmin();
-  const dl = $('dbgLink'); if (dl) dl.onclick = e => { e.preventDefault(); showDebug(); };
+  if (tab === 'admin') { wireAdmin(); paintQ(); }
 }
 load();
 document.addEventListener('visibilitychange', () => { if (!document.hidden && S) refresh(); });
