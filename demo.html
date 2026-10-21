@@ -180,11 +180,15 @@ label.f{display:block;font-family:var(--mono);font-size:10.5px;letter-spacing:1.
 .sp-f{position:absolute;opacity:.9;animation:fly 5s ease-in-out infinite;will-change:transform}
 .sp-f:nth-of-type(1){left:14%;top:22%}.sp-f:nth-of-type(2){right:13%;top:30%;animation-delay:-1.5s}.sp-f:nth-of-type(3){left:20%;bottom:20%;animation-delay:-3s}.sp-f:nth-of-type(4){right:18%;bottom:24%;animation-delay:-2.2s}
 @keyframes fly{50%{transform:translateY(-18px)}}
+.sp-u{font-family:var(--mono);font-size:13px;color:var(--gold);margin-top:-12px;min-height:16px}
+.sp-t{max-width:86%;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sp-s{min-height:16px}.sp-s:after{content:"";animation:dots 1.3s steps(4,end) infinite}
+@keyframes dots{0%{content:""}25%{content:"."}50%{content:".."}75%,100%{content:"..."}}
 </style>
 </head>
 <body>
 <div class="aurora"><i></i><i></i><i></i></div>
-<div class="splash" id="splash"><span class="sp-f" data-i="1f4b0"></span><span class="sp-f" data-i="1f48e"></span><span class="sp-f" data-i="2728"></span><span class="sp-f" data-i="1f4b8"></span><div class="sp-ring"><div class="sp-in" id="spMain"></div></div><div class="sp-t">Earn Wallet</div><div class="sp-bar"><i></i></div><div class="sp-s">Loading your wallet</div></div>
+<div class="splash" id="splash"><span class="sp-f" data-i="1f4b0"></span><span class="sp-f" data-i="1f48e"></span><span class="sp-f" data-i="2728"></span><span class="sp-f" data-i="1f4b8"></span><div class="sp-ring"><div class="sp-in" id="spMain"></div></div><div class="sp-t" id="spT"></div><div class="sp-u" id="spU"></div><div class="sp-bar"><i></i></div><div class="sp-s" id="spS">Fetching your details</div></div>
 <div class="toast" id="toast"></div>
 <div class="wrap" id="app"><div class="skel"></div><div class="skel" style="height:90px"></div><div class="skel" style="height:120px"></div></div>
 
@@ -200,7 +204,7 @@ label.f{display:block;font-family:var(--mono);font-size:10.5px;letter-spacing:1.
 <div class="dock hide" id="dock"></div>
 
 <script>
-window.addEventListener('error', e => { const a = document.getElementById('app'); if (a && a.querySelector('.skel')) a.innerHTML = '<div class="glass" style="color:#ff7a90"><b>App error:</b> ' + String(e.message).replace(/</g, '&lt;') + '</div>'; });
+window.addEventListener('error', e => { if (!e.message || /^Script error/i.test(e.message)) return; const a = document.getElementById('app'); if (a && a.querySelector('.skel')) a.innerHTML = '<div class="glass" style="color:#ff7a90"><b>App error:</b> ' + String(e.message).replace(/</g, '&lt;') + '</div>'; });
 const tg = window.Telegram && Telegram.WebApp;
 if (tg) { tg.ready(); tg.expand(); try { tg.setHeaderColor('#070716'); tg.setBackgroundColor('#070716'); } catch (e) {} }
 const q = new URLSearchParams(location.search);
@@ -390,7 +394,7 @@ async function refresh() {            // real time: every 2s, redraw only when s
     if (r && r.ok && !r.banned) {
       norm(r);
       if (sig(r) !== sig(S)) {
-        const old = S; S = r; showGate(S.gate); notifyChanges(old, S);
+        const old = S; S = r; saveC(S); showGate(S.gate); notifyChanges(old, S);
         const typing = document.activeElement && /INPUT|TEXTAREA/.test(document.activeElement.tagName);
         if (tab !== 'admin' && !typing) { const y = window.scrollY; render(); window.scrollTo(0, y); }
         else if (tab === 'wd') { const a = document.querySelector('.hero .amt'); if (a) a.innerHTML = '<i>₹</i>' + rs(S.balance); paintHist(); }
@@ -402,16 +406,35 @@ async function refresh() {            // real time: every 2s, redraw only when s
 }
 setInterval(refresh, 2500);
 
+const CK = 'dm_' + UID;
+function saveC(r) { try { const c = Object.assign({}, r); c.gate = null; localStorage.setItem(CK, JSON.stringify(c)); } catch (e) {} }
+function loadAdmin() {
+  if (!S || !S.admin || loadAdmin.b) return;
+  loadAdmin.b = 1;
+  Promise.all([call('adm_cfg_get').catch(() => null), pollQ().catch(() => {})]).then(r => {
+    loadAdmin.b = 0;
+    if (r[0] && r[0].ok) { const was = !A; A = r[0]; if (was && tab === 'admin') render(); }
+  });
+}
+function retryUi(msg) {
+  $('app').innerHTML = '<div class="glass"><b class="bad">' + esc(msg) + '</b><div class="help">Check your internet and tap retry.</div><button class="btn" id="rt" style="margin-top:14px">Retry</button></div>';
+  $('rt').onclick = () => { $('app').innerHTML = '<div class="skel"></div><div class="skel" style="height:90px"></div>'; load(); };
+}
 async function load(keepTab) {
   if (!API || !UID) { $('app').innerHTML = '<div class="glass"><b>Open this app from the bot inside Telegram.</b><div class="help">Missing: ' + (!API ? 'api ' : '') + (!UID ? 'user id' : '') + '</div></div>'; return; }
-  try { S = await call('me'); } catch (e) { $('app').innerHTML = '<div class="glass"><b class="bad">Connection error</b><div class="help">' + esc(e.message) + '. Close the app and open it again from the bot.</div></div>'; return; }
-  if (!S.ok) { $('app').innerHTML = '<div class="glass bad"><b>' + esc(S.error || 'Error') + '</b></div>'; return; }
-  if (S.banned) { $('app').innerHTML = '<div class="glass bad"><b>Your account is banned.</b></div>'; return; }
-  norm(S);
-  if (S.admin) { try { A = await call('adm_cfg_get'); } catch (e) { A = null; } try { await pollQ(); } catch (e) {} }
+  let cached = false;
+  if (!keepTab && !S) {                 // show the last saved data at once, fresh data replaces it a moment later
+    try { const c = JSON.parse(localStorage.getItem(CK) || 'null'); if (c && c.ok && !c.banned) { S = norm(c); tab = 'home'; cached = true; render(); hideSplash(); } } catch (e) {}
+  }
+  let r;
+  try { r = await call('me'); } catch (e) { if (!cached) retryUi('Connection problem'); return; }
+  if (!r || !r.ok) { if (!cached) $('app').innerHTML = '<div class="glass bad"><b>' + esc((r && r.error) || 'Error') + '</b></div>'; return; }
+  if (r.banned) { $('app').innerHTML = '<div class="glass bad"><b>Your account is banned.</b></div>'; return; }
+  S = norm(r); saveC(S);
   showGate(S.gate);
-  if (!keepTab) tab = 'home';
+  if (!keepTab && !cached) tab = 'home';
   render();
+  loadAdmin();
 }
 
 function showGate(g) {
@@ -484,7 +507,7 @@ function wd() {
 /* ---------- admin ---------- */
 const sw = (id, on) => '<div class="sw' + (on ? ' on' : '') + '" id="' + id + '"></div>';
 function admin() {
-  if (!A || !A.ok) return hdr() + '<div class="glass bad">Admin data could not load. Reopen the app.</div>';
+  if (!A || !A.ok) return hdr() + '<div class="glass mut" style="text-align:center">Loading admin panel…</div>';
   return hdr() + '<div class="glass"><div class="k">Admin panel</div><div class="mut" style="font-size:12px;margin-top:6px">' + A.users + ' users · ₹' + rs(A.bonusTotal) + ' bonus paid to ' + A.bonusCount + ' · ' + A.withdrawCount + ' withdrawals</div>' +
     '<div class="grp row"><div><b>Bot</b><div class="help" style="margin:2px 0 0">Turn the whole bot ON / OFF</div></div>' + sw('swBot', A.botOn) + '</div>' +
     '<div class="grp row"><div><b>Withdraw</b><div class="help" style="margin:2px 0 0">Allow / stop cashouts</div></div>' + sw('swWd', A.wdOn) + '</div></div>' +
@@ -552,15 +575,21 @@ function render() {
       confirmWd(upi, amount);
     };
   }
-  if (tab === 'admin') { wireAdmin(); paintQ(); }
+  if (tab === 'admin') { if (!A) loadAdmin(); wireAdmin(); paintQ(); }
 }
 document.querySelectorAll('.sp-f').forEach(e => e.innerHTML = EM(e.dataset.i, '', 38));
 $('spMain').innerHTML = EM('1f680', '', 70);
-function hideSplash() { const s = $('splash'); if (!s || s.dataset.d) return; s.dataset.d = 1; s.classList.add('out'); setTimeout(() => s.remove(), 600); }
+const tu = (tg && tg.initDataUnsafe && tg.initDataUnsafe.user) || {};
+const nm = [tu.first_name, tu.last_name].filter(Boolean).join(' ');
+$('spT').textContent = nm ? 'Welcome, ' + nm : 'Welcome';
+$('spU').textContent = tu.username ? '@' + tu.username : (UID ? 'ID ' + UID : '');
+const msgs = ['Fetching your details', 'Checking your account', 'Syncing wallet balance', 'Loading your rewards', 'Almost ready'];
+let mi = 0; const sTm = setInterval(() => { mi = (mi + 1) % msgs.length; const e = $('spS'); if (e) e.textContent = msgs[mi]; }, 1100);
+function hideSplash() { const s = $('splash'); if (!s || s.dataset.d) return; s.dataset.d = 1; clearInterval(sTm); s.classList.add('out'); setTimeout(() => s.remove(), 600); }
 setTimeout(hideSplash, 12000);
 const _t0 = Date.now();
-load().catch(e => { $('app').innerHTML = '<div class="glass bad"><b>' + esc(e.message) + '</b></div>'; }).finally(() => setTimeout(hideSplash, Math.max(0, 700 - (Date.now() - _t0))));
-document.addEventListener('visibilitychange', () => { if (!document.hidden && S) refresh(); });
+load().catch(e => { $('app').innerHTML = '<div class="glass bad"><b>' + esc(e.message) + '</b></div>'; }).finally(() => setTimeout(hideSplash, Math.max(0, 450 - (Date.now() - _t0))));
+document.addEventListener('visibilitychange', () => { if (document.hidden) return; if (S) refresh(); else if (API && UID) load(); });
 </script>
 </body>
 </html>
