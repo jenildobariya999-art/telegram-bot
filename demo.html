@@ -152,7 +152,9 @@ async function call(a, extra) {
   const ctl = new AbortController(); const tm = setTimeout(() => ctl.abort(), 20000);
   try {
     const r = await fetch(API, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(Object.assign({ a, uid: UID }, extra || {})), signal: ctl.signal });
-    return await r.json();
+    const j = await r.json();
+    // TBC wraps the bot's answer as {"ok":true,"result":{...}}: always hand back the inner object
+    return (j && j.result && typeof j.result === 'object') ? j.result : j;
   } finally { clearTimeout(tm); }
 }
 function norm(r) {
