@@ -89,6 +89,7 @@ label.f{display:block;font-family:var(--mono);font-size:11px;color:var(--mut);le
 <body>
 <div class="toast" id="toast"></div>
 <div class="wrap" id="app"><div class="spin">LOADING</div></div>
+<script>(function(){var p=new URLSearchParams(location.search),n=p.get("bn")||p.get("bu");if(n){var a=document.getElementById("app");a.innerHTML='<div class="spin">'+n.replace(/[<>&]/g,"")+'<br><small style="opacity:.6;letter-spacing:2px">LOADING</small></div>'}})();</script>
 
 <div class="ov hide" id="gate"><div class="card" style="width:100%;max-width:440px">
   <div class="k">Step 3 of 3</div>
@@ -126,6 +127,12 @@ async function load(keepTab) {
   try { S = await call('me'); } catch (e) { $('app').innerHTML = '<div class="card bad"><b>Connection error.</b><div class="mut" style="margin-top:6px;font-size:13px">' + esc(e.message) + '. Close and open the app again from the bot.</div></div>'; return; }
   if (!S.ok) { $('app').innerHTML = '<div class="card bad"><b>' + esc(S.error || 'Error') + '</b></div>'; return; }
   if (S.banned) { $('app').innerHTML = '<div class="card bad"><b>Your account is banned.</b></div>'; return; }
+  // bot id / username / brand: server value first, then the values the bot put in the link
+  S.bot = S.bot || q.get('bu') || '';
+  S.brand = S.brand || q.get('bn') || S.bot || 'Earn Wallet';
+  if (!S.link || /t\.me\/\?start/.test(S.link)) S.link = S.bot ? 'https://t.me/' + S.bot + '?start=' + UID : '';
+  if (S.balance == null) S.balance = Number(q.get('b') || 0);
+  if (S.perRef == null) S.perRef = q.get('p') || '0';
   if (S.admin) { try { A = await call('adm_cfg_get'); } catch (e) { A = null; } }
   showGate(S.gate);
   if (!keepTab) tab = 'home';
@@ -151,7 +158,7 @@ $('gateBtn').onclick = async () => {
 
 /* ---------- screens ---------- */
 function hdr() {
-  return '<div class="top"><div class="brand"><div class="mark">' + esc((S.brand || 'E')[0].toUpperCase()) + '</div><div><b>' + esc(S.brand) + '</b><small>@' + esc(S.bot) + '</small></div></div><div class="live">UPI LIVE</div></div>';
+  return '<div class="top"><div class="brand"><div class="mark">' + esc((S.brand || 'E')[0].toUpperCase()) + '</div><div><b>' + esc(S.brand) + '</b><small>' + (S.bot ? '@' + esc(S.bot) + ' · ' : '') + 'ID ' + esc(UID) + '</small></div></div><div class="live">UPI LIVE</div></div>';
 }
 
 function ticket() {
