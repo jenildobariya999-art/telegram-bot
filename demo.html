@@ -126,6 +126,11 @@ label.f{display:block;font-family:var(--mono);font-size:10.5px;letter-spacing:1.
   <button class="btn" id="gateBtn" style="margin-top:18px">I joined — check</button>
 </div></div>
 
+<div class="ov hide" id="dbg"><div class="glass" style="width:100%;max-width:460px">
+  <div class="k">Diagnostics</div>
+  <pre id="dbgTxt" style="white-space:pre-wrap;word-break:break-all;font-family:var(--mono);font-size:11.5px;line-height:1.6;margin:10px 0 14px;color:#d9d7ff"></pre>
+  <button class="btn ghost" id="dbgClose">Close</button>
+</div></div>
 <div class="dock hide" id="dock"></div>
 
 <script>
@@ -190,6 +195,7 @@ async function load(keepTab) {
   showGate(S.gate);
   if (!keepTab) tab = 'home';
   render();
+  if (!S.ver && !load.shown) { load.shown = 1; showDebug(); }
 }
 
 function showGate(g) {
@@ -213,7 +219,25 @@ $('gateBtn').onclick = async () => {
 function hdr() {
   return '<div class="head"><div class="brand"><div class="mark">' + esc((S.brand || 'E')[0].toUpperCase()) + '</div><div style="min-width:0"><b>' + esc(S.brand) + '</b><small>' + (S.bot ? '@' + esc(S.bot) + ' · ' : '') + 'ID ' + esc(S.uid || UID) + '</small></div></div><div class="live">UPI LIVE</div></div>';
 }
-function foot() { return '<div class="foot">' + BUILD + ' · ' + esc(S.ver || 'api: old') + (S.admin ? ' · admin' : '') + '</div>'; }
+function foot() { return '<div class="foot">' + BUILD + ' · ' + esc(S.ver || 'api: old') + (S.admin ? ' · admin' : '') + ' · <a href="#" id="dbgLink" style="color:#9d9bc4">debug</a></div>'; }
+async function showDebug() {
+  const o = $('dbg'), t = $('dbgTxt'); o.classList.remove('hide'); t.textContent = 'loading…';
+  let ping = null, me = null;
+  try { ping = await call('ping'); } catch (e) { ping = { error: String(e.message) }; }
+  try { me = await call('me'); } catch (e) { me = { error: String(e.message) }; }
+  const host = (API || '').replace(/^https?:\/\//, '');
+  t.textContent = [
+    'page      : ' + BUILD,
+    'my id     : ' + UID,
+    'api host  : ' + host.slice(0, 32) + '…' + host.slice(-14),
+    'url keys  : ' + Array.from(q.keys()).join(','),
+    'tg user   : ' + ((tg && tg.initDataUnsafe && tg.initDataUnsafe.user && tg.initDataUnsafe.user.id) || 'none'),
+    '--- ping ---', JSON.stringify(ping),
+    '--- me (keys) ---', me && typeof me === 'object' ? Object.keys(me).join(',') : String(me),
+    'ok=' + (me && me.ok) + ' ver=' + (me && me.ver) + ' admin=' + (me && me.admin) + ' verified=' + (me && me.verified) + ' sameDev=' + (me && me.sameDev) + ' banned=' + (me && me.banned)
+  ].join('\n');
+}
+$('dbgClose').onclick = () => $('dbg').classList.add('hide');
 
 function ticket() {
   const a = S.bonusAmt;
@@ -334,6 +358,7 @@ function render() {
     };
   }
   if (tab === 'admin') wireAdmin();
+  const dl = $('dbgLink'); if (dl) dl.onclick = e => { e.preventDefault(); showDebug(); };
 }
 load();
 document.addEventListener('visibilitychange', () => { if (!document.hidden && S) refresh(); });
