@@ -122,17 +122,42 @@ async function call(a, extra) {
   } finally { clearTimeout(tm); }
 }
 
+function norm(r) {
+  r.bot = r.bot || q.get('bu') || '';
+  r.brand = r.brand || q.get('bn') || r.bot || 'Earn Wallet';
+  if (!r.link || /t\.me\/\?start/.test(r.link)) r.link = r.bot ? 'https://t.me/' + r.bot + '?start=' + UID : '';
+  if (r.balance == null) r.balance = Number(q.get('b') || 0);
+  if (r.perRef == null) r.perRef = q.get('p') || '0';
+  return r;
+}
+const sig = r => JSON.stringify([r.balance, r.verified, r.sameDev, r.bonusClaimed, r.bonusAmt, r.invites, r.earned, r.perRef, (r.activity || []).length, (r.activity || [])[0], (r.refs || []).length, r.wd, r.gate && r.gate.channels.map(c => c.joined), r.admin]);
+let busy = false;
+// real time: ask the server every 4 seconds, redraw only when something changed (and never while typing)
+async function refresh() {
+  if (busy || document.hidden || !S || !API || !UID) return;
+  busy = true;
+  try {
+    const r = await call('me');
+    if (r && r.ok && !r.banned) {
+      norm(r);
+      if (sig(r) !== sig(S)) {
+        const typing = document.activeElement && /INPUT|TEXTAREA/.test(document.activeElement.tagName);
+        S = r; showGate(S.gate);
+        if (tab !== 'admin' && !typing) render();
+        else if (tab === 'wd') { const a = document.querySelector('.bal .amt'); if (a) a.innerHTML = '<i>₹</i>' + rs(S.balance); }
+      }
+    }
+  } catch (e) {}
+  busy = false;
+}
+setInterval(refresh, 4000);
+
 async function load(keepTab) {
   if (!API || !UID) { $('app').innerHTML = '<div class="card"><b>Open this app from the bot inside Telegram.</b></div>'; return; }
   try { S = await call('me'); } catch (e) { $('app').innerHTML = '<div class="card bad"><b>Connection error.</b><div class="mut" style="margin-top:6px;font-size:13px">' + esc(e.message) + '. Close and open the app again from the bot.</div></div>'; return; }
   if (!S.ok) { $('app').innerHTML = '<div class="card bad"><b>' + esc(S.error || 'Error') + '</b></div>'; return; }
   if (S.banned) { $('app').innerHTML = '<div class="card bad"><b>Your account is banned.</b></div>'; return; }
-  // bot id / username / brand: server value first, then the values the bot put in the link
-  S.bot = S.bot || q.get('bu') || '';
-  S.brand = S.brand || q.get('bn') || S.bot || 'Earn Wallet';
-  if (!S.link || /t\.me\/\?start/.test(S.link)) S.link = S.bot ? 'https://t.me/' + S.bot + '?start=' + UID : '';
-  if (S.balance == null) S.balance = Number(q.get('b') || 0);
-  if (S.perRef == null) S.perRef = q.get('p') || '0';
+  norm(S);
   if (S.admin) { try { A = await call('adm_cfg_get'); } catch (e) { A = null; } }
   showGate(S.gate);
   if (!keepTab) tab = 'home';
@@ -169,7 +194,9 @@ function ticket() {
   else if (S.bonusClaimed) { h = 'Bonus claimed ✓'; p = 'You already received your welcome bonus.'; off = true; }
   else if (!a) { h = 'Bonus is off'; p = 'The welcome bonus is switched off right now.'; off = true; }
   else btn = '<button class="btn sm" id="claimBtn">Claim ₹' + rs(a) + '</button>';
-  return '<div class="ticket' + (off ? ' off' : '') + '"><div class="l"><h3>' + h + '</h3><p>' + p + '</p>' + btn + '</div><div class="r"><div class="v">₹' + rs(a || 0) + '<small>BONUS</small></div></div></div>';
+  const chip = (ok, t) => '<span style="font-family:var(--mono);font-size:11px;margin-right:8px;color:var(--' + (ok ? 'ok' : 'bad') + ')">' + (ok ? '✓ ' : '✗ ') + t + '</span>';
+  const chips = '<div style="margin-top:12px">' + chip(S.verified, 'Verified') + chip(!S.sameDev, 'Device') + chip(!S.bonusClaimed, 'Not claimed') + '</div>';
+  return '<div class="ticket' + (off ? ' off' : '') + '"><div class="l"><h3>' + h + '</h3><p>' + p + '</p>' + btn + chips + '</div><div class="r"><div class="v">₹' + rs(a || 0) + '<small>BONUS</small></div></div></div>';
 }
 
 function home() {
@@ -214,6 +241,7 @@ function admin() {
     '<div class="h">Withdraw limits</div><div class="card"><div class="two"><div><label class="f" style="margin-top:0">Min ₹</label><input class="in" id="aMin" type="number" value="' + rs(A.wmin) + '"></div><div><label class="f" style="margin-top:0">Max ₹</label><input class="in" id="aMax" type="number" value="' + rs(A.wmax) + '"></div></div>' +
     '<label class="f">Withdrawals per day (per user)</label><input class="in" id="aDay" type="number" value="' + A.wdPerDay + '"><button class="btn" id="saveWd" style="margin-top:12px">Save limits</button></div>' +
 
+    '<div class="h">Reset user (testing)</div><div class="card"><label class="f" style="margin-top:0">Telegram user id</label><input class="in" id="rUid" type="number" inputmode="numeric" placeholder="123456789"><div class="help">Clears the “same device” mark and the bonus-claimed mark so that user can claim the welcome bonus again.</div><button class="btn alt" id="saveRs" style="margin-top:12px">Reset this user</button></div>' +
     '<div class="h">UPI gateway API</div><div class="card"><label class="f" style="margin-top:0">API link (GET)</label><input class="in" id="gUrl" placeholder="https://gateway.com/api?token={token}&upi={upi}&amount={amount}" value="' + esc(A.gwUrl) + '" autocapitalize="off">' +
     '<div class="two"><div><label class="f">Token / API key</label><input class="in" id="gKey" placeholder="' + (A.gwKeySet ? esc(A.gwKeyMask) + ' (saved)' : 'paste key') + '" autocapitalize="off"></div><div><label class="f">Merchant id</label><input class="in" id="gMid" value="' + esc(A.gwMid) + '" placeholder="optional"></div></div>' +
     '<div class="help">Use placeholders <code>{upi}</code> <code>{amount}</code> <code>{token}</code> <code>{mid}</code> in the link. Payout counts as success when the gateway replies JSON <code>"status":"success"</code>; otherwise the user is refunded automatically. Leave the link empty for manual payout (requests go to your payment channel). Leave the key box empty to keep the saved key.</div>' +
@@ -234,6 +262,9 @@ function wireAdmin() {
   run('saveWd', async () => {
     let r = await call('adm_wd_set', { wmin: $('aMin').value, wmax: $('aMax').value }); if (!r.ok) throw new Error(r.error);
     await setCfg('WdPerDay', $('aDay').value);
+  });
+  run('saveRs', async () => {
+    const r = await call('adm_user_reset', { target: $('rUid').value.trim() }); if (!r.ok) throw new Error(r.error || 'Failed');
   });
   run('saveGw', async () => {
     await setCfg('GwUrl', $('gUrl').value.trim());
@@ -287,7 +318,7 @@ function render() {
   if (tab === 'admin') wireAdmin();
 }
 load();
-document.addEventListener('visibilitychange', () => { if (!document.hidden && S && tab !== 'admin') load(true); });
+document.addEventListener('visibilitychange', () => { if (!document.hidden && S) refresh(); });
 </script>
 </body>
 </html>
