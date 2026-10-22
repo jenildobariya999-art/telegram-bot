@@ -219,7 +219,7 @@ function toast(m) { const t = $('toast'); t.textContent = m; t.classList.add('sh
 function boom() { for (let i = 0; i < 10; i++) { const e = document.createElement('div'); e.className = 'boom'; const z = [['1f389','🎉'],['2728','✨'],['1f4b0','💰'],['2b50','⭐']][i % 4]; e.innerHTML = EM(z[0], z[1], 34); e.style.setProperty('--x', (Math.random() * 300 - 150) + 'px'); e.style.setProperty('--y', (Math.random() * -260 - 40) + 'px'); e.style.setProperty('--r', (Math.random() * 360) + 'deg'); document.body.appendChild(e); setTimeout(() => e.remove(), 1200); } }
 
 async function call(a, extra) {
-  const ctl = new AbortController(); const tm = setTimeout(() => ctl.abort(), 20000);
+  const ctl = new AbortController(); const tm = setTimeout(() => ctl.abort(), a === 'wd_do' ? 50000 : 20000);
   try {
     const r = await fetch(API, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(Object.assign({ a, uid: UID }, extra || {})), signal: ctl.signal });
     const j = await r.json();
@@ -260,8 +260,8 @@ const EM = (c, f, s) => { const i = IC[c] || IC['2728']; s = s || 24; return '<s
 
 /* ---------- withdrawal statuses ---------- */
 const ST = {
-  pending: { t: 'PENDING', c: 'q', e: ['23f3', '⏳'], m: 'Waiting for admin approval. The result shows here instantly.' },
-  approved: { t: 'PAID', c: '', e: ['2705', '✅'], m: 'Approved by admin. The money is being credited to your UPI.' },
+  pending: { t: 'PENDING', c: 'q', e: ['23f3', '⏳'], m: 'Your payment is being processed.' },
+  approved: { t: 'PAID', c: '', e: ['2705', '✅'], m: 'Paid to your UPI instantly.' },
   rejected: { t: 'REJECTED', c: 'r', e: ['274c', '❌'], m: 'Rejected by admin. The amount was returned to your wallet.' },
   refund: { t: 'REFUNDED', c: '', e: ['1f4b0', '💰'], m: 'Returned to your wallet.' }
 };
@@ -271,10 +271,10 @@ const isWd = a => (a.a < 0 && (a.rid || a.upi || a.v)) || a.st === 'refund' || a
 const ttl = a => /voucher/i.test(a.t || '') ? 'Cashout' : (a.t || '');
 
 /* ---------- popup ---------- */
-let popRid = null, P = null, qsig = '';
+let popRid = null, P = null, qsig = '', popLock = false;
 function openPop(h) { const b = $('popBox'); b.innerHTML = h; $('pop').classList.remove('hide'); b.querySelectorAll('[data-close]').forEach(x => x.onclick = closePop); }
 function closePop() { $('pop').classList.add('hide'); popRid = null; }
-$('pop').onclick = e => { if (e.target.id === 'pop') closePop(); };
+$('pop').onclick = e => { if (e.target.id === 'pop' && !popLock) closePop(); };
 
 function txRow(a, i) {
   const s = stOf(a) || ST.approved, neg = a.a < 0;
@@ -288,7 +288,7 @@ function txHtml(a) {
   r('Type', esc(ttl(a)));
   if (a.d) r('Date', esc(a.d));
   if (a.tm) r('Time', esc(a.tm));
-  if (isWd(a) && neg) r('Gateway fee', '<span class="ok">₹0 free</span>');
+  if (isWd(a) && neg) { if (a.fee > 0) { r('Cashout charge', '<span class="bad">-₹' + rs(a.fee) + '</span>'); r('Sent to UPI', '<span class="ok">₹' + rs(a.recv) + '</span>'); } else r('Cashout charge', '<span class="ok">₹0 free</span>'); }
   if (a.rid) r('Request ID', '<code>' + esc(String(a.rid).replace(/r$/, '')) + '</code>');
   return '<div class="pc">' + EM(e[0], e[1], 76) + '<h3>' + esc(ttl(a)) + '</h3><div class="big ' + (neg ? 'bad' : 'ok') + '">' + (neg ? '-' : '+') + '₹' + rs(Math.abs(a.a)) + '</div>' + (s ? '<span class="pill ' + s.c + '">' + s.t + '</span>' : '') + '</div><div class="sum">' + rows + '</div>' + (s ? '<p class="help" style="text-align:center">' + s.m + '</p>' : '') + '<button class="btn ghost" data-close>Close</button>';
 }
@@ -302,34 +302,47 @@ function histHtml() {
 function paintHist() { const h = $('hist'); if (h) { h.innerHTML = histHtml(); wireTx(h); } }
 
 /* ---------- withdrawal popups (user) ---------- */
+function feeOf(a) { const w = S.wd || {}; return Math.round(((+w.feeFlat || 0) + a * ((+w.feePct || 0) / 100)) * 100) / 100; }
+function feeTxt(a) { const f = feeOf(a); return f > 0 ? '<span class="bad">-₹' + rs(f) + '</span>' : '<span class="ok">₹0 free</span>'; }
+function chargeNote() { const w = S.wd || {}, f = +w.feeFlat || 0, c = +w.feePct || 0; if (!f && !c) return ''; return ' · Charge ' + (f ? '₹' + rs(f) : '') + (f && c ? ' + ' : '') + (c ? c + '%' : ''); }
+function respHtml(t) {
+  if (!t) return '';
+  const rows = String(t).split(' | ').map(p => {
+    const i = p.indexOf(': ');
+    if (i < 0) return '<div><span class="mut">Response</span><span style="text-align:right;max-width:66%;word-break:break-word">' + esc(p) + '</span></div>';
+    const k = p.slice(0, i), v = p.slice(i + 2), lv = v.toLowerCase();
+    const good = /^(true|success|successful|ok|completed|processed|processing|pending|queued|accepted|initiated|created)$/.test(lv);
+    const bad = /^(false|fail|failed|failure|error|rejected|declined|cancelled|canceled|invalid)$/.test(lv);
+    return '<div><span class="mut">' + esc(k) + '</span><span class="' + (good ? 'ok' : bad ? 'bad' : '') + '" style="text-align:right;max-width:62%;word-break:break-word">' + esc(v) + '</span></div>';
+  }).join('');
+  return '<div class="k" style="margin:14px 0 6px">API response</div><div class="sum">' + rows + '</div>';
+}
 function confirmWd(upi, amount) {
-  openPop('<div class="pc">' + EM('1f3e6', '🏦', 76) + '<h3>Confirm cashout</h3></div><div class="sum"><div><span class="mut">UPI ID</span><span>' + esc(upi) + '</span></div><div><span class="mut">Amount</span><span>₹' + rs(amount) + '</span></div><div><span class="mut">Gateway fee</span><span class="ok">₹0 free</span></div><div><b>You receive</b><b class="ok">₹' + rs(amount) + '</b></div></div><p class="help" style="text-align:center">Admin will approve your request. If it is rejected the money comes back to your wallet.</p><div class="two"><button class="btn ghost" data-close>Cancel</button><button class="btn" id="cfOk">Confirm</button></div>');
+  openPop('<div class="pc">' + EM('1f3e6', '', 76) + '<h3>Confirm cashout</h3></div><div class="sum"><div><span class="mut">UPI ID</span><span>' + esc(upi) + '</span></div><div><span class="mut">Amount</span><span>₹' + rs(amount) + '</span></div><div><span class="mut">Cashout charge</span><span>' + feeTxt(amount) + '</span></div><div><b>You receive</b><b class="ok">₹' + rs(Math.max(0, amount - feeOf(amount))) + '</b></div></div><p class="help" style="text-align:center">The money is sent to your UPI right after you confirm.</p><div class="two"><button class="btn ghost" data-close>Cancel</button><button class="btn" id="cfOk">Confirm &amp; send</button></div>');
+  const fail = (msg, resp) => openPop('<div class="pc">' + EM('274c', '', 76) + '<h3>' + (resp ? 'Payment failed' : 'Could not send') + '</h3><p class="help">' + esc(String(msg || 'Unknown error').replace(/^Payment failed\.?\s*/i, '')) + '</p></div>' + respHtml(resp) + '<button class="btn" data-close>Close</button>');
   $('cfOk').onclick = async () => {
-    $('cfOk').disabled = true;
+    popLock = true;
+    openPop('<div class="pc">' + EM('23f3', '', 76) + '<h3>Sending payment</h3><p class="help">Please wait, do not close the app…</p><div class="sp-bar" style="margin:16px auto 4px"><i></i></div></div>');
     try {
       const r = await call('wd_do', { upi, amount });
+      popLock = false;
       if (r.ok) {
         boom(); popRid = r.rid || null;
-        openPop('<div class="pc">' + EM('23f3', '⏳', 76) + '<h3>Request sent</h3><div class="big ok">₹' + rs(r.amount) + '</div><span class="pill q">PENDING</span></div><div class="sum"><div><span class="mut">UPI ID</span><span>' + esc(r.upi || upi) + '</span></div><div><span class="mut">Status</span><span class="gold">Waiting for approval</span></div></div><p class="help" style="text-align:center">You will see the result here instantly.</p><button class="btn" data-close>Done</button>');
+        let rows = '<div><span class="mut">UPI ID</span><span>' + esc(r.upi || upi) + '</span></div>';
+        if (r.fee > 0) rows += '<div><span class="mut">Cashout charge</span><span class="bad">-₹' + rs(r.fee) + '</span></div>';
+        rows += '<div><span class="mut">Sent to UPI</span><span class="ok">₹' + rs(r.recv != null ? r.recv : r.amount) + '</span></div>';
+        openPop('<div class="pc">' + EM('2705', '', 76) + '<h3>Payment sent</h3><div class="big ok">₹' + rs(r.amount) + '</div><span class="pill">PAID</span></div><div class="sum">' + rows + '</div>' + respHtml(r.msg) + '<button class="btn" data-close>Done</button>');
         await load(true);
       } else if (r.gate) { closePop(); showGate(r.gate); toast(r.error); }
-      else { closePop(); toast(r.error || 'Failed'); }
-    } catch (e) { closePop(); toast('Network error'); }
+      else fail(r.error, r.resp);
+    } catch (e) {
+      popLock = false;
+      fail('No reply from the server. Your balance is safe. Check your cashout history before trying again.');
+      try { await load(true); } catch (x) {}
+    }
   };
 }
 
-/* ---------- admin approve / reject queue ---------- */
-function qRow(r) {
-  return '<div class="rq"><div class="m"><b>₹' + rs(r.amt) + '</b><small>' + esc(r.upi) + '</small><small>User ' + esc(r.uid) + ' · ' + esc(r.d || '') + ' ' + esc(r.tm || '') + '</small></div><div class="two" style="margin-top:12px"><button class="btn sm2 rj" data-op="reject" data-rid="' + esc(r.id) + '">' + EM('274c', '❌', 18) + ' Reject</button><button class="btn sm2 ap" data-op="approve" data-rid="' + esc(r.id) + '">' + EM('2705', '✅', 18) + ' Approve</button></div></div>';
-}
-function qHtml() {
-  if (!P) return '<div class="mut" style="text-align:center;padding:12px">Loading…</div>';
-  const pend = (P.pending || []).map(qRow).join('') || '<div class="mut" style="text-align:center;padding:14px">' + EM('1f389', '🎉', 44) + '<br>No pending requests</div>';
-  const dn = (P.done || []).slice(0, 6).map(r => { const s = ST[r.st] || ST.approved; return '<div class="li"><div class="ic">' + EM(s.e[0], s.e[1], 24) + '</div><div class="m"><b>₹' + rs(r.amt) + '</b><small>' + esc(r.upi) + '</small></div><div class="pill ' + s.c + '">' + s.t + '</div></div>'; }).join('');
-  return '<div class="row"><b>Pending requests</b><span class="pill q">' + (P.pending || []).length + '</span></div>' + pend + (dn ? '<div class="k" style="margin:18px 0 10px">Recent decisions</div>' + dn : '');
-}
-function wireQ() { const q = $('wdq'); if (q) q.querySelectorAll('[data-op]').forEach(b => b.onclick = () => admAsk(b.dataset.op, b.dataset.rid)); }
-function paintQ() { const q = $('wdq'); if (q) { q.innerHTML = qHtml(); wireQ(); } }
 function paintDock() {
   const items = [['home', 'HOME'], ['invite', 'INVITE'], ['wd', 'CASHOUT']];
   if (S && S.admin) items.push(['admin', 'ADMIN']);
@@ -338,37 +351,6 @@ function paintDock() {
   dk.innerHTML = items.map(i => '<button data-t="' + i[0] + '" class="' + (tab === i[0] ? 'on' : '') + '">' + ICONS[i[0]] + i[1] + (i[0] === 'admin' && n ? '<i class="bdg">' + n + '</i>' : '') + '</button>').join('');
   dk.querySelectorAll('button').forEach(b => b.onclick = () => { tab = b.dataset.t; window._anim = 1; render(); });
 }
-function admAsk(op, rid) {
-  const r = (P.pending || []).find(x => x.id === rid); if (!r) return;
-  const ap = op === 'approve';
-  openPop('<div class="pc">' + EM(ap ? '2705' : '274c', ap ? '✅' : '❌', 76) + '<h3>' + (ap ? 'Approve' : 'Reject') + ' withdrawal?</h3><div class="big ' + (ap ? 'ok' : 'bad') + '">₹' + rs(r.amt) + '</div></div><div class="sum"><div><span class="mut">UPI ID</span><span>' + esc(r.upi) + '</span></div><div><span class="mut">User</span><span>' + esc(r.uid) + '</span></div></div><p class="help" style="text-align:center">' + (ap ? 'The user is told right away.' : 'The amount goes back to the user wallet.') + '</p><div class="two"><button class="btn ghost" data-close>Cancel</button><button class="btn ' + (ap ? 'ap' : 'rj') + '" id="opOk">' + (ap ? 'Approve' : 'Reject') + '</button></div>');
-  $('opOk').onclick = async () => {
-    $('opOk').disabled = true;
-    try {
-      const x = await call('adm_wd_act', { rid, op });
-      if (x.ok) {
-        P.pending = P.pending.filter(y => y.id !== rid);
-        P.done = [Object.assign({}, r, { st: x.st })].concat(P.done || []);
-        qsig = ''; paintQ(); paintDock(); closePop();
-        if (ap) boom();
-        toast(ap ? 'Approved' : 'Rejected, money refunded');
-      } else { closePop(); toast(x.error || 'Failed'); pollQ(); }
-    } catch (e) { closePop(); toast('Network error'); }
-  };
-}
-async function pollQ() {
-  if (!S || !S.admin) return;
-  const r = await call('adm_wd_list');
-  if (r && r.ok) {
-    const s = JSON.stringify([(r.pending || []).map(x => x.id), (r.done || []).map(x => x.id + x.st)]);
-    if (s !== qsig) {
-      const more = qsig && P && (r.pending || []).length > (P.pending || []).length;
-      qsig = s; P = r; paintQ(); paintDock();
-      if (more) { toast('New withdrawal request'); try { tg && tg.HapticFeedback.notificationOccurred('warning'); } catch (e) {} }
-    }
-  }
-}
-
 /* ---------- live: user status changes ---------- */
 function notifyChanges(o, n) {
   const m = {};
@@ -400,7 +382,6 @@ async function refresh() {            // real time: every 2s, redraw only when s
         else if (tab === 'wd') { const a = document.querySelector('.hero .amt'); if (a) a.innerHTML = '<i>₹</i>' + rs(S.balance); paintHist(); }
       }
     }
-    if (S && S.admin && (tab === 'admin' || ++_pq % 3 === 0)) await pollQ();
   } catch (e) {}
   busy = false;
 }
@@ -411,7 +392,7 @@ function saveC(r) { try { const c = Object.assign({}, r); c.gate = null; localSt
 function loadAdmin() {
   if (!S || !S.admin || loadAdmin.b) return;
   loadAdmin.b = 1;
-  Promise.all([call('adm_cfg_get').catch(() => null), pollQ().catch(() => {})]).then(r => {
+  Promise.all([call('adm_cfg_get').catch(() => null)]).then(r => {
     loadAdmin.b = 0;
     if (r[0] && r[0].ok) { const was = !A; A = r[0]; if (was && tab === 'admin') render(); }
   });
@@ -495,31 +476,39 @@ function invite() {
 
 function wd() {
   const w = S.wd || {}, off = !w.on || !w.botOn;
-  return hdr() + '<div class="hero"><div class="cc"></div><div class="k">' + EM('1f3e6', '🏦', 18) + ' Available to withdraw</div><div class="amt"><i>₹</i>' + rs(S.balance) + '</div><div style="font-family:var(--mono);font-size:12px;color:#ffffffcc">Min ₹' + rs(w.min) + ' · Max ₹' + rs(w.max) + ' · ' + (w.count || 0) + '/' + (w.limit || 1) + ' today</div></div>' +
+  return hdr() + '<div class="hero"><div class="cc"></div><div class="k">' + EM('1f3e6', '🏦', 18) + ' Available to withdraw</div><div class="amt"><i>₹</i>' + rs(S.balance) + '</div><div style="font-family:var(--mono);font-size:12px;color:#ffffffcc">Min ₹' + rs(w.min) + ' · Max ₹' + rs(w.max) + ' · ' + (w.count || 0) + '/' + (w.limit || 1) + ' today' + chargeNote() + '</div></div>' +
     '<div class="glass" style="margin-top:14px">' + (off ? '<div class="bad" style="font-weight:700">Withdrawals are switched off right now.</div>' : '') +
     '<label class="f" style="margin-top:0">Receiver UPI ID</label><input class="in" id="upi" placeholder="name@bank" autocomplete="off" autocapitalize="off">' +
     '<label class="f">Amount (₹' + rs(w.min) + ' – ₹' + rs(w.max) + ')</label><input class="in" id="amt" type="number" inputmode="decimal" value="' + rs(w.min) + '">' +
-    '<div class="sum"><div><span class="mut">Request</span><span id="s1">₹' + rs(w.min) + '</span></div><div><span class="mut">Gateway fee</span><span class="ok">₹0 free</span></div><div><b>You receive</b><b class="ok" id="s2">₹' + rs(w.min) + '</b></div></div>' +
+    '<div class="sum"><div><span class="mut">Request</span><span id="s1">₹' + rs(w.min) + '</span></div><div><span class="mut">Cashout charge</span><span id="sf">' + feeTxt(w.min) + '</span></div><div><b>You receive</b><b class="ok" id="s2">₹' + rs(Math.max(0, w.min - feeOf(w.min))) + '</b></div></div>' +
     '<button class="btn" id="wdBtn"' + (off ? ' disabled' : '') + '>' + EM('1f680', '🚀', 20) + ' Transfer to UPI now</button></div>' +
     '<div class="sec"><span>Cashout history</span><span class="gold">tap for details</span></div><div class="glass" id="hist">' + histHtml() + '</div>' + foot();
 }
 
 /* ---------- admin ---------- */
 const sw = (id, on) => '<div class="sw' + (on ? ' on' : '') + '" id="' + id + '"></div>';
+let gwSel = null;
 function admin() {
+  if (!gwSel && A) gwSel = A.gwType || 'link';
   if (!A || !A.ok) return hdr() + '<div class="glass mut" style="text-align:center">Loading admin panel…</div>';
   return hdr() + '<div class="glass"><div class="k">Admin panel</div><div class="mut" style="font-size:12px;margin-top:6px">' + A.users + ' users · ₹' + rs(A.bonusTotal) + ' bonus paid to ' + A.bonusCount + ' · ' + A.withdrawCount + ' withdrawals</div>' +
     '<div class="grp row"><div><b>Bot</b><div class="help" style="margin:2px 0 0">Turn the whole bot ON / OFF</div></div>' + sw('swBot', A.botOn) + '</div>' +
     '<div class="grp row"><div><b>Withdraw</b><div class="help" style="margin:2px 0 0">Allow / stop cashouts</div></div>' + sw('swWd', A.wdOn) + '</div></div>' +
-    '<div class="sec"><span>Withdraw requests</span></div><div class="glass" id="wdq">' + qHtml() + '</div>' +
     '<div class="sec"><span>Bonus &amp; refer</span></div><div class="glass"><div class="two"><div><label class="f" style="margin-top:0">Welcome bonus ₹</label><input class="in" id="aBonus" type="number" value="' + rs(A.bonus) + '"></div><div><label class="f" style="margin-top:0">Per refer ₹</label><input class="in" id="aRef" value="' + esc(A.perRef) + '"></div></div>' +
     '<div class="help">Bonus 0 = off. Refer can be a number (5) or a range (2-5).</div><button class="btn" id="saveBR" style="margin-top:14px">Save bonus &amp; refer</button></div>' +
     '<div class="sec"><span>Withdraw limits</span></div><div class="glass"><div class="two"><div><label class="f" style="margin-top:0">Min ₹</label><input class="in" id="aMin" type="number" value="' + rs(A.wmin) + '"></div><div><label class="f" style="margin-top:0">Max ₹</label><input class="in" id="aMax" type="number" value="' + rs(A.wmax) + '"></div></div>' +
     '<label class="f">Withdrawals per day (per user)</label><input class="in" id="aDay" type="number" value="' + A.wdPerDay + '"><button class="btn" id="saveWd" style="margin-top:14px">Save limits</button></div>' +
+    '<div class="sec"><span>Cashout charge</span></div><div class="glass"><div class="two"><div><label class="f" style="margin-top:0">Flat charge ₹</label><input class="in" id="aFeeF" type="number" inputmode="decimal" value="' + rs(A.feeFlat) + '"></div><div><label class="f" style="margin-top:0">Percent %</label><input class="in" id="aFeeP" type="number" inputmode="decimal" value="' + rs(A.feePct) + '"></div></div><div class="help">Taken from every cashout: charge = flat + percent of the amount. The user balance is cut by the full amount and the user receives the rest. 0 and 0 = free.</div><button class="btn" id="saveFee" style="margin-top:14px">Save charge</button></div>' +
     '<div class="sec"><span>Reset user (testing)</span></div><div class="glass"><label class="f" style="margin-top:0">Telegram user id</label><input class="in" id="rUid" type="number" inputmode="numeric" placeholder="123456789"><div class="help">Clears the “same device” mark and the bonus-claimed mark so that user can claim the welcome bonus again.</div><button class="btn ghost" id="saveRs" style="margin-top:12px">Reset this user</button></div>' +
-    '<div class="sec"><span>UPI gateway API</span></div><div class="glass"><label class="f" style="margin-top:0">API link (GET)</label><input class="in" id="gUrl" placeholder="https://gateway.com/api?token={token}&upi={upi}&amount={amount}" value="' + esc(A.gwUrl) + '" autocapitalize="off">' +
-    '<div class="two"><div><label class="f">Token / key</label><input class="in" id="gKey" placeholder="' + (A.gwKeySet ? esc(A.gwKeyMask) + ' saved' : 'paste key') + '" autocapitalize="off"></div><div><label class="f">Merchant id</label><input class="in" id="gMid" value="' + esc(A.gwMid) + '" placeholder="optional"></div></div>' +
-    '<div class="help">Placeholders: <code>{upi}</code> <code>{amount}</code> <code>{token}</code> <code>{mid}</code>. Success = JSON <code>"status":"success"</code>, otherwise the user is refunded. Empty link = manual payout via your payment channel. Empty key box keeps the saved key.</div>' +
+    '<div class="sec"><span>Cashout gateway</span></div><div class="glass"><div class="two"><button class="btn sm2' + (gwSel === 'link' ? '' : ' ghost') + '" data-gw="link">API link</button><button class="btn sm2' + (gwSel === 'paynit' ? '' : ' ghost') + '" data-gw="paynit">Client ID + Secret</button></div>' +
+    '<div id="gwLink" class="' + (gwSel === 'link' ? '' : 'hide') + '"><label class="f">API link</label><input class="in" id="gUrl" placeholder="https://gateway.com/pay?upi={upi}&amount={amount}" value="' + esc(A.gwUrl) + '" autocapitalize="off" autocomplete="off">' +
+    '<div class="help">Paste only the API link, the key is already inside it. Put <code>{upi}</code> and <code>{amount}</code> where the receiver and the amount go (GET request).</div></div>' +
+    '<div id="gwPn" class="' + (gwSel === 'paynit' ? '' : 'hide') + '"><label class="f">Endpoint (POST)</label><input class="in" id="pUrl" value="' + esc(A.pnUrl) + '" autocapitalize="off" autocomplete="off">' +
+    '<label class="f">Client ID</label><input class="in" id="pId" value="' + esc(A.pnId) + '" autocapitalize="off" autocomplete="off">' +
+    '<label class="f">Client secret</label><input class="in" id="pSec" type="password" placeholder="' + (A.pnSecretSet ? 'saved ' + esc(A.pnSecretMask) + ' (type to change)' : 'paste the secret') + '" autocomplete="off">' +
+    '<label class="f">Note</label><input class="in" id="pNote" value="' + esc(A.pnNote) + '">' +
+    '<div class="help">Sent as POST with headers <code>X-Client-Id</code>, <code>X-Client-Secret</code>, <code>X-Idempotency-Key</code> and body <code>order_id, amount, payout_method: UPI, upi_id, note</code>. Filled in automatically for every cashout.</div></div>' +
+    '<div class="help">Payment starts automatically when a user confirms a cashout. Links, ids and secrets are never shown to users.</div>' +
     '<button class="btn" id="saveGw" style="margin-top:14px">Save gateway</button></div>' + foot();
 }
 async function setCfg(f, v) { const r = await call('adm_cfg_set', { f, v }); if (!r.ok) throw new Error(r.error || 'Failed'); }
@@ -530,7 +519,14 @@ function wireAdmin() {
   run('saveBR', async () => { let r = await call('adm_set', { f: 'StartBonus', v: $('aBonus').value }); if (!r.ok) throw new Error(r.error); r = await call('adm_set', { f: 'PerRefer', v: $('aRef').value }); if (!r.ok) throw new Error(r.error); });
   run('saveWd', async () => { const r = await call('adm_wd_set', { wmin: $('aMin').value, wmax: $('aMax').value }); if (!r.ok) throw new Error(r.error); await setCfg('WdPerDay', $('aDay').value); });
   run('saveRs', async () => { const r = await call('adm_user_reset', { target: $('rUid').value.trim() }); if (!r.ok) throw new Error(r.error || 'Failed'); });
-  run('saveGw', async () => { await setCfg('GwUrl', $('gUrl').value.trim()); await setCfg('GwMid', $('gMid').value.trim()); if ($('gKey').value.trim()) await setCfg('GwKey', $('gKey').value.trim()); });
+  run('saveGw', async () => {
+    await setCfg('GwType', gwSel);
+    if (gwSel === 'link') await setCfg('GwUrl', $('gUrl').value.trim());
+    else { await setCfg('PnUrl', $('pUrl').value.trim()); await setCfg('PnId', $('pId').value.trim()); if ($('pSec').value.trim()) await setCfg('PnSecret', $('pSec').value.trim()); await setCfg('PnNote', $('pNote').value.trim()); }
+    gwSel = null;
+  });
+  run('saveFee', async () => { await setCfg('WdFeeFlat', $('aFeeF').value); await setCfg('WdFeePct', $('aFeeP').value); });
+  document.querySelectorAll('[data-gw]').forEach(b => b.onclick = () => { gwSel = b.dataset.gw; document.querySelectorAll('[data-gw]').forEach(x => x.classList.toggle('ghost', x !== b)); $('gwLink').classList.toggle('hide', gwSel !== 'link'); $('gwPn').classList.toggle('hide', gwSel !== 'paynit'); });
 }
 
 const ICONS = {
@@ -564,7 +560,7 @@ function render() {
     $('shareBtn').onclick = () => { const u = 'https://t.me/share/url?url=' + encodeURIComponent(S.link) + '&text=' + encodeURIComponent('Join and earn money!'); if (tg) tg.openTelegramLink(u); else window.open(u, '_blank'); };
   }
   if ($('wdBtn')) {
-    const sync = () => { const v = rs($('amt').value); $('s1').textContent = '₹' + v; $('s2').textContent = '₹' + v; };
+    const sync = () => { const x = Number($('amt').value) || 0; $('s1').textContent = '₹' + rs(x); $('sf').innerHTML = feeTxt(x); $('s2').textContent = '₹' + rs(Math.max(0, x - feeOf(x))); };
     $('amt').oninput = sync;
     $('wdBtn').onclick = () => {
       const upi = $('upi').value.trim().toLowerCase(), amount = Number($('amt').value), w = S.wd || {};
@@ -575,7 +571,7 @@ function render() {
       confirmWd(upi, amount);
     };
   }
-  if (tab === 'admin') { if (!A) loadAdmin(); wireAdmin(); paintQ(); }
+  if (tab === 'admin') { if (!A) loadAdmin(); wireAdmin(); }
 }
 document.querySelectorAll('.sp-f').forEach(e => e.innerHTML = EM(e.dataset.i, '', 38));
 $('spMain').innerHTML = EM('1f680', '', 70);
